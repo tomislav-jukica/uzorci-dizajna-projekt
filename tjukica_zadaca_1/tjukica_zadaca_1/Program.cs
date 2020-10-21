@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text.RegularExpressions;
 
 namespace tjukica_zadaca_1
@@ -11,11 +12,12 @@ namespace tjukica_zadaca_1
         static string dokumentVozila = null;
         static string dokumentLokacije = null;
         static string dokumentCjenik = null;
-        static string dokumentVozilaKapacitet = null;
+        static string dokumentLokacijeKapacitet = null;
         static string dokumentOsobe = null;
         static string dokumentAktivnosti = null;
         static DateTime virtualnoVrijeme;
 
+        private static bool radi;
         
 
         static void Main(string[] args)
@@ -27,14 +29,21 @@ namespace tjukica_zadaca_1
             }
 
             UnesiDokumente(args);
-            UcitajDokument(TipDatoteke.osobe);
-            UcitajDokument(TipDatoteke.lokacije);
-            UcitajDokument(TipDatoteke.vozila);
-            UcitajDokument(TipDatoteke.cjenik);
-            Console.WriteLine(Cjenik.cjenik.Count);
-            Console.ReadLine();
+            if (!UcitajSveDokumente())
+            {
+                Console.WriteLine("Neuspjelo ucitavanje dokumenata. Zatvaram program...");
+                return;
+            }
+            while (radi)
+            {
+                Console.ReadLine();
+            }
+
+            
             
         }
+
+        
 
         static void UnesiDokumente(string[] args)
         {
@@ -53,7 +62,7 @@ namespace tjukica_zadaca_1
                         dokumentCjenik = args[i + 1];
                         break;
                     case "-k":
-                        dokumentVozilaKapacitet = args[i + 1];
+                        dokumentLokacijeKapacitet = args[i + 1];
                         break;
                     case "-o":
                         dokumentOsobe = args[i + 1];
@@ -69,7 +78,21 @@ namespace tjukica_zadaca_1
             }
         }
 
-        static void UcitajDokument(TipDatoteke tip)
+        static bool UcitajSveDokumente()
+        {
+            bool retVal = false;
+            if(UcitajDokument(TipDatoteke.osobe) &&
+                UcitajDokument(TipDatoteke.lokacije) &&
+                UcitajDokument(TipDatoteke.vozila) &&
+                UcitajDokument(TipDatoteke.cjenik) &&
+                UcitajDokument(TipDatoteke.lokacije_kapacitet))
+            {
+                retVal = true;
+            }
+            return retVal;
+        }
+
+        static bool UcitajDokument(TipDatoteke tip)
         {
             System.IO.StreamReader file = null;
             string line;
@@ -78,7 +101,15 @@ namespace tjukica_zadaca_1
             switch (tip)
             {
                 case TipDatoteke.osobe:
-                    file = new System.IO.StreamReader(dokumentOsobe);
+                    try
+                    {
+                        file = new System.IO.StreamReader(dokumentOsobe);
+                    }
+                    catch (FileNotFoundException)
+                    {
+                        Console.WriteLine("Greška prilikom unosa osoba. Datoteka ne postoji!");
+                        return false;
+                    }
                     brojac = 1;
                     while((line = file.ReadLine()) != null)
                     {
@@ -103,10 +134,18 @@ namespace tjukica_zadaca_1
                             }                            
                         }
                         brojac++;
-                    } 
-                    break;
+                    }
+                    return true;
                 case TipDatoteke.lokacije:
-                    file = new System.IO.StreamReader(dokumentLokacije);
+                    try
+                    {
+                        file = new System.IO.StreamReader(dokumentLokacije);
+                    }
+                    catch (FileNotFoundException)
+                    {
+                        Console.WriteLine("Greška prilikom unosa lokacija. Datoteka ne postoji!");
+                        return false;
+                    }
                     brojac = 1;
                     while ((line = file.ReadLine()) != null)
                     {
@@ -132,7 +171,7 @@ namespace tjukica_zadaca_1
                         }
                         brojac++;
                     }
-                    break;
+                    return true;
                 case TipDatoteke.vozila:
                     file = new System.IO.StreamReader(dokumentVozila);
                     brojac = 1;
@@ -160,7 +199,7 @@ namespace tjukica_zadaca_1
                         }
                         brojac++;
                     }
-                    break;
+                    return true;
                 case TipDatoteke.cjenik:
                     file = new System.IO.StreamReader(dokumentCjenik);
                     brojac = 1;
@@ -187,20 +226,70 @@ namespace tjukica_zadaca_1
                                         }
                                         catch (Exception)
                                         {
-                                            Console.WriteLine("Greška prilikom učitavanja " + tip + "!");
+                                            Console.WriteLine("Greška prilikom učitavanja " + tip + "a!");
                                         }
                                         postoji = true;
                                     }
                                 }
                                 if (!postoji)
                                 {
-                                    Console.WriteLine("Greška u kreiranju cjenika! Ne postoji vozilo ID-jem " + int.Parse(atributi[0]) + ".");
+                                    Console.WriteLine("Linija: " + brojac + " - Greška u kreiranju cjenika! Ne postoji vozilo s ID-jem " + int.Parse(atributi[0]) + ".");
                                 }
                             }
                         }
                         brojac++;
                     }
-                    break;
+                    return true;
+                case TipDatoteke.lokacije_kapacitet:
+                    file = new System.IO.StreamReader(dokumentLokacijeKapacitet);
+                    brojac = 1;
+                    while ((line = file.ReadLine()) != null)
+                    {
+                        string[] atributi = Array.ConvertAll(line.Split(";"), p => p.Trim());
+                        if (brojac > 1) //Preskacemo prvu liniju u datoteci
+                        {
+                            if (atributi.Length != 4)
+                            {
+                                Console.WriteLine("Pogrešna sintaksa u liniji: " + brojac + " - " + tip);
+                            }
+                            else
+                            {
+                                postoji = false;
+                                foreach (Lokacija lokacija in Lokacija.lokacije)
+                                {
+                                    if(lokacija.id == int.Parse(atributi[0])){
+                                        postoji = true;
+                                    }
+                                }
+                                if (!postoji)
+                                {
+                                    Console.WriteLine("Linija: " + brojac + " - Greška u kreiranju kapaciteta lokacija! Ne postoji lokacija s ID-jem " + int.Parse(atributi[0]) + ".");
+                                }
+                                if (postoji)
+                                {
+                                    postoji = false;
+                                    foreach (Vozilo vozilo in Vozilo.vozila)
+                                    {
+                                        if (vozilo.id == int.Parse(atributi[1]))
+                                        {
+                                            postoji = true;
+                                            LokacijaKapacitet novaLokacijaKapacitet = new LokacijaKapacitet(int.Parse(atributi[0]), int.Parse(atributi[1]), int.Parse(atributi[2]), int.Parse(atributi[3]));
+                                            LokacijaKapacitet.kapacitetiLokacija.Add(novaLokacijaKapacitet);
+                                        }
+                                    }
+                                    if (!postoji)
+                                    {
+                                        Console.WriteLine("Linija: " + brojac + " - Greška u kreiranju kapaciteta lokacija! Ne postoji vozilo s ID-jem " + int.Parse(atributi[1]) + ".");
+                                    }
+                                }
+                                
+                            }
+                        }
+                        brojac++;
+                    }
+                    return true;
+                default:
+                    return false;
             }
 
         }
