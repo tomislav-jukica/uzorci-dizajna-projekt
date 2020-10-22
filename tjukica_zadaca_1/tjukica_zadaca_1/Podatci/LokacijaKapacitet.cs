@@ -5,14 +5,13 @@ using System.Text;
 namespace tjukica_zadaca_1
 {
     
-    class LokacijaKapacitet
+    public class LokacijaKapacitet
     {
         public Lokacija lokacija { get; private set; }
         public  Vozilo vozilo { get; private set; }
         private int brojMjesta;
         private int brojVozila;
 
-        public static List<LokacijaKapacitet> kapacitetiLokacija = new List<LokacijaKapacitet>();
         public LokacijaKapacitet(Lokacija lokacija, Vozilo vozilo, int brojMjesta, int brojVozila)
         {
             this.lokacija = lokacija;

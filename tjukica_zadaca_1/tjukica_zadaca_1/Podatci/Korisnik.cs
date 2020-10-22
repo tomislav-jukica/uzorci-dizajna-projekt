@@ -4,13 +4,13 @@ using System.Text;
 
 namespace tjukica_zadaca_1
 {
-    class Korisnik
+    public class Korisnik
     {
 
-        private int id { get; set; }
+        public int id { get; private set; }
         private string ime { get; set; }
 
-        public static List<Korisnik> korisnici = new List<Korisnik>();
+        //public static List<Korisnik> korisnici = new List<Korisnik>();
 
         public Korisnik(int id, string ime)
         {

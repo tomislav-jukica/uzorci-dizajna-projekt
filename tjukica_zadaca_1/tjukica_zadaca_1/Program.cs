@@ -15,11 +15,10 @@ namespace tjukica_zadaca_1
         static string dokumentCjenik = null;
         static string dokumentLokacijeKapacitet = null;
         static string dokumentOsobe = null;
-        static string dokumentAktivnosti = null;
-        static DateTime virtualnoVrijeme;
+        static string dokumentAktivnosti = null;        
 
         private static bool radi = true;
-        
+        static Baza baza = Baza.getInstance();
 
         static void Main(string[] args)
         {                                  
@@ -28,7 +27,7 @@ namespace tjukica_zadaca_1
                 Console.WriteLine("Neispravan broj argumenata!");
                 return;
             }
-
+            
             UnesiDokumente(args);
             if (!UcitajSveDokumente())
             {
@@ -36,7 +35,7 @@ namespace tjukica_zadaca_1
                 return;
             }
 
-            if(args.Length == 12)//interaktivni način
+            if (args.Length == 12)//interaktivni način
             {
                 while (radi)
                 {
@@ -48,9 +47,7 @@ namespace tjukica_zadaca_1
             else if(args.Length == 14)//skupni način
             {
 
-            }
-            
-
+            }           
             
             
         }
@@ -96,9 +93,10 @@ namespace tjukica_zadaca_1
                     case "-o":
                         dokumentOsobe = args[i + 1];
                         break;
-                    case "-t":
-                        virtualnoVrijeme = new DateTime();
+                    case "-t":                        
+                        DateTime virtualnoVrijeme = new DateTime();
                         virtualnoVrijeme = DateTime.Parse(args[i + 1]);
+                        baza.setVirtualnoVrijeme(virtualnoVrijeme);
                         break;
                     case "-s":
                         dokumentAktivnosti = args[i + 1];
@@ -154,7 +152,7 @@ namespace tjukica_zadaca_1
                                 try
                                 {
                                     Korisnik noviKorisnik = new Korisnik(int.Parse(atributi[0]), atributi[1]);
-                                    Korisnik.korisnici.Add(noviKorisnik);
+                                    baza.getKorisnici().Add(noviKorisnik);
                                 }
                                 catch (Exception)
                                 {
@@ -190,7 +188,7 @@ namespace tjukica_zadaca_1
                                 try
                                 {
                                     Lokacija novaLokacija = new Lokacija(int.Parse(atributi[0]), atributi[1], atributi[2], atributi[3]);
-                                    Lokacija.lokacije.Add(novaLokacija);
+                                    baza.getLokacije().Add(novaLokacija);
                                 }
                                 catch (Exception)
                                 {
@@ -226,7 +224,7 @@ namespace tjukica_zadaca_1
                                 try
                                 {
                                     Vozilo novoVozilo = new Vozilo(int.Parse(atributi[0]), atributi[1], int.Parse(atributi[2]), int.Parse(atributi[3]));
-                                    Vozilo.vozila.Add(novoVozilo);
+                                    baza.getVozila().Add(novoVozilo);
                                 }
                                 catch (Exception)
                                 {
@@ -260,14 +258,14 @@ namespace tjukica_zadaca_1
                             else
                             {
                                 postoji = false;
-                                foreach (Vozilo vozilo in Vozilo.vozila)
+                                foreach (Vozilo vozilo in baza.getVozila())
                                 {
                                     if(vozilo.id == int.Parse(atributi[0]))
                                     {
                                         try
                                         {
                                             Cjenik noviCjenik = new Cjenik(vozilo, int.Parse(atributi[1]), int.Parse(atributi[2]), int.Parse(atributi[3]));
-                                            Cjenik.cjenik.Add(noviCjenik);                                            
+                                            baza.getCjenik().Add(noviCjenik);                                            
                                         }
                                         catch (Exception)
                                         {
@@ -309,7 +307,7 @@ namespace tjukica_zadaca_1
                             {
                                 postoji = false;
                                 Lokacija lokacijaUnos = null;
-                                foreach (Lokacija lokacija in Lokacija.lokacije)
+                                foreach (Lokacija lokacija in baza.getLokacije())
                                 {
                                     if(lokacija.id == int.Parse(atributi[0])){
                                         postoji = true;
@@ -323,13 +321,13 @@ namespace tjukica_zadaca_1
                                 if (postoji)
                                 {
                                     postoji = false;
-                                    foreach (Vozilo vozilo in Vozilo.vozila)
+                                    foreach (Vozilo vozilo in baza.getVozila())
                                     {
                                         if (vozilo.id == int.Parse(atributi[1]))
                                         {
                                             postoji = true;
                                             LokacijaKapacitet novaLokacijaKapacitet = new LokacijaKapacitet(lokacijaUnos, vozilo, int.Parse(atributi[2]), int.Parse(atributi[3]));
-                                            LokacijaKapacitet.kapacitetiLokacija.Add(novaLokacijaKapacitet);
+                                            baza.getLokacijaKapacitet().Add(novaLokacijaKapacitet);
                                         }
                                     }
                                     if (!postoji)

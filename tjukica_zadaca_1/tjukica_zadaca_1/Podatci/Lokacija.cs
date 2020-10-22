@@ -4,15 +4,13 @@ using System.Text;
 
 namespace tjukica_zadaca_1
 {
-    class Lokacija
+    public class Lokacija
     {
         public int id { get; private set; }
         private string naziv;
         private string adresa;
         private double geoSirina;
         private double geoDuzina;
-
-        public static List<Lokacija> lokacije = new List<Lokacija>();
 
         public Lokacija(int id, string naziv, string adresa, string koordinata)
         {

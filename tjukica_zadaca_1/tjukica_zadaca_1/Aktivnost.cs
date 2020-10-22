@@ -21,9 +21,7 @@ namespace tjukica_zadaca_1
         public int BrojKm { get => brojKm; private set => brojKm = value; }
         public int IdAktivnosti { get => idAktivnosti; private set => idAktivnosti = value; }
         public DateTime Vrijeme { get => vrijeme; private set => vrijeme = value; }
-
-        private AktivnostBuilder aktivnostBuilder;
-
+       
         public Aktivnost(AktivnostBuilder builder)
         {
             this.idAktivnosti = builder.IdAktivnosti;
