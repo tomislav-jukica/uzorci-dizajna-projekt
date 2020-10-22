@@ -8,6 +8,7 @@ namespace tjukica_zadaca_1
     class Program
     {
         Regex regex = new Regex("-(\\w) (\\w+[.]\\w+)|-(\\w) ([0-9-:]+ [0-9:]+)");
+        private static Regex REGEX_KRAJ = new Regex("(\\d) .(\\d+-\\d+-\\d+ \\d+:\\d+:\\d+).");
 
         static string dokumentVozila = null;
         static string dokumentLokacije = null;
@@ -17,7 +18,7 @@ namespace tjukica_zadaca_1
         static string dokumentAktivnosti = null;
         static DateTime virtualnoVrijeme;
 
-        private static bool radi;
+        private static bool radi = true;
         
 
         static void Main(string[] args)
@@ -34,16 +35,44 @@ namespace tjukica_zadaca_1
                 Console.WriteLine("Neuspjelo ucitavanje dokumenata. Zatvaram program...");
                 return;
             }
-            while (radi)
+
+            if(args.Length == 12)//interaktivni način
             {
-                Console.ReadLine();
+                while (radi)
+                {
+                    Console.WriteLine("Unesite komandu: ");
+                    string komanda = Console.ReadLine();
+                    CitajKomandu(komanda);
+                }
             }
+            else if(args.Length == 14)//skupni način
+            {
+
+            }
+            
 
             
             
         }
 
-        
+        static void CitajKomandu(string komanda)
+        {
+            MatchCollection matches = REGEX_KRAJ.Matches(komanda);
+            int aktivnost = int.Parse(matches[0].Groups[1].Value);
+            DateTime vrijeme = DateTime.Parse(matches[0].Groups[2].Value);
+            switch (aktivnost)
+            {
+                case 0:
+                    AktivnostKraj(aktivnost, vrijeme);
+                    break;
+            }
+
+        }
+
+        private static void AktivnostKraj(int idAktivnosti, DateTime vrijeme)
+        {
+            Aktivnost aktivnost = AktivnostDirektor.Kraj(idAktivnosti, vrijeme);         
+        }
 
         static void UnesiDokumente(string[] args)
         {
@@ -173,7 +202,15 @@ namespace tjukica_zadaca_1
                     }
                     return true;
                 case TipDatoteke.vozila:
-                    file = new System.IO.StreamReader(dokumentVozila);
+                    try
+                    {
+                        file = new System.IO.StreamReader(dokumentVozila);
+                    }
+                    catch (FileNotFoundException)
+                    {
+                        Console.WriteLine("Greška prilikom unosa vozila. Datoteka ne postoji!");
+                        return false;                       
+                    }
                     brojac = 1;
                     while ((line = file.ReadLine()) != null)
                     {
@@ -201,7 +238,15 @@ namespace tjukica_zadaca_1
                     }
                     return true;
                 case TipDatoteke.cjenik:
-                    file = new System.IO.StreamReader(dokumentCjenik);
+                    try
+                    {
+                        file = new System.IO.StreamReader(dokumentCjenik);
+                    }
+                    catch (FileNotFoundException)
+                    {
+                        Console.WriteLine("Greška prilikom unosa cjenika. Datoteka ne postoji!");
+                        return false;
+                    }
                     brojac = 1;
                     while ((line = file.ReadLine()) != null)
                     {
@@ -221,8 +266,8 @@ namespace tjukica_zadaca_1
                                     {
                                         try
                                         {
-                                            Cjenik noviCjenik = new Cjenik(int.Parse(atributi[0]), int.Parse(atributi[1]), int.Parse(atributi[2]), int.Parse(atributi[3]));
-                                            Cjenik.cjenik.Add(noviCjenik);
+                                            Cjenik noviCjenik = new Cjenik(vozilo, int.Parse(atributi[1]), int.Parse(atributi[2]), int.Parse(atributi[3]));
+                                            Cjenik.cjenik.Add(noviCjenik);                                            
                                         }
                                         catch (Exception)
                                         {
@@ -241,7 +286,15 @@ namespace tjukica_zadaca_1
                     }
                     return true;
                 case TipDatoteke.lokacije_kapacitet:
-                    file = new System.IO.StreamReader(dokumentLokacijeKapacitet);
+                    try
+                    {
+                        file = new System.IO.StreamReader(dokumentLokacijeKapacitet);
+                    }
+                    catch (FileNotFoundException)
+                    {
+                        Console.WriteLine("Greška prilikom unosa kapaciteta lokacija. Datoteka ne postoji!");
+                        return false;
+                    }
                     brojac = 1;
                     while ((line = file.ReadLine()) != null)
                     {
@@ -255,10 +308,12 @@ namespace tjukica_zadaca_1
                             else
                             {
                                 postoji = false;
+                                Lokacija lokacijaUnos = null;
                                 foreach (Lokacija lokacija in Lokacija.lokacije)
                                 {
                                     if(lokacija.id == int.Parse(atributi[0])){
                                         postoji = true;
+                                        lokacijaUnos = lokacija;
                                     }
                                 }
                                 if (!postoji)
@@ -273,7 +328,7 @@ namespace tjukica_zadaca_1
                                         if (vozilo.id == int.Parse(atributi[1]))
                                         {
                                             postoji = true;
-                                            LokacijaKapacitet novaLokacijaKapacitet = new LokacijaKapacitet(int.Parse(atributi[0]), int.Parse(atributi[1]), int.Parse(atributi[2]), int.Parse(atributi[3]));
+                                            LokacijaKapacitet novaLokacijaKapacitet = new LokacijaKapacitet(lokacijaUnos, vozilo, int.Parse(atributi[2]), int.Parse(atributi[3]));
                                             LokacijaKapacitet.kapacitetiLokacija.Add(novaLokacijaKapacitet);
                                         }
                                     }

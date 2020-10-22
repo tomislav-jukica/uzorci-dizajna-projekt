@@ -7,16 +7,16 @@ namespace tjukica_zadaca_1
     
     class LokacijaKapacitet
     {
-        private int idLokacije;
-        private int idVozila;
+        public Lokacija lokacija { get; private set; }
+        public  Vozilo vozilo { get; private set; }
         private int brojMjesta;
         private int brojVozila;
 
         public static List<LokacijaKapacitet> kapacitetiLokacija = new List<LokacijaKapacitet>();
-        public LokacijaKapacitet(int idLokacije, int idVozila, int brojMjesta, int brojVozila)
+        public LokacijaKapacitet(Lokacija lokacija, Vozilo vozilo, int brojMjesta, int brojVozila)
         {
-            this.idLokacije = idLokacije;
-            this.idVozila = idVozila;
+            this.lokacija = lokacija;
+            this.vozilo = vozilo;
             this.brojMjesta = brojMjesta;
             this.brojVozila = brojVozila;
         }

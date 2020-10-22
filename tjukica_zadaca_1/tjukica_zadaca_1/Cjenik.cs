@@ -6,16 +6,16 @@ namespace tjukica_zadaca_1
 {
     class Cjenik
     {
-        int idVozila;
+        public Vozilo vozilo { get; private set; }
         int najam;
         int cijenaSat;
         int cijenaKm;
 
         public static List<Cjenik> cjenik = new List<Cjenik>();
 
-        public Cjenik(int idVozila, int najam, int cijenaSat, int cijenaKm)
+        public Cjenik(Vozilo vozilo, int najam, int cijenaSat, int cijenaKm)
         {
-            this.idVozila = idVozila;
+            this.vozilo = vozilo;
             this.najam = najam;
             this.cijenaSat = cijenaSat;
             this.cijenaKm = cijenaKm;
