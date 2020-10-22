@@ -9,6 +9,8 @@ namespace tjukica_zadaca_1
     {
         Regex regex = new Regex("-(\\w) (\\w+[.]\\w+)|-(\\w) ([0-9-:]+ [0-9:]+)");
         private static Regex REGEX_KRAJ = new Regex("(\\d) .(\\d+-\\d+-\\d+ \\d+:\\d+:\\d+).");
+        private static Regex REGEX_PODATCI = new Regex("(\\d) .(\\d+-\\d+-\\d+ \\d+:\\d+:\\d+). (\\d+) (\\d+) (\\d+)");
+        private static Regex REGEX_VRACANJE = new Regex("(\\d) .(\\d+-\\d+-\\d+ \\d+:\\d+:\\d+). (\\d+) (\\d+) (\\d+) (\\d+)");
 
         static string dokumentVozila = null;
         static string dokumentLokacije = null;
@@ -54,21 +56,95 @@ namespace tjukica_zadaca_1
 
         static void CitajKomandu(string komanda)
         {
-            MatchCollection matches = REGEX_KRAJ.Matches(komanda);
-            int aktivnost = int.Parse(matches[0].Groups[1].Value);
-            DateTime vrijeme = DateTime.Parse(matches[0].Groups[2].Value);
-            switch (aktivnost)
+            MatchCollection matchPodatci = REGEX_PODATCI.Matches(komanda);
+            MatchCollection matchVracanje = REGEX_VRACANJE.Matches(komanda);
+            MatchCollection matchKraj = REGEX_KRAJ.Matches(komanda);
+            
+            if (matchPodatci.Count != 0)
             {
-                case 0:
-                    AktivnostKraj(aktivnost, vrijeme);
-                    break;
-            }
+                try
+                {
+                    int aktivnost = int.Parse(matchPodatci[0].Groups[1].Value);
+                    DateTime vrijeme = DateTime.Parse(matchPodatci[0].Groups[2].Value);
+                    Match podatci = matchPodatci[0];
+                    switch (aktivnost)
+                    {
+                        case 1:
+                            AktivnostPregled(aktivnost, vrijeme, podatci.Groups[3].Value, podatci.Groups[4].Value, podatci.Groups[5].Value);
+                            break;
+                        case 2:
+                            break;
+                        case 3:
+                            break;
+                        default:
+                            Console.WriteLine("Pogrešna sintaksa komande!");
+                            break;
+                    }
+                }
+                catch (FormatException)
+                {
+                    Console.WriteLine("Pogrešan format datuma!");
+                }
+            } else if(matchVracanje.Count != 0)
+            {
 
+            } else if(matchKraj.Count!= 0)
+            {
+                try
+                {
+                    int aktivnost = int.Parse(matchKraj[0].Groups[1].Value);
+                    DateTime vrijeme = DateTime.Parse(matchKraj[0].Groups[2].Value);
+                    if (aktivnost == 0)
+                    {
+                        AktivnostKraj(aktivnost, vrijeme);
+                    }
+                    else
+                    {
+                        Console.WriteLine("Pogrešna sintaksa komande!");
+                    }
+                }
+                catch (FormatException)
+                {
+                    Console.WriteLine("Pogrešan format datuma!");
+                }
+            } else
+            {
+                Console.WriteLine("Pogrešna sintaksa komande!");
+            }          
+        }
+
+        private static void AktivnostPregled(int idAktivnosti, DateTime vrijeme, string korisnik, string lokacija, string vozilo)
+        {
+            if (baza.UsporediVrijeme(vrijeme))
+            {
+                Aktivnost aktivnost = AktivnostDirektor.Pregled(idAktivnosti, vrijeme,
+                    baza.getKorisnik(int.Parse(korisnik)),
+                    baza.getLokacija(int.Parse(lokacija)),
+                    baza.getVozilo(int.Parse(vozilo)));
+
+                baza.getAktivnosti().Add(aktivnost);
+                Console.WriteLine("Na lokaciji " + aktivnost.Lokacija.naziv +
+                    " trenutno se nalazi " + baza.getKapacitetLokacije(aktivnost.Lokacija, aktivnost.Vozilo).brojVozila +
+                    " vozila tipa " + aktivnost.Vozilo.naziv + ".");
+                
+            } else
+            {
+                Console.WriteLine("Vrijeme aktivnosti je manje od virtualnog vremena.");
+            }
         }
 
         private static void AktivnostKraj(int idAktivnosti, DateTime vrijeme)
         {
-            Aktivnost aktivnost = AktivnostDirektor.Kraj(idAktivnosti, vrijeme);         
+            if (baza.UsporediVrijeme(vrijeme))
+            {
+                Aktivnost aktivnost = AktivnostDirektor.Kraj(idAktivnosti, vrijeme);
+                Console.WriteLine("U " + vrijeme + " program završava s radom.");
+                radi = false;
+            } else
+            {
+                Console.WriteLine("Vrijeme aktivnosti je manje od virtualnog vremena.");
+            }
+            
         }
 
         static void UnesiDokumente(string[] args)

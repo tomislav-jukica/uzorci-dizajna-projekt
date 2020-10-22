@@ -10,8 +10,9 @@ namespace tjukica_zadaca_1
         private List<Lokacija> lokacije = new List<Lokacija>();
         private List<Vozilo> vozila = new List<Vozilo>();
         private List<Cjenik> cjenik = new List<Cjenik>();
-        private List<LokacijaKapacitet> lokacijaKapacitet = new List<LokacijaKapacitet>();
+        private List<LokacijaKapacitet> kapacitetiLokacija = new List<LokacijaKapacitet>();
         private DateTime virtualnoVrijeme;
+        private List<Aktivnost> aktivnosti = new List<Aktivnost>();
 
         private static Baza baza = null;
 
@@ -26,6 +27,19 @@ namespace tjukica_zadaca_1
             return baza;
         }
 
+
+        public bool UsporediVrijeme(DateTime vrijeme)
+        {
+            if(vrijeme.CompareTo(baza.virtualnoVrijeme) > 0)
+            {
+                return true;
+            } else
+            {
+                return false;
+            }
+        }
+
+
         public DateTime getVirtualnoVrijeme()
         {
             return baza.virtualnoVrijeme;
@@ -35,7 +49,54 @@ namespace tjukica_zadaca_1
             baza.virtualnoVrijeme = vrijeme;
         }
 
-
+        public Korisnik getKorisnik(int id)
+        {
+            Korisnik korisnik = null;
+            foreach (Korisnik k in baza.korisnici)
+            {
+                if(k.id == id)
+                {
+                    korisnik = k;
+                }
+            }
+            return korisnik;
+        }
+        public Lokacija getLokacija(int id)
+        {
+            Lokacija lokacija = null;
+            foreach(Lokacija l in baza.lokacije)
+            {
+                if(l.id == id)
+                {
+                    lokacija = l;
+                }
+            }
+            return lokacija;
+        }
+        public Vozilo getVozilo(int id)
+        {
+            Vozilo vozilo = null;
+            foreach(Vozilo v in baza.vozila)
+            {
+                if(v.id == id)
+                {
+                    vozilo = v;
+                }
+            }
+            return vozilo;
+        }
+        public LokacijaKapacitet getKapacitetLokacije(Lokacija lokacija, Vozilo vozilo)
+        {
+            LokacijaKapacitet retVal = null;
+            foreach (LokacijaKapacitet x in baza.kapacitetiLokacija)
+            {
+                if(x.lokacija.id == lokacija.id && x.vozilo.id == vozilo.id)
+                {
+                    retVal = x;
+                }
+            }
+            return retVal;
+        }
 
         public List<Korisnik> getKorisnici()
         {
@@ -55,7 +116,12 @@ namespace tjukica_zadaca_1
         }
         public List<LokacijaKapacitet> getLokacijaKapacitet()
         {
-            return baza.lokacijaKapacitet;
+            return baza.kapacitetiLokacija;
+        }
+
+        public List<Aktivnost> getAktivnosti()
+        {
+            return baza.aktivnosti;
         }
     }
 }

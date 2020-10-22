@@ -7,7 +7,7 @@ namespace tjukica_zadaca_1
     public class Lokacija
     {
         public int id { get; private set; }
-        private string naziv;
+        public string naziv { get; private set; }
         private string adresa;
         private double geoSirina;
         private double geoDuzina;

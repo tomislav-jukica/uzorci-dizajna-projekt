@@ -6,7 +6,7 @@ namespace tjukica_zadaca_1
 {
     class AktivnostDirektor
     {
-        public static Aktivnost Najam(int idAktivnosti, DateTime vrijeme, int idKorisnik, int idLokacija, int idVozilo)
+        public static Aktivnost Pregled(int idAktivnosti, DateTime vrijeme, Korisnik idKorisnik, Lokacija idLokacija, Vozilo idVozilo)
         {
             return new AktivnostBuilder(idAktivnosti, vrijeme).setPodatci(idKorisnik, idLokacija, idVozilo).build();
         }

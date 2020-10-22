@@ -4,23 +4,24 @@ using System.Text;
 
 namespace tjukica_zadaca_1
 {
-    class AktivnostBuilder
+    public class AktivnostBuilder
     {
         //Glavne
         private int idAktivnosti;
         private DateTime vrijeme;
 
         //Opcionalne
-        private int idKorisnik;
-        private int idLokacija;
-        private int idVozilo;
+        private Korisnik korisnik;
+        private Lokacija lokacija;
+        private Vozilo vozilo;
         private int brojKm;
-        public int IdKorisnik { get => idKorisnik; private set => idKorisnik = value; }
-        public int IdLokacija { get => idLokacija; private set => idLokacija = value; }
-        public int IdVozilo { get => idVozilo; private set => idVozilo = value; }
-        public int BrojKm { get => brojKm; private set => brojKm = value; }
+        
         public int IdAktivnosti { get => idAktivnosti; private set => idAktivnosti = value; }
         public DateTime Vrijeme { get => vrijeme; private set => vrijeme = value; }
+        public Korisnik Korisnik { get => korisnik; private set => korisnik = value; }
+        public Lokacija Lokacija { get => lokacija; private set => lokacija = value; }
+        public Vozilo Vozilo { get => vozilo; private set => vozilo = value; }
+        public int BrojKm { get => brojKm; private set => brojKm = value; }
 
         public AktivnostBuilder(int idAktivnosti, DateTime vrijeme)
         {
@@ -28,27 +29,27 @@ namespace tjukica_zadaca_1
             this.vrijeme = vrijeme;
         }
 
-        public AktivnostBuilder setPodatci(int idKorisnik, int idLokacija, int idVozilo)
+        public AktivnostBuilder setPodatci(Korisnik idKorisnik, Lokacija idLokacija, Vozilo idVozilo)
         {
-            this.idKorisnik = idKorisnik;
-            this.idLokacija = idLokacija;
-            this.idVozilo = idVozilo;
+            this.korisnik = idKorisnik;
+            this.lokacija = idLokacija;
+            this.vozilo = idVozilo;
             return this;
         }
 
-        public AktivnostBuilder setIdKorisnik(int id)
+        public AktivnostBuilder setKorisnik(Korisnik korisnik)
         {
-            this.idKorisnik = id;
+            this.korisnik = korisnik;
             return this;
         }
-        public AktivnostBuilder setIdLokacija(int id)
+        public AktivnostBuilder setLokacija(Lokacija lokacija)
         {
-            this.idLokacija = id;
+            this.lokacija = lokacija;
             return this;
         }
-        public AktivnostBuilder setIdVozilo(int id)
+        public AktivnostBuilder setVozilo(Vozilo vozilo)
         {
-            this.idVozilo = id;
+            this.vozilo = vozilo;
             return this;
         }
         public AktivnostBuilder setBrojKm(int brojKm)

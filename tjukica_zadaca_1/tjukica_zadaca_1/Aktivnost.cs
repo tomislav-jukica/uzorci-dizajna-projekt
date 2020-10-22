@@ -4,31 +4,33 @@ using System.Text;
 
 namespace tjukica_zadaca_1
 {
-    class Aktivnost
+    public class Aktivnost
     {
         //Glavne
         private int idAktivnosti;
         private DateTime vrijeme;
         //Opcionalne
-        private int idKorisnik;
-        private int idLokacija;
-        private int idVozilo;
+        private Korisnik korisnik;
+        private Lokacija lokacija;
+        private Vozilo vozilo;
         private int brojKm;
 
-        public int IdKorisnik { get => idKorisnik; private set => idKorisnik = value; }
-        public int IdLokacija { get => idLokacija; private set => idLokacija = value; }
-        public int IdVozilo { get => idVozilo; private set => idVozilo = value; }
-        public int BrojKm { get => brojKm; private set => brojKm = value; }
+
+        
         public int IdAktivnosti { get => idAktivnosti; private set => idAktivnosti = value; }
         public DateTime Vrijeme { get => vrijeme; private set => vrijeme = value; }
-       
+        public Korisnik Korisnik { get => korisnik; set => korisnik = value; }
+        public Lokacija Lokacija { get => lokacija; set => lokacija = value; }
+        public Vozilo Vozilo { get => vozilo; set => vozilo = value; }
+        public int BrojKm { get => brojKm; private set => brojKm = value; }
+
         public Aktivnost(AktivnostBuilder builder)
         {
             this.idAktivnosti = builder.IdAktivnosti;
             this.vrijeme = builder.Vrijeme;
-            this.idLokacija = builder.IdLokacija;
-            this.idKorisnik = builder.IdKorisnik;
-            this.idVozilo = builder.IdVozilo;
+            this.lokacija = builder.Lokacija;
+            this.korisnik = builder.Korisnik;
+            this.vozilo = builder.Vozilo;
             this.brojKm = builder.BrojKm;
         }
 

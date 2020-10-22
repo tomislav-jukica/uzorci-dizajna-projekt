@@ -8,7 +8,7 @@ namespace tjukica_zadaca_1
     {
 
         public int id { get; private set; }
-        private string ime { get; set; }
+        public string ime { get; private set; }
 
         //public static List<Korisnik> korisnici = new List<Korisnik>();
 
