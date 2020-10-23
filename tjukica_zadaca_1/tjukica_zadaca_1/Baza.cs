@@ -13,6 +13,9 @@ namespace tjukica_zadaca_1
         private List<LokacijaKapacitet> kapacitetiLokacija = new List<LokacijaKapacitet>();
         private DateTime virtualnoVrijeme;
         private List<Aktivnost> aktivnosti = new List<Aktivnost>();
+        private List<NajamVozila> vozilaZaNajam = new List<NajamVozila>();
+        private List<Punjenje> vozilaNaPunjenju = new List<Punjenje>();
+        private List<NajamVozila> iznajmljenaVozila = new List<NajamVozila>();
 
         private static Baza baza = null;
 
@@ -122,10 +125,36 @@ namespace tjukica_zadaca_1
         {
             return baza.kapacitetiLokacija;
         }
-
         public List<Aktivnost> getAktivnosti()
         {
             return baza.aktivnosti;
         }
+        public List<NajamVozila> getVozilaZaNajam()
+        {
+            return baza.vozilaZaNajam;
+        }
+        public NajamVozila getNajamVozila(Vozilo vozilo)
+        {
+            NajamVozila najam = null;
+            foreach (NajamVozila n in baza.vozilaZaNajam)
+            {
+                if(vozilo.id == n.id)
+                {
+                    //TODO stavi da gleda jel iznajmljeno
+                    najam = n;
+                }
+            }
+            return najam;
+        }
+
+        public List<Punjenje> getVozilaNaPunjenju()
+        {
+            return baza.vozilaNaPunjenju;
+        }
+        public List<NajamVozila> getIznajmljenaVozila()
+        {
+            return baza.iznajmljenaVozila;
+        }
+
     }
 }

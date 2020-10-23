@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Text.RegularExpressions;
 
@@ -36,7 +37,7 @@ namespace tjukica_zadaca_1
                 Console.WriteLine("Neuspjelo ucitavanje dokumenata. Zatvaram program...");
                 return;
             }
-
+            Debug.WriteLine(baza.getVozilaZaNajam().Count);
             if (args.Length == 12)//interaktivni način
             {
                 while (radi)
@@ -50,7 +51,7 @@ namespace tjukica_zadaca_1
             {
 
             }
-
+            
 
         }
 
@@ -198,7 +199,7 @@ namespace tjukica_zadaca_1
                 Aktivnost aktivnost = AktivnostDirektor.Vracanje(idAktivnosti, vrijeme,
                     baza.getKorisnik(int.Parse(korisnik)),
                     baza.getLokacija(int.Parse(lokacija)),
-                    baza.getVozilo(int.Parse(vozilo)),
+                    baza.getNajamVozila(baza.getVozilo(int.Parse(vozilo))),
                     int.Parse(brojKm));
                 if(aktivnost != null)
                 {
@@ -482,6 +483,12 @@ namespace tjukica_zadaca_1
                                             postoji = true;
                                             LokacijaKapacitet novaLokacijaKapacitet = new LokacijaKapacitet(lokacijaUnos, vozilo, int.Parse(atributi[2]), int.Parse(atributi[3]));
                                             baza.getLokacijaKapacitet().Add(novaLokacijaKapacitet);
+                                            for (int i = 0; i < novaLokacijaKapacitet.brojVozila; i++)
+                                            {
+                                                NajamVozila najamVozila = new NajamVozila(vozilo.id, vozilo.naziv, vozilo.vrijemePunjenja, vozilo.domet);
+                                                baza.getVozilaZaNajam().Add(najamVozila);
+                                            }
+                                            
                                         }
                                     }
                                     if (!postoji)

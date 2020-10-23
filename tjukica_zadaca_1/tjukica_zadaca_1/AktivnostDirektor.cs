@@ -13,6 +13,7 @@ namespace tjukica_zadaca_1
             builder = new AktivnostBuilder(idAktivnosti, vrijeme).setPodatci(idKorisnik, idLokacija, idVozilo);
             if (builder != null)
             {
+                ProvjeriPunjenje(vrijeme);
                 aktivnost = builder.build();
                 Console.WriteLine("Na lokaciji " + idLokacija.naziv +
                 " trenutno se nalazi " + Baza.getInstance().getKapacitetLokacije(idLokacija, idVozilo).brojVozila +
@@ -31,6 +32,7 @@ namespace tjukica_zadaca_1
             builder = new AktivnostBuilder(idAktivnosti, vrijeme).setPodatci(idKorisnik, idLokacija, idVozilo);
             if (builder != null)
             {
+                ProvjeriPunjenje(vrijeme);
                 if (Baza.getInstance().getKapacitetLokacije(idLokacija, idVozilo).brojVozila < 1)
                 {
                     Console.WriteLine("Na lokaciji " + idLokacija.naziv + " nema vozila tipa " + idVozilo.naziv + ".");
@@ -43,7 +45,13 @@ namespace tjukica_zadaca_1
                 }
                 aktivnost = builder.build();
                 Baza.getInstance().getKapacitetLokacije(idLokacija, idVozilo).brojVozila--;
-                idKorisnik.najamVozila = idVozilo;
+
+                //NajamVozila najam = new NajamVozila(idVozilo.id, idVozilo.naziv, idVozilo.vrijemePunjenja, idVozilo.domet);
+                NajamVozila najam = Baza.getInstance().getNajamVozila(idVozilo);
+                najam.iznajmljen = true;
+                idKorisnik.najamVozila = najam;
+                Baza.getInstance().getIznajmljenaVozila().Add(idKorisnik.najamVozila);
+                //Baza.getInstance().getVozilaZaNajam().Add(najam);
                 Console.WriteLine("Korisnik " + idKorisnik.ime + " unajmio je vozilo tipa " + idVozilo.naziv + " na lokaciji " + idLokacija.naziv + ".");
                 return aktivnost;
             }
@@ -52,6 +60,19 @@ namespace tjukica_zadaca_1
                 return null;
             }
         }
+
+        private static void ProvjeriPunjenje(DateTime vrijeme)
+        {
+            foreach (Punjenje p in Baza.getInstance().getVozilaNaPunjenju())
+            {
+                if (p.gotovoPunjenje.CompareTo(vrijeme) > 0)
+                {
+                    p.lokacija.brojVozila++;
+                    Baza.getInstance().getVozilaNaPunjenju().Remove(p);
+                }
+            }
+        }
+
         public static Aktivnost PregledMjesta(int idAktivnosti, DateTime vrijeme, Korisnik idKorisnik, Lokacija idLokacija, Vozilo idVozilo)
         {
             Aktivnost aktivnost = null;
@@ -59,6 +80,7 @@ namespace tjukica_zadaca_1
             builder = new AktivnostBuilder(idAktivnosti, vrijeme).setPodatci(idKorisnik, idLokacija, idVozilo);
             if (builder != null)
             {
+                ProvjeriPunjenje(vrijeme);
                 aktivnost = builder.build();
                 LokacijaKapacitet kapacitet = Baza.getInstance().getKapacitetLokacije(idLokacija, idVozilo);
                 int slobodnaMjesta = kapacitet.brojMjesta - kapacitet.brojVozila;
@@ -70,19 +92,21 @@ namespace tjukica_zadaca_1
                 return null;
             }
         }
-        public static Aktivnost Vracanje(int idAktivnosti, DateTime vrijeme, Korisnik idKorisnik, Lokacija idLokacija, Vozilo idVozilo, int brojKm)
+        public static Aktivnost Vracanje(int idAktivnosti, DateTime vrijeme, Korisnik idKorisnik, Lokacija idLokacija, NajamVozila najam, int brojKm)
         {
             Aktivnost aktivnost = null;
             AktivnostBuilder builder = null;
+            Vozilo idVozilo = Baza.getInstance().getVozilo(najam.id);
             builder = new AktivnostBuilder(idAktivnosti, vrijeme).setPodatci(idKorisnik, idLokacija, idVozilo).setBrojKm(brojKm);
             if (builder != null)
             {
+                ProvjeriPunjenje(vrijeme);
                 if (idKorisnik.najamVozila == null)
                 {
                     Console.WriteLine("Korisnik " + idKorisnik.ime + " nema nijedno vozilo u najmu.");
                     return null;
                 }
-                else if (idKorisnik.najamVozila != idVozilo)
+                else if (idKorisnik.najamVozila.id != idVozilo.id)
                 {
                     Console.WriteLine("Korisnik " + idKorisnik.ime + " nema u najmu vozilo tipa " + idVozilo.naziv);
                     return null;
@@ -95,10 +119,20 @@ namespace tjukica_zadaca_1
                 } else
                 {
                     Console.WriteLine("Korisnik " + idKorisnik.ime + " vratio je vozilo tipa " + idKorisnik.najamVozila.naziv + " na lokaciju " + idLokacija.naziv + ".");
+
+                    Punjenje punjenje = new Punjenje(najam, kapacitet, vrijeme);
+                    Baza.getInstance().getVozilaNaPunjenju().Add(punjenje);
+                    //Baza.getInstance().getVozilaZaNajam().Remove(idKorisnik.najamVozila);
+                    idKorisnik.najamVozila = null;                    
+                    aktivnost = builder.build();
+                    return aktivnost;
+                    //TODO
+                    /*
                     kapacitet.brojVozila++;
                     idKorisnik.najamVozila = null;
                     aktivnost = builder.build();
                     return aktivnost;
+                    */
                 }
                 
             }

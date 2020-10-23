@@ -8,8 +8,8 @@ namespace tjukica_zadaca_1
     {
         public int id { get; private set; }
         public string naziv { get; private set; }
-        private int vrijemePunjenja;
-        private int domet;
+        public int vrijemePunjenja { get; private set; }
+        public int domet { get; private set; }
 
         public Vozilo(int id, string naziv, int vrijemePunjenja, int domet)
         {

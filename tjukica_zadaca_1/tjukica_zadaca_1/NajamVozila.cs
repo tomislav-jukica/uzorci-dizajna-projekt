@@ -5,25 +5,20 @@ using System.Text;
 
 namespace tjukica_zadaca_1
 {
-    class NajamVozila : Vozilo
+    public class NajamVozila : Vozilo
     {
         int idNajamVozila = 1;
-        string tip;
-        int vrijemePunjenja;
-        int domet;
-
-        float baterija;
-        int kilometri;
+        public float baterija { get; set; }
+        public int kilometri { get; set; }
+        public bool iznajmljen { get; set; }
 
         public NajamVozila(int id, string naziv, int punjenje, int domet) 
             : base(id, naziv, punjenje, domet)
         {
             this.idNajamVozila += 1;
-            this.tip = naziv;
-            this.vrijemePunjenja = punjenje;
-            this.domet = domet;
             this.baterija = 1;
             this.kilometri = 0;
+            iznajmljen = false;
         }
 
     }
