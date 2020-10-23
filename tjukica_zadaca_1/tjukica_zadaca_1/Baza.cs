@@ -61,6 +61,7 @@ namespace tjukica_zadaca_1
             }
             return korisnik;
         }
+
         public Lokacija getLokacija(int id)
         {
             Lokacija lokacija = null;
@@ -88,12 +89,15 @@ namespace tjukica_zadaca_1
         public LokacijaKapacitet getKapacitetLokacije(Lokacija lokacija, Vozilo vozilo)
         {
             LokacijaKapacitet retVal = null;
-            foreach (LokacijaKapacitet x in baza.kapacitetiLokacija)
+            if (lokacija != null && vozilo != null)
             {
-                if(x.lokacija.id == lokacija.id && x.vozilo.id == vozilo.id)
+                foreach (LokacijaKapacitet x in baza.kapacitetiLokacija)
                 {
-                    retVal = x;
-                }
+                    if (x.lokacija.id == lokacija.id && x.vozilo.id == vozilo.id)
+                    {
+                        retVal = x;
+                    }
+                } 
             }
             return retVal;
         }

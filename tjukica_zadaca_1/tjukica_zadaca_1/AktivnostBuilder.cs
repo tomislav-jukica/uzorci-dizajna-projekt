@@ -31,35 +31,61 @@ namespace tjukica_zadaca_1
 
         public AktivnostBuilder setPodatci(Korisnik idKorisnik, Lokacija idLokacija, Vozilo idVozilo)
         {
-            this.korisnik = idKorisnik;
-            this.lokacija = idLokacija;
-            this.vozilo = idVozilo;
-            return this;
+            if(this.setKorisnik(idKorisnik) == null ||
+            this.setLokacija(idLokacija) == null ||
+            this.setVozilo(idVozilo) == null)
+            {
+                return null;
+            } else
+            {
+                return this;
+            }            
         }
 
         public AktivnostBuilder setKorisnik(Korisnik korisnik)
         {
+            if(korisnik == null)
+            {
+                Console.WriteLine("Greška: Korisnik ne postoji.");
+                return null;
+            }
             this.korisnik = korisnik;
             return this;
         }
         public AktivnostBuilder setLokacija(Lokacija lokacija)
         {
+            if (lokacija == null)
+            {
+                Console.WriteLine("Greška: Lokacija ne postoji.");
+                return null;
+            }
             this.lokacija = lokacija;
             return this;
         }
         public AktivnostBuilder setVozilo(Vozilo vozilo)
         {
+            if (vozilo == null)
+            {
+                Console.WriteLine("Greška: Vozilo ne postoji.");
+                return null;
+            }
             this.vozilo = vozilo;
             return this;
         }
         public AktivnostBuilder setBrojKm(int brojKm)
         {
+            if(brojKm < 0)
+            {
+                Console.WriteLine("Broj kilometara ne može biti negativan!");
+                return null;
+            }
             this.brojKm = brojKm;
             return this;
         }
 
         public Aktivnost build()
-        {
+        {            
+            Baza.getInstance().setVirtualnoVrijeme(this.vrijeme);
             return new Aktivnost(this);
         }
 

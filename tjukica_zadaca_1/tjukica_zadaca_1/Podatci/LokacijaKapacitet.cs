@@ -10,7 +10,7 @@ namespace tjukica_zadaca_1
         public Lokacija lokacija { get; private set; }
         public  Vozilo vozilo { get; private set; }
         public int brojMjesta { get; private set; }
-        public int brojVozila { get; private set; }
+        public int brojVozila { get; set; }
 
         public LokacijaKapacitet(Lokacija lokacija, Vozilo vozilo, int brojMjesta, int brojVozila)
         {

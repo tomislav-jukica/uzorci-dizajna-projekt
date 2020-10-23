@@ -8,28 +8,28 @@ namespace tjukica_zadaca_1
     class Program
     {
         Regex regex = new Regex("-(\\w) (\\w+[.]\\w+)|-(\\w) ([0-9-:]+ [0-9:]+)");
-        private static Regex REGEX_KRAJ = new Regex("(\\d) .(\\d+-\\d+-\\d+ \\d+:\\d+:\\d+).");
-        private static Regex REGEX_PODATCI = new Regex("(\\d) .(\\d+-\\d+-\\d+ \\d+:\\d+:\\d+). (\\d+) (\\d+) (\\d+)");
-        private static Regex REGEX_VRACANJE = new Regex("(\\d) .(\\d+-\\d+-\\d+ \\d+:\\d+:\\d+). (\\d+) (\\d+) (\\d+) (\\d+)");
+        private static Regex REGEX_KRAJ = new Regex("(\\d); .(\\d+-\\d+-\\d+ \\d+:\\d+:\\d+).");
+        private static Regex REGEX_PODATCI = new Regex("(\\d); .(\\d+-\\d+-\\d+ \\d+:\\d+:\\d+).; (\\d+); (\\d+); (\\d+)");
+        private static Regex REGEX_VRACANJE = new Regex("(\\d); .(\\d+-\\d+-\\d+ \\d+:\\d+:\\d+).; (\\d+); (\\d+); (\\d+); (\\d+)");
 
         static string dokumentVozila = null;
         static string dokumentLokacije = null;
         static string dokumentCjenik = null;
         static string dokumentLokacijeKapacitet = null;
         static string dokumentOsobe = null;
-        static string dokumentAktivnosti = null;        
+        static string dokumentAktivnosti = null;
 
         private static bool radi = true;
         static Baza baza = Baza.getInstance();
 
         static void Main(string[] args)
-        {                                  
+        {
             if (args.Length != 14 && args.Length != 12)
             {
                 Console.WriteLine("Neispravan broj argumenata!");
                 return;
             }
-            
+
             UnesiDokumente(args);
             if (!UcitajSveDokumente())
             {
@@ -46,12 +46,12 @@ namespace tjukica_zadaca_1
                     CitajKomandu(komanda);
                 }
             }
-            else if(args.Length == 14)//skupni način
+            else if (args.Length == 14)//skupni način
             {
 
-            }           
-            
-            
+            }
+
+
         }
 
         static void CitajKomandu(string komanda)
@@ -59,8 +59,29 @@ namespace tjukica_zadaca_1
             MatchCollection matchPodatci = REGEX_PODATCI.Matches(komanda);
             MatchCollection matchVracanje = REGEX_VRACANJE.Matches(komanda);
             MatchCollection matchKraj = REGEX_KRAJ.Matches(komanda);
-            
-            if (matchPodatci.Count != 0)
+
+            if (matchVracanje.Count != 0)
+            {
+                try
+                {
+                    int aktivnost = int.Parse(matchVracanje[0].Groups[1].Value);
+                    DateTime vrijeme = DateTime.Parse(matchVracanje[0].Groups[2].Value);
+                    Match podatci = matchVracanje[0];
+                    if (aktivnost == 4)
+                    {
+                        AktivnostVracanje(aktivnost, vrijeme, podatci.Groups[3].Value, podatci.Groups[4].Value, podatci.Groups[5].Value, podatci.Groups[6].Value);
+                    }
+                    else
+                    {
+                        Console.WriteLine("Pogrešna sintaksa komande!");
+                    }
+                }
+                catch (FormatException)
+                {
+                    Console.WriteLine("Pogrešan format datuma!");
+                }                
+            }
+            else if (matchPodatci.Count != 0)
             {
                 try
                 {
@@ -70,11 +91,13 @@ namespace tjukica_zadaca_1
                     switch (aktivnost)
                     {
                         case 1:
-                            AktivnostPregled(aktivnost, vrijeme, podatci.Groups[3].Value, podatci.Groups[4].Value, podatci.Groups[5].Value);
+                            AktivnostPregledVozila(aktivnost, vrijeme, podatci.Groups[3].Value, podatci.Groups[4].Value, podatci.Groups[5].Value);
                             break;
                         case 2:
+                            AktivnostNajam(aktivnost, vrijeme, podatci.Groups[3].Value, podatci.Groups[4].Value, podatci.Groups[5].Value);
                             break;
                         case 3:
+                            AktivnostPregledMjesta(aktivnost, vrijeme, podatci.Groups[3].Value, podatci.Groups[4].Value, podatci.Groups[5].Value);
                             break;
                         default:
                             Console.WriteLine("Pogrešna sintaksa komande!");
@@ -85,10 +108,8 @@ namespace tjukica_zadaca_1
                 {
                     Console.WriteLine("Pogrešan format datuma!");
                 }
-            } else if(matchVracanje.Count != 0)
-            {
-
-            } else if(matchKraj.Count!= 0)
+            }
+            else if (matchKraj.Count != 0)
             {
                 try
                 {
@@ -107,32 +128,89 @@ namespace tjukica_zadaca_1
                 {
                     Console.WriteLine("Pogrešan format datuma!");
                 }
-            } else
+            }
+            else
             {
                 Console.WriteLine("Pogrešna sintaksa komande!");
-            }          
+            }
         }
 
-        private static void AktivnostPregled(int idAktivnosti, DateTime vrijeme, string korisnik, string lokacija, string vozilo)
+        
+
+        private static void AktivnostPregledVozila(int idAktivnosti, DateTime vrijeme, string korisnik, string lokacija, string vozilo)
         {
             if (baza.UsporediVrijeme(vrijeme))
             {
-                Aktivnost aktivnost = AktivnostDirektor.Pregled(idAktivnosti, vrijeme,
+                Aktivnost aktivnost = AktivnostDirektor.PregledVozila(idAktivnosti, vrijeme,
                     baza.getKorisnik(int.Parse(korisnik)),
                     baza.getLokacija(int.Parse(lokacija)),
                     baza.getVozilo(int.Parse(vozilo)));
-
-                baza.getAktivnosti().Add(aktivnost);
-                Console.WriteLine("Na lokaciji " + aktivnost.Lokacija.naziv +
-                    " trenutno se nalazi " + baza.getKapacitetLokacije(aktivnost.Lokacija, aktivnost.Vozilo).brojVozila +
-                    " vozila tipa " + aktivnost.Vozilo.naziv + ".");
-                
-            } else
+                if (aktivnost != null)
+                {
+                    baza.getAktivnosti().Add(aktivnost);
+                }                
+            }
+            else
             {
                 Console.WriteLine("Vrijeme aktivnosti je manje od virtualnog vremena.");
             }
         }
-
+        private static void AktivnostNajam(int idAktivnosti, DateTime vrijeme, string korisnik, string lokacija, string vozilo)
+        {
+            if (baza.UsporediVrijeme(vrijeme))
+            {
+                Aktivnost aktivnost = AktivnostDirektor.Najam(idAktivnosti, vrijeme,
+                    baza.getKorisnik(int.Parse(korisnik)),
+                    baza.getLokacija(int.Parse(lokacija)),
+                    baza.getVozilo(int.Parse(vozilo)));
+                if(aktivnost != null)
+                {
+                    baza.getAktivnosti().Add(aktivnost);
+                }                
+            }
+            else
+            {
+                Console.WriteLine("Vrijeme aktivnosti je manje od virtualnog vremena.");
+            }
+        }
+        private static void AktivnostPregledMjesta(int idAktivnosti, DateTime vrijeme, string korisnik, string lokacija, string vozilo)
+        {
+            if (baza.UsporediVrijeme(vrijeme))
+            {
+                Aktivnost aktivnost = AktivnostDirektor.PregledMjesta(idAktivnosti, vrijeme,
+                    baza.getKorisnik(int.Parse(korisnik)),
+                    baza.getLokacija(int.Parse(lokacija)),
+                    baza.getVozilo(int.Parse(vozilo)));
+                if(aktivnost != null)
+                {
+                    baza.getAktivnosti().Add(aktivnost);
+                }                
+            }
+            else
+            {
+                Console.WriteLine("Vrijeme aktivnosti je manje od virtualnog vremena.");
+            }
+        }
+        private static void AktivnostVracanje(int idAktivnosti, DateTime vrijeme, string korisnik, string lokacija, string vozilo, string brojKm)
+        {
+            if (baza.UsporediVrijeme(vrijeme))
+            {
+                Aktivnost aktivnost = AktivnostDirektor.Vracanje(idAktivnosti, vrijeme,
+                    baza.getKorisnik(int.Parse(korisnik)),
+                    baza.getLokacija(int.Parse(lokacija)),
+                    baza.getVozilo(int.Parse(vozilo)),
+                    int.Parse(brojKm));
+                if(aktivnost != null)
+                {
+                    baza.getAktivnosti().Add(aktivnost);
+                }
+                
+            }
+            else
+            {
+                Console.WriteLine("Vrijeme aktivnosti je manje od virtualnog vremena.");
+            }
+        }
         private static void AktivnostKraj(int idAktivnosti, DateTime vrijeme)
         {
             if (baza.UsporediVrijeme(vrijeme))
@@ -140,11 +218,12 @@ namespace tjukica_zadaca_1
                 Aktivnost aktivnost = AktivnostDirektor.Kraj(idAktivnosti, vrijeme);
                 Console.WriteLine("U " + vrijeme + " program završava s radom.");
                 radi = false;
-            } else
+            }
+            else
             {
                 Console.WriteLine("Vrijeme aktivnosti je manje od virtualnog vremena.");
             }
-            
+
         }
 
         static void UnesiDokumente(string[] args)
@@ -169,7 +248,7 @@ namespace tjukica_zadaca_1
                     case "-o":
                         dokumentOsobe = args[i + 1];
                         break;
-                    case "-t":                        
+                    case "-t":
                         DateTime virtualnoVrijeme = new DateTime();
                         virtualnoVrijeme = DateTime.Parse(args[i + 1]);
                         baza.setVirtualnoVrijeme(virtualnoVrijeme);
@@ -180,11 +259,10 @@ namespace tjukica_zadaca_1
                 }
             }
         }
-
         static bool UcitajSveDokumente()
         {
             bool retVal = false;
-            if(UcitajDokument(TipDatoteke.osobe) &&
+            if (UcitajDokument(TipDatoteke.osobe) &&
                 UcitajDokument(TipDatoteke.lokacije) &&
                 UcitajDokument(TipDatoteke.vozila) &&
                 UcitajDokument(TipDatoteke.cjenik) &&
@@ -194,7 +272,6 @@ namespace tjukica_zadaca_1
             }
             return retVal;
         }
-
         static bool UcitajDokument(TipDatoteke tip)
         {
             System.IO.StreamReader file = null;
@@ -214,7 +291,7 @@ namespace tjukica_zadaca_1
                         return false;
                     }
                     brojac = 1;
-                    while((line = file.ReadLine()) != null)
+                    while ((line = file.ReadLine()) != null)
                     {
                         string[] atributi = Array.ConvertAll(line.Split(";"), p => p.Trim());
                         if (brojac > 1) //Preskacemo prvu liniju u datoteci
@@ -234,7 +311,7 @@ namespace tjukica_zadaca_1
                                 {
                                     Console.WriteLine("Greška prilikom učitavanja " + tip + "!");
                                 }
-                            }                            
+                            }
                         }
                         brojac++;
                     }
@@ -283,7 +360,7 @@ namespace tjukica_zadaca_1
                     catch (FileNotFoundException)
                     {
                         Console.WriteLine("Greška prilikom unosa vozila. Datoteka ne postoji!");
-                        return false;                       
+                        return false;
                     }
                     brojac = 1;
                     while ((line = file.ReadLine()) != null)
@@ -336,12 +413,12 @@ namespace tjukica_zadaca_1
                                 postoji = false;
                                 foreach (Vozilo vozilo in baza.getVozila())
                                 {
-                                    if(vozilo.id == int.Parse(atributi[0]))
+                                    if (vozilo.id == int.Parse(atributi[0]))
                                     {
                                         try
                                         {
                                             Cjenik noviCjenik = new Cjenik(vozilo, int.Parse(atributi[1]), int.Parse(atributi[2]), int.Parse(atributi[3]));
-                                            baza.getCjenik().Add(noviCjenik);                                            
+                                            baza.getCjenik().Add(noviCjenik);
                                         }
                                         catch (Exception)
                                         {
@@ -385,7 +462,8 @@ namespace tjukica_zadaca_1
                                 Lokacija lokacijaUnos = null;
                                 foreach (Lokacija lokacija in baza.getLokacije())
                                 {
-                                    if(lokacija.id == int.Parse(atributi[0])){
+                                    if (lokacija.id == int.Parse(atributi[0]))
+                                    {
                                         postoji = true;
                                         lokacijaUnos = lokacija;
                                     }
@@ -411,7 +489,7 @@ namespace tjukica_zadaca_1
                                         Console.WriteLine("Linija: " + brojac + " - Greška u kreiranju kapaciteta lokacija! Ne postoji vozilo s ID-jem " + int.Parse(atributi[1]) + ".");
                                     }
                                 }
-                                
+
                             }
                         }
                         brojac++;
