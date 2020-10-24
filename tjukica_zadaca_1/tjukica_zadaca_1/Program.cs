@@ -44,10 +44,6 @@ namespace tjukica_zadaca_1
             {
                 while (radi)
                 {
-                    foreach (var vozilo in baza.getVozilaZaNajam())
-                    {
-                        Console.WriteLine("ID: " + vozilo.idNajamVozila + " Kilometri: " + vozilo.kilometri);
-                    }
                     Console.WriteLine("Unesite komandu: ");
                     string komanda = Console.ReadLine();
                     CitajKomandu(komanda);
@@ -205,7 +201,6 @@ namespace tjukica_zadaca_1
                 Aktivnost aktivnost = AktivnostDirektor.Vracanje(idAktivnosti, vrijeme,
                     baza.getKorisnik(int.Parse(korisnik)),
                     baza.getLokacija(int.Parse(lokacija)),
-                    baza.getNajamVozila(baza.getVozilo(int.Parse(vozilo))),
                     int.Parse(brojKm));
                 if(aktivnost != null)
                 {
@@ -296,7 +291,7 @@ namespace tjukica_zadaca_1
                     {
                         Console.WriteLine("Greška prilikom unosa osoba. Datoteka ne postoji!");
                         return false;
-                    }
+                    }                    
                     brojac = 1;
                     while ((line = file.ReadLine()) != null)
                     {
@@ -492,6 +487,7 @@ namespace tjukica_zadaca_1
                                             for (int i = 0; i < novaLokacijaKapacitet.brojVozila; i++)
                                             {
                                                 NajamVozila najamVozila = new NajamVozila(vozilo.id, vozilo.naziv, vozilo.vrijemePunjenja, vozilo.domet);
+                                                novaLokacijaKapacitet.trenutnaVozila.Add(najamVozila);
                                                 baza.getVozilaZaNajam().Add(najamVozila);
                                             }
                                             
