@@ -18,7 +18,7 @@ namespace tjukica_zadaca_1
             this.vrijemeAktivnosti = vrijeme;
         }
 
-        private void IzracunajVrijemePunjenja(int napravljeniKilometri)
+        public void IzracunajVrijemePunjenja(int napravljeniKilometri)
         {
             int vrijemePunjenja = vozilo.vrijemePunjenja; // npr. 4 sata
             int domet = vozilo.domet;
@@ -29,7 +29,7 @@ namespace tjukica_zadaca_1
             }
             vozilo.kilometri += napravljeniKilometri;
             int zaNapuniti = 100 - postotakBaterije;
-            double jedanPosto = vrijemePunjenja / 100;
+            double jedanPosto = (double)vrijemePunjenja / (double)100;
             double satiPunjenja = zaNapuniti * jedanPosto;
             gotovoPunjenje = vrijemeAktivnosti.AddHours(satiPunjenja);
 
@@ -43,7 +43,7 @@ namespace tjukica_zadaca_1
                 return -1;
             } else
             {
-                double baterija = (domet - kilometri) / domet;
+                double baterija = (double)(domet - kilometri) / (double)domet;
                 baterija *= 100;
                 return (int)baterija;
             }

@@ -37,11 +37,17 @@ namespace tjukica_zadaca_1
                 Console.WriteLine("Neuspjelo ucitavanje dokumenata. Zatvaram program...");
                 return;
             }
-            Debug.WriteLine(baza.getVozilaZaNajam().Count);
+
+            
+            
             if (args.Length == 12)//interaktivni način
             {
                 while (radi)
                 {
+                    foreach (var vozilo in baza.getVozilaZaNajam())
+                    {
+                        Console.WriteLine("ID: " + vozilo.idNajamVozila + " Kilometri: " + vozilo.kilometri);
+                    }
                     Console.WriteLine("Unesite komandu: ");
                     string komanda = Console.ReadLine();
                     CitajKomandu(komanda);

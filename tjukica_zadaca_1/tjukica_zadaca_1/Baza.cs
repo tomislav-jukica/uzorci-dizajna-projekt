@@ -138,9 +138,8 @@ namespace tjukica_zadaca_1
             NajamVozila najam = null;
             foreach (NajamVozila n in baza.vozilaZaNajam)
             {
-                if(vozilo.id == n.id)
+                if(vozilo.id == n.id && n.iznajmljen == false)
                 {
-                    //TODO stavi da gleda jel iznajmljeno
                     najam = n;
                 }
             }
@@ -154,6 +153,19 @@ namespace tjukica_zadaca_1
         public List<NajamVozila> getIznajmljenaVozila()
         {
             return baza.iznajmljenaVozila;
+        }
+
+        public int brojVozilaKojaSePune(LokacijaKapacitet lokacija)
+        {
+            int retVal = 0;
+            foreach (Punjenje v in baza.vozilaNaPunjenju)
+            {
+                if(v.lokacija == lokacija)
+                {
+                    retVal++;
+                }
+            }
+            return retVal;
         }
 
     }

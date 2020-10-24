@@ -15,8 +15,10 @@ namespace tjukica_zadaca_1
             {
                 ProvjeriPunjenje(vrijeme);
                 aktivnost = builder.build();
+                LokacijaKapacitet kapacitet = Baza.getInstance().getKapacitetLokacije(idLokacija, idVozilo);
+                int brojVozila = kapacitet.brojVozila;
                 Console.WriteLine("Na lokaciji " + idLokacija.naziv +
-                " trenutno se nalazi " + Baza.getInstance().getKapacitetLokacije(idLokacija, idVozilo).brojVozila +
+                " trenutno se nalazi " + brojVozila +
                 " vozila tipa " + idVozilo.naziv + ".");
                 return aktivnost;
             }
@@ -63,13 +65,20 @@ namespace tjukica_zadaca_1
 
         private static void ProvjeriPunjenje(DateTime vrijeme)
         {
-            foreach (Punjenje p in Baza.getInstance().getVozilaNaPunjenju())
+            try
             {
-                if (p.gotovoPunjenje.CompareTo(vrijeme) > 0)
+                foreach (Punjenje p in Baza.getInstance().getVozilaNaPunjenju())
                 {
-                    p.lokacija.brojVozila++;
-                    Baza.getInstance().getVozilaNaPunjenju().Remove(p);
+                    if (p.gotovoPunjenje.CompareTo(vrijeme) < 0)
+                    {
+                        p.lokacija.brojVozila++;
+                        Baza.getInstance().getVozilaNaPunjenju().Remove(p);
+                    }
                 }
+            }
+            catch (InvalidOperationException)
+            {
+                //TODO hendlaj exception
             }
         }
 
@@ -83,7 +92,7 @@ namespace tjukica_zadaca_1
                 ProvjeriPunjenje(vrijeme);
                 aktivnost = builder.build();
                 LokacijaKapacitet kapacitet = Baza.getInstance().getKapacitetLokacije(idLokacija, idVozilo);
-                int slobodnaMjesta = kapacitet.brojMjesta - kapacitet.brojVozila;
+                int slobodnaMjesta = kapacitet.brojMjesta - kapacitet.brojVozila - Baza.getInstance().brojVozilaKojaSePune(kapacitet);
                 Console.WriteLine("Na lokaciji " + idLokacija.naziv + " ima " + slobodnaMjesta + " slobodnih mjesta za vozilo tipa " + idVozilo.naziv + ".");
                 return aktivnost;
             }
@@ -121,7 +130,9 @@ namespace tjukica_zadaca_1
                     Console.WriteLine("Korisnik " + idKorisnik.ime + " vratio je vozilo tipa " + idKorisnik.najamVozila.naziv + " na lokaciju " + idLokacija.naziv + ".");
 
                     Punjenje punjenje = new Punjenje(najam, kapacitet, vrijeme);
+                    punjenje.IzracunajVrijemePunjenja(brojKm);
                     Baza.getInstance().getVozilaNaPunjenju().Add(punjenje);
+                    
                     //Baza.getInstance().getVozilaZaNajam().Remove(idKorisnik.najamVozila);
                     idKorisnik.najamVozila = null;                    
                     aktivnost = builder.build();
