@@ -8,7 +8,7 @@ namespace tjukica_zadaca_1
 {
     class Program
     {
-        private static Regex REGEX_VRIJEME = new Regex("([„](\\d+-\\d+-\\d+ \\d+:\\d+:\\d+)[“])");
+        private static Regex REGEX_VRIJEME = new Regex("([„](\\d+-\\d+-\\d+ \\d+:\\d+:\\d+))");
         private static Regex REGEX_KRAJ = new Regex("(\\d); .(\\d+-\\d+-\\d+ \\d+:\\d+:\\d+).");
         private static Regex REGEX_PODATCI = new Regex("(\\d); .(\\d+-\\d+-\\d+ \\d+:\\d+:\\d+).; (\\d+); (\\d+); (\\d+)");
         private static Regex REGEX_VRACANJE = new Regex("(\\d); .(\\d+-\\d+-\\d+ \\d+:\\d+:\\d+).; (\\d+); (\\d+); (\\d+); (\\d+)");
@@ -22,21 +22,18 @@ namespace tjukica_zadaca_1
 
         private static bool radi = true;
         static Baza baza = Baza.getInstance();
+        private static bool skupni = false;
 
         static void Main(string[] args)
         {
-            if (args.Length != 15 && args.Length != 13)
+            string pocetnaKomanda = "";
+            foreach(var x in args)
             {
-                Console.WriteLine("Neispravan broj argumenata!");
-                Console.WriteLine(args.Length);
-                foreach (var x in args)
-                {
-                    Console.WriteLine(x.ToString());
-                }
-                return;
+                pocetnaKomanda += " " + x;
             }
+            string[] strSplit = Array.ConvertAll(pocetnaKomanda.Split(" "), p => p.Trim());
 
-            UnesiDokumente(args);
+            UnesiDokumente(strSplit);
             if (!UcitajSveDokumente())
             {
                 Console.WriteLine("Neuspjelo ucitavanje dokumenata. Zatvaram program...");
@@ -45,7 +42,12 @@ namespace tjukica_zadaca_1
 
 
 
-            if (args.Length == 13)//interaktivni način
+            if (skupni)//skupni način
+            {
+                Console.WriteLine("Skupni način izvođenja...");
+                UcitajDokumentAktivnosti();
+                Console.WriteLine("Program završava sa radom.");
+            } else
             {
                 while (radi)
                 {
@@ -53,12 +55,6 @@ namespace tjukica_zadaca_1
                     string komanda = Console.ReadLine();
                     CitajKomandu(komanda);
                 }
-            }
-            else if (args.Length == 15)//skupni način
-            {
-                Console.WriteLine("Skupni način izvođenja...");
-                UcitajDokumentAktivnosti();
-                Console.WriteLine("Program završava sa radom.");
             }
 
 
@@ -259,13 +255,16 @@ namespace tjukica_zadaca_1
                         dokumentOsobe = args[i + 1];
                         break;
                     case "-t":
+                        
                         string vrijeme = args[i + 1] + " " + args[i + 2];
+                        Console.WriteLine(vrijeme);
                         MatchCollection match = REGEX_VRIJEME.Matches(vrijeme);
                         DateTime virtualnoVrijeme = new DateTime();
                         virtualnoVrijeme = DateTime.Parse(match[0].Groups[2].Value);
                         baza.setVirtualnoVrijeme(virtualnoVrijeme);
                         break;
                     case "-s":
+                        skupni = true;
                         dokumentAktivnosti = args[i + 1];
                         break;
                 }
