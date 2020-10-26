@@ -146,7 +146,8 @@ namespace tjukica_zadaca_1
         {
             if (baza.UsporediVrijeme(vrijeme))
             {
-                Aktivnost aktivnost = AktivnostDirektor.PregledVozila(idAktivnosti, vrijeme,
+                AktivnostDirektor direktor = new AktivnostDirektor(new Aktivnost.Builder(idAktivnosti,vrijeme));
+                Aktivnost aktivnost = direktor.PregledVozila(
                     baza.getKorisnik(int.Parse(korisnik)),
                     baza.getLokacija(int.Parse(lokacija)),
                     baza.getVozilo(int.Parse(vozilo)));
@@ -164,7 +165,7 @@ namespace tjukica_zadaca_1
         {
             if (baza.UsporediVrijeme(vrijeme))
             {
-                Aktivnost aktivnost = AktivnostDirektor.Najam(idAktivnosti, vrijeme,
+                Aktivnost aktivnost = new AktivnostDirektor(new Aktivnost.Builder(idAktivnosti,vrijeme)).Najam(
                     baza.getKorisnik(int.Parse(korisnik)),
                     baza.getLokacija(int.Parse(lokacija)),
                     baza.getVozilo(int.Parse(vozilo)));
@@ -182,7 +183,7 @@ namespace tjukica_zadaca_1
         {
             if (baza.UsporediVrijeme(vrijeme))
             {
-                Aktivnost aktivnost = AktivnostDirektor.PregledMjesta(idAktivnosti, vrijeme,
+                Aktivnost aktivnost = new AktivnostDirektor(new Aktivnost.Builder(idAktivnosti, vrijeme)).PregledMjesta(
                     baza.getKorisnik(int.Parse(korisnik)),
                     baza.getLokacija(int.Parse(lokacija)),
                     baza.getVozilo(int.Parse(vozilo)));
@@ -200,7 +201,7 @@ namespace tjukica_zadaca_1
         {
             if (baza.UsporediVrijeme(vrijeme))
             {
-                Aktivnost aktivnost = AktivnostDirektor.Vracanje(idAktivnosti, vrijeme,
+                Aktivnost aktivnost = new AktivnostDirektor(new Aktivnost.Builder(idAktivnosti, vrijeme)).Vracanje(
                     baza.getKorisnik(int.Parse(korisnik)),
                     baza.getLokacija(int.Parse(lokacija)),
                     int.Parse(brojKm));
@@ -219,7 +220,7 @@ namespace tjukica_zadaca_1
         {
             if (baza.UsporediVrijeme(vrijeme))
             {
-                Aktivnost aktivnost = AktivnostDirektor.Kraj(idAktivnosti, vrijeme);
+                Aktivnost aktivnost = new AktivnostDirektor(new Aktivnost.Builder(idAktivnosti, vrijeme)).Kraj();
                 Console.WriteLine("U " + vrijeme + " program završava s radom.");
                 radi = false;
             }
