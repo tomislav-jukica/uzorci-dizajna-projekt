@@ -38,8 +38,8 @@ namespace tjukica_zadaca_1
                 return;
             }
 
-            
-            
+
+
             if (args.Length == 12)//interaktivni način
             {
                 while (radi)
@@ -51,9 +51,11 @@ namespace tjukica_zadaca_1
             }
             else if (args.Length == 14)//skupni način
             {
-
+                Console.WriteLine("Skupni način izvođenja...");
+                UcitajDokumentAktivnosti();
+                Console.WriteLine("Program završava sa radom.");
             }
-            
+
 
         }
 
@@ -82,7 +84,7 @@ namespace tjukica_zadaca_1
                 catch (FormatException)
                 {
                     Console.WriteLine("Pogrešan format datuma!");
-                }                
+                }
             }
             else if (matchPodatci.Count != 0)
             {
@@ -138,7 +140,7 @@ namespace tjukica_zadaca_1
             }
         }
 
-        
+
 
         private static void AktivnostPregledVozila(int idAktivnosti, DateTime vrijeme, string korisnik, string lokacija, string vozilo)
         {
@@ -151,7 +153,7 @@ namespace tjukica_zadaca_1
                 if (aktivnost != null)
                 {
                     baza.getAktivnosti().Add(aktivnost);
-                }                
+                }
             }
             else
             {
@@ -166,10 +168,10 @@ namespace tjukica_zadaca_1
                     baza.getKorisnik(int.Parse(korisnik)),
                     baza.getLokacija(int.Parse(lokacija)),
                     baza.getVozilo(int.Parse(vozilo)));
-                if(aktivnost != null)
+                if (aktivnost != null)
                 {
                     baza.getAktivnosti().Add(aktivnost);
-                }                
+                }
             }
             else
             {
@@ -184,10 +186,10 @@ namespace tjukica_zadaca_1
                     baza.getKorisnik(int.Parse(korisnik)),
                     baza.getLokacija(int.Parse(lokacija)),
                     baza.getVozilo(int.Parse(vozilo)));
-                if(aktivnost != null)
+                if (aktivnost != null)
                 {
                     baza.getAktivnosti().Add(aktivnost);
-                }                
+                }
             }
             else
             {
@@ -202,11 +204,11 @@ namespace tjukica_zadaca_1
                     baza.getKorisnik(int.Parse(korisnik)),
                     baza.getLokacija(int.Parse(lokacija)),
                     int.Parse(brojKm));
-                if(aktivnost != null)
+                if (aktivnost != null)
                 {
                     baza.getAktivnosti().Add(aktivnost);
                 }
-                
+
             }
             else
             {
@@ -280,18 +282,14 @@ namespace tjukica_zadaca_1
             string line;
             int brojac;
             bool postoji;
+            file = UcitajDatoteku(tip);
+            if (file == null)
+            {
+                return false;
+            }
             switch (tip)
             {
                 case TipDatoteke.osobe:
-                    try
-                    {
-                        file = new System.IO.StreamReader(dokumentOsobe);
-                    }
-                    catch (FileNotFoundException)
-                    {
-                        Console.WriteLine("Greška prilikom unosa osoba. Datoteka ne postoji!");
-                        return false;
-                    }                    
                     brojac = 1;
                     while ((line = file.ReadLine()) != null)
                     {
@@ -319,15 +317,6 @@ namespace tjukica_zadaca_1
                     }
                     return true;
                 case TipDatoteke.lokacije:
-                    try
-                    {
-                        file = new System.IO.StreamReader(dokumentLokacije);
-                    }
-                    catch (FileNotFoundException)
-                    {
-                        Console.WriteLine("Greška prilikom unosa lokacija. Datoteka ne postoji!");
-                        return false;
-                    }
                     brojac = 1;
                     while ((line = file.ReadLine()) != null)
                     {
@@ -355,15 +344,6 @@ namespace tjukica_zadaca_1
                     }
                     return true;
                 case TipDatoteke.vozila:
-                    try
-                    {
-                        file = new System.IO.StreamReader(dokumentVozila);
-                    }
-                    catch (FileNotFoundException)
-                    {
-                        Console.WriteLine("Greška prilikom unosa vozila. Datoteka ne postoji!");
-                        return false;
-                    }
                     brojac = 1;
                     while ((line = file.ReadLine()) != null)
                     {
@@ -391,15 +371,6 @@ namespace tjukica_zadaca_1
                     }
                     return true;
                 case TipDatoteke.cjenik:
-                    try
-                    {
-                        file = new System.IO.StreamReader(dokumentCjenik);
-                    }
-                    catch (FileNotFoundException)
-                    {
-                        Console.WriteLine("Greška prilikom unosa cjenika. Datoteka ne postoji!");
-                        return false;
-                    }
                     brojac = 1;
                     while ((line = file.ReadLine()) != null)
                     {
@@ -439,15 +410,6 @@ namespace tjukica_zadaca_1
                     }
                     return true;
                 case TipDatoteke.lokacije_kapacitet:
-                    try
-                    {
-                        file = new System.IO.StreamReader(dokumentLokacijeKapacitet);
-                    }
-                    catch (FileNotFoundException)
-                    {
-                        Console.WriteLine("Greška prilikom unosa kapaciteta lokacija. Datoteka ne postoji!");
-                        return false;
-                    }
                     brojac = 1;
                     while ((line = file.ReadLine()) != null)
                     {
@@ -479,10 +441,17 @@ namespace tjukica_zadaca_1
                                     postoji = false;
                                     foreach (Vozilo vozilo in baza.getVozila())
                                     {
+
                                         if (vozilo.id == int.Parse(atributi[1]))
                                         {
                                             postoji = true;
                                             LokacijaKapacitet novaLokacijaKapacitet = new LokacijaKapacitet(lokacijaUnos, vozilo, int.Parse(atributi[2]), int.Parse(atributi[3]));
+                                            if (novaLokacijaKapacitet.brojVozila > novaLokacijaKapacitet.brojMjesta)
+                                            {
+                                                Console.WriteLine("Linija: " + brojac + " - Greška u kreiranju kapaciteta lokacija! - Broj vozila ne moze biti veci od broja mjesta!");
+                                                novaLokacijaKapacitet.brojMjesta = 0;
+                                                novaLokacijaKapacitet.brojVozila = 0;
+                                            }
                                             baza.getLokacijaKapacitet().Add(novaLokacijaKapacitet);
                                             for (int i = 0; i < novaLokacijaKapacitet.brojVozila; i++)
                                             {
@@ -490,7 +459,6 @@ namespace tjukica_zadaca_1
                                                 novaLokacijaKapacitet.trenutnaVozila.Add(najamVozila);
                                                 baza.getVozilaZaNajam().Add(najamVozila);
                                             }
-                                            
                                         }
                                     }
                                     if (!postoji)
@@ -507,7 +475,76 @@ namespace tjukica_zadaca_1
                 default:
                     return false;
             }
+        }
 
+        static bool UcitajDokumentAktivnosti()
+        {
+            System.IO.StreamReader file = null;
+            string line;
+            int brojac;
+            bool postoji;
+            file = UcitajDatoteku(TipDatoteke.aktivnosti);
+            if (file == null)
+            {
+                return false;
+            }
+            brojac = 1;
+            while ((line = file.ReadLine()) != null)
+            {
+                string[] atributi = Array.ConvertAll(line.Split(";"), p => p.Trim());
+                if (brojac > 1) //Preskacemo prvu liniju u datoteci
+                {
+                    if (atributi.Length != 5 && atributi.Length != 6)
+                    {
+                        Console.WriteLine("Pogrešna sintaksa u liniji: " + brojac + " - aktivnosti");
+                    }
+                    else
+                    {
+                        try
+                        {
+                            CitajKomandu(line);
+                        }
+                        catch (Exception)
+                        {
+                            Console.WriteLine("Greška prilikom učitavanja aktivnosti!");
+                        }
+                    }
+                }
+                brojac++;
+            }
+            return true;
+        }
+
+
+        private static StreamReader UcitajDatoteku(TipDatoteke tip)
+        {
+            try
+            {
+                switch (tip)
+                {
+                    case TipDatoteke.osobe:
+                        return new System.IO.StreamReader(dokumentOsobe);
+                    case TipDatoteke.lokacije:
+                        return new System.IO.StreamReader(dokumentLokacije);
+                    case TipDatoteke.vozila:
+                        return new System.IO.StreamReader(dokumentVozila);
+                    case TipDatoteke.cjenik:
+                        return new System.IO.StreamReader(dokumentCjenik);
+                    case TipDatoteke.lokacije_kapacitet:
+                        return new System.IO.StreamReader(dokumentLokacijeKapacitet);
+                    case TipDatoteke.aktivnosti:
+                        return new System.IO.StreamReader(dokumentAktivnosti);
+                }
+            }
+            catch (FileNotFoundException)
+            {
+                Console.WriteLine("Greška prilikom unosa osoba. Datoteka ne postoji!");
+            }
+            catch (DirectoryNotFoundException)
+            {
+                Console.WriteLine("Greška prilikom unosa osoba. Datoteka ne postoji!");
+            }
+            return null;
         }
 
         enum TipDatoteke

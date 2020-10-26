@@ -10,7 +10,7 @@ namespace tjukica_zadaca_1
     {
         public Lokacija lokacija { get; private set; }
         public Vozilo vozilo { get; private set; }
-        public int brojMjesta { get; private set; }
+        public int brojMjesta { get; set; }
         public int brojVozila { get; set; }
 
         public List<NajamVozila> trenutnaVozila = new List<NajamVozila>();
@@ -35,17 +35,6 @@ namespace tjukica_zadaca_1
                     retVal -= 1;
                 }
             }
-            /*
-            foreach (Punjenje p in baza.getVozilaNaPunjenju())
-            {
-                foreach(NajamVozila v in trenutnaVozila)
-                {
-                    if(p.vozilo == v)
-                    {
-                        retVal -= 1;
-                    }
-                }
-            }*/
             return retVal;
         }
 

@@ -121,6 +121,17 @@ namespace tjukica_zadaca_1
         {
             return baza.cjenik;
         }
+        public Cjenik getCjenikZaVozilo (Vozilo vozilo)
+        {
+            foreach(Cjenik c in cjenik)
+            {
+                if(c.vozilo == vozilo)
+                {
+                    return c;
+                }
+            }
+            return null;
+        }
         public List<LokacijaKapacitet> getLokacijaKapacitet()
         {
             return baza.kapacitetiLokacija;

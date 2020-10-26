@@ -7,9 +7,9 @@ namespace tjukica_zadaca_1
     public class Cjenik
     {
         public Vozilo vozilo { get; private set; }
-        int najam;
-        int cijenaSat;
-        int cijenaKm;
+        public int najam { get; private set; }
+        public int cijenaSat { get; private set; }
+        public int cijenaKm { get; private set; }
 
         public Cjenik(Vozilo vozilo, int najam, int cijenaSat, int cijenaKm)
         {
