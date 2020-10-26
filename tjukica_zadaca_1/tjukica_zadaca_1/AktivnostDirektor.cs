@@ -9,8 +9,7 @@ namespace tjukica_zadaca_1
         public static Aktivnost PregledVozila(int idAktivnosti, DateTime vrijeme, Korisnik idKorisnik, Lokacija idLokacija, Vozilo idVozilo)
         {
             Aktivnost aktivnost = null;
-            AktivnostBuilder builder = null;
-            builder = new AktivnostBuilder(idAktivnosti, vrijeme).setPodatci(idKorisnik, idLokacija, idVozilo);
+            Aktivnost.Builder builder = new Aktivnost.Builder(idAktivnosti, vrijeme).setPodatci(idKorisnik, idLokacija, idVozilo);
             if (builder != null)
             {
                 ProvjeriPunjenje(vrijeme);
@@ -30,8 +29,8 @@ namespace tjukica_zadaca_1
         public static Aktivnost Najam(int idAktivnosti, DateTime vrijeme, Korisnik idKorisnik, Lokacija idLokacija, Vozilo idVozilo)
         {
             Aktivnost aktivnost = null;
-            AktivnostBuilder builder = null;
-            builder = new AktivnostBuilder(idAktivnosti, vrijeme).setPodatci(idKorisnik, idLokacija, idVozilo);
+            Aktivnost.Builder builder = null;
+            builder = new Aktivnost.Builder(idAktivnosti, vrijeme).setPodatci(idKorisnik, idLokacija, idVozilo);
             if (builder != null)
             {
                 ProvjeriPunjenje(vrijeme);
@@ -84,8 +83,8 @@ namespace tjukica_zadaca_1
         public static Aktivnost PregledMjesta(int idAktivnosti, DateTime vrijeme, Korisnik idKorisnik, Lokacija idLokacija, Vozilo idVozilo)
         {
             Aktivnost aktivnost = null;
-            AktivnostBuilder builder = null;
-            builder = new AktivnostBuilder(idAktivnosti, vrijeme).setPodatci(idKorisnik, idLokacija, idVozilo);
+            Aktivnost.Builder builder = null;
+            builder = new Aktivnost.Builder(idAktivnosti, vrijeme).setPodatci(idKorisnik, idLokacija, idVozilo);
             if (builder != null)
             {
                 ProvjeriPunjenje(vrijeme);
@@ -103,7 +102,7 @@ namespace tjukica_zadaca_1
         public static Aktivnost Vracanje(int idAktivnosti, DateTime vrijeme, Korisnik idKorisnik, Lokacija idLokacija, int brojKm)
         {
             Aktivnost aktivnost = null;
-            AktivnostBuilder builder = null;
+            Aktivnost.Builder builder = null;
             
             if (idKorisnik.najamVozila == null)
             {
@@ -122,7 +121,7 @@ namespace tjukica_zadaca_1
                 return null;
             }
             
-            builder = new AktivnostBuilder(idAktivnosti, vrijeme).setPodatci(idKorisnik, idLokacija, idVozilo).setBrojKm(brojKm);
+            builder = new Aktivnost.Builder(idAktivnosti, vrijeme).setPodatci(idKorisnik, idLokacija, idVozilo).setBrojKm(brojKm);
             if (builder != null)
             {
                 ProvjeriPunjenje(vrijeme);
@@ -182,7 +181,7 @@ namespace tjukica_zadaca_1
         }
         public static Aktivnost Kraj(int idAktivnosti, DateTime vrijeme)
         {
-            return new AktivnostBuilder(idAktivnosti, vrijeme).build();
+            return new Aktivnost.Builder(idAktivnosti, vrijeme).build();
         }
     }
 }
