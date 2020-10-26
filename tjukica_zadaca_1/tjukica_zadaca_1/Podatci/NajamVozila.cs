@@ -11,7 +11,7 @@ namespace tjukica_zadaca_1
         public float baterija { get; set; }
         public int kilometri { get; set; }
         public bool iznajmljen { get; set; }
-      //  public bool naPunjenju { get; set; }
+
 
         public NajamVozila(int id, string naziv, int punjenje, int domet) 
             : base(id, naziv, punjenje, domet)
@@ -20,7 +20,6 @@ namespace tjukica_zadaca_1
             this.baterija = 1;
             this.kilometri = 0;
             iznajmljen = false;
-        //    naPunjenju = false;
         }
 
     }

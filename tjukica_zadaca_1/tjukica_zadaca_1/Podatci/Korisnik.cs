@@ -12,7 +12,6 @@ namespace tjukica_zadaca_1
 
         public NajamVozila najamVozila { get; set; }
 
-        //public static List<Korisnik> korisnici = new List<Korisnik>();
 
         public Korisnik(int id, string ime)
         {
