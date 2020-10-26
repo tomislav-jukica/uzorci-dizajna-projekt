@@ -8,7 +8,7 @@ namespace tjukica_zadaca_1
 {
     class Program
     {
-        Regex regex = new Regex("-(\\w) (\\w+[.]\\w+)|-(\\w) ([0-9-:]+ [0-9:]+)");
+        private static Regex REGEX_VRIJEME = new Regex("([„](\\d+-\\d+-\\d+ \\d+:\\d+:\\d+)[“])");
         private static Regex REGEX_KRAJ = new Regex("(\\d); .(\\d+-\\d+-\\d+ \\d+:\\d+:\\d+).");
         private static Regex REGEX_PODATCI = new Regex("(\\d); .(\\d+-\\d+-\\d+ \\d+:\\d+:\\d+).; (\\d+); (\\d+); (\\d+)");
         private static Regex REGEX_VRACANJE = new Regex("(\\d); .(\\d+-\\d+-\\d+ \\d+:\\d+:\\d+).; (\\d+); (\\d+); (\\d+); (\\d+)");
@@ -25,9 +25,14 @@ namespace tjukica_zadaca_1
 
         static void Main(string[] args)
         {
-            if (args.Length != 14 && args.Length != 12)
+            if (args.Length != 15 && args.Length != 13)
             {
                 Console.WriteLine("Neispravan broj argumenata!");
+                Console.WriteLine(args.Length);
+                foreach (var x in args)
+                {
+                    Console.WriteLine(x.ToString());
+                }
                 return;
             }
 
@@ -40,7 +45,7 @@ namespace tjukica_zadaca_1
 
 
 
-            if (args.Length == 12)//interaktivni način
+            if (args.Length == 13)//interaktivni način
             {
                 while (radi)
                 {
@@ -49,7 +54,7 @@ namespace tjukica_zadaca_1
                     CitajKomandu(komanda);
                 }
             }
-            else if (args.Length == 14)//skupni način
+            else if (args.Length == 15)//skupni način
             {
                 Console.WriteLine("Skupni način izvođenja...");
                 UcitajDokumentAktivnosti();
@@ -254,8 +259,10 @@ namespace tjukica_zadaca_1
                         dokumentOsobe = args[i + 1];
                         break;
                     case "-t":
+                        string vrijeme = args[i + 1] + " " + args[i + 2];
+                        MatchCollection match = REGEX_VRIJEME.Matches(vrijeme);
                         DateTime virtualnoVrijeme = new DateTime();
-                        virtualnoVrijeme = DateTime.Parse(args[i + 1]);
+                        virtualnoVrijeme = DateTime.Parse(match[0].Groups[2].Value);
                         baza.setVirtualnoVrijeme(virtualnoVrijeme);
                         break;
                     case "-s":
@@ -483,7 +490,6 @@ namespace tjukica_zadaca_1
             System.IO.StreamReader file = null;
             string line;
             int brojac;
-            bool postoji;
             file = UcitajDatoteku(TipDatoteke.aktivnosti);
             if (file == null)
             {
