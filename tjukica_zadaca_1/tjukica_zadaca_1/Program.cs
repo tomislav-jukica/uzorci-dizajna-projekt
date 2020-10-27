@@ -257,7 +257,6 @@ namespace tjukica_zadaca_1
                     case "-t":
                         
                         string vrijeme = args[i + 1] + " " + args[i + 2];
-                        Console.WriteLine(vrijeme);
                         MatchCollection match = REGEX_VRIJEME.Matches(vrijeme);
                         DateTime virtualnoVrijeme = new DateTime();
                         virtualnoVrijeme = DateTime.Parse(match[0].Groups[2].Value);
@@ -451,20 +450,27 @@ namespace tjukica_zadaca_1
 
                                         if (vozilo.id == int.Parse(atributi[1]))
                                         {
-                                            postoji = true;
-                                            LokacijaKapacitet novaLokacijaKapacitet = new LokacijaKapacitet(lokacijaUnos, vozilo, int.Parse(atributi[2]), int.Parse(atributi[3]));
-                                            if (novaLokacijaKapacitet.brojVozila > novaLokacijaKapacitet.brojMjesta)
+                                            try
                                             {
-                                                Console.WriteLine("Linija: " + brojac + " - Greška u kreiranju kapaciteta lokacija! - Broj vozila ne moze biti veci od broja mjesta!");
-                                                novaLokacijaKapacitet.brojMjesta = 0;
-                                                novaLokacijaKapacitet.brojVozila = 0;
+                                                postoji = true;
+                                                LokacijaKapacitet novaLokacijaKapacitet = new LokacijaKapacitet(lokacijaUnos, vozilo, int.Parse(atributi[2]), int.Parse(atributi[3]));
+                                                if (novaLokacijaKapacitet.brojVozila > novaLokacijaKapacitet.brojMjesta)
+                                                {
+                                                    Console.WriteLine("Linija: " + brojac + " - Greška u kreiranju kapaciteta lokacija! - Broj vozila ne moze biti veci od broja mjesta!");
+                                                    novaLokacijaKapacitet.brojMjesta = 0;
+                                                    novaLokacijaKapacitet.brojVozila = 0;
+                                                }
+                                                baza.getLokacijaKapacitet().Add(novaLokacijaKapacitet);
+                                                for (int i = 0; i < novaLokacijaKapacitet.brojVozila; i++)
+                                                {
+                                                    NajamVozila najamVozila = new NajamVozila(vozilo.id, vozilo.naziv, vozilo.vrijemePunjenja, vozilo.domet);
+                                                    novaLokacijaKapacitet.trenutnaVozila.Add(najamVozila);
+                                                    baza.getVozilaZaNajam().Add(najamVozila);
+                                                }
                                             }
-                                            baza.getLokacijaKapacitet().Add(novaLokacijaKapacitet);
-                                            for (int i = 0; i < novaLokacijaKapacitet.brojVozila; i++)
+                                            catch (Exception)
                                             {
-                                                NajamVozila najamVozila = new NajamVozila(vozilo.id, vozilo.naziv, vozilo.vrijemePunjenja, vozilo.domet);
-                                                novaLokacijaKapacitet.trenutnaVozila.Add(najamVozila);
-                                                baza.getVozilaZaNajam().Add(najamVozila);
+                                                Console.WriteLine("Linija: " + brojac + " - Greška u kreiranju kapaciteta lokacija!");
                                             }
                                         }
                                     }
