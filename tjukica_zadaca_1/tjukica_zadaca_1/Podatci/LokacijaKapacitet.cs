@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Text;
+using tjukica_zadaca_1.Composite;
 
 namespace tjukica_zadaca_1
 {

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Text.RegularExpressions;
+using tjukica_zadaca_1.Composite;
 
 namespace tjukica_zadaca_1
 {
@@ -38,9 +39,10 @@ namespace tjukica_zadaca_1
             UnesiDokumente(strSplit);
             if (!UcitajSveDokumente())
             {
-                Console.WriteLine("Neuspjelo ucitavanje dokumenata. Zatvaram program...");
+                cw.Write("Neuspjelo ucitavanje dokumenata. Zatvaram program...");
                 return;
             }
+            PostaviRoditeljeLokacijama();
 
 
 
@@ -60,7 +62,46 @@ namespace tjukica_zadaca_1
                 }
             }
 
+            foreach (OrgJedinica item in baza.getSveOrgJedinice())
+            {
+                cw.Write(item.getParentComponent().getComponentName());
+                /*
+                foreach (Lokacija x in item.getChildrenComponents())
+                {
+                    cw.Write(x.getComponentName(),false);
+                }*/
+            }
+        }
 
+        private static void PostaviRoditeljeLokacijama()//TODO iterator
+        {
+            foreach (Lokacija l in baza.getLokacije())
+            {
+                foreach (OrgJedinica o in baza.getSveOrgJedinice())
+                {
+                    foreach (var x in o.getChildrenComponents())
+                    {
+                        if(x.id == l.id)
+                        {
+                            l.nadredeni = o;
+                        }
+                    }
+                }
+            }
+            List<Lokacija> temp = new List<Lokacija>();
+            foreach(Lokacija l in baza.getLokacije())
+            {
+                if(l.nadredeni == null)
+                {
+                    temp.Add(l);
+                    cw.Write("Greška prilikom unošenja lokacija. Lokacija " + l.naziv + " nema organizacijsku jedinicu.");
+                }
+            }
+            foreach (var item in temp)
+            {
+                baza.getLokacije().Remove(item);
+            }
+            
         }
 
         static void CitajKomandu(string komanda)
@@ -343,7 +384,8 @@ namespace tjukica_zadaca_1
                             {
                                 try
                                 {
-                                    Lokacija novaLokacija = new Lokacija(int.Parse(atributi[0]), atributi[1], atributi[2], atributi[3]);
+                                    TvrtkaComponent tvrtkaComponent = null; //TODO
+                                    Lokacija novaLokacija = new Lokacija(int.Parse(atributi[0]), atributi[1], atributi[2], atributi[3], tvrtkaComponent);
                                     baza.getLokacije().Add(novaLokacija);
                                 }
                                 catch (Exception)
@@ -495,6 +537,7 @@ namespace tjukica_zadaca_1
                     return true;
                 case TipDatoteke.tvrtka:
                     brojac = 1;
+                    TvrtkaComponent tvrtka = null;
                     while ((line = file.ReadLine()) != null)
                     {
                         string[] atributi = Array.ConvertAll(line.Split(";"), p => p.Trim());
@@ -506,14 +549,55 @@ namespace tjukica_zadaca_1
                             }
                             else
                             {
-                                try
+                                string[] lokacije = Array.ConvertAll(atributi[3].Split(","), p => p.Trim());
+                                List<TvrtkaComponent> lokacijeComponents = new List<TvrtkaComponent>();
+                                foreach (string x in lokacije)
                                 {
-                                    //TODO tvrtka
+                                    foreach (TvrtkaComponent t in baza.getLokacije())
+                                    {
+                                        if (x == "")
+                                        {
+                                            continue;
+                                        }
+                                        if(t.id == int.Parse(x))
+                                        {
+                                            lokacijeComponents.Add(t);
+                                            break;
+                                        }
+                                    }
                                 }
-                                catch (Exception)
+
+                                foreach (TvrtkaComponent t in baza.getSveOrgJedinice())
                                 {
-                                    //TODO
+                                    if(t.id == int.Parse(atributi[2]))
+                                    {
+                                        tvrtka = t;
+                                    }
                                 }
+
+                                if(baza.ishodisna == null && atributi[2] == "")
+                                {
+                                    OrgJedinica novaOrgJedinica = new OrgJedinica(int.Parse(atributi[0]), atributi[1], tvrtka, lokacijeComponents);
+                                    baza.ishodisna = novaOrgJedinica;
+                                    baza.getSveOrgJedinice().Add(novaOrgJedinica);
+                                } else
+                                {
+                                    if (tvrtka == null)
+                                    {
+                                        cw.Write("Linija: " + brojac + " - Ne postoji ta nadredena jedinica.");
+                                        continue;
+                                    }
+                                    try
+                                    {
+                                        OrgJedinica novaOrgJedinica = new OrgJedinica(int.Parse(atributi[0]), atributi[1], tvrtka, lokacijeComponents);
+                                        baza.getSveOrgJedinice().Add(novaOrgJedinica);
+                                    }
+                                    catch (Exception)
+                                    {
+                                        //TODO
+                                    }
+                                }
+                                
                             }
                         }
                         brojac++;

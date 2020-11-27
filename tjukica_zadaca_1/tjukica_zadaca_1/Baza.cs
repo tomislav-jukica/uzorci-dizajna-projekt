@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using tjukica_zadaca_1.Composite;
 
 namespace tjukica_zadaca_1
 {
@@ -16,8 +17,11 @@ namespace tjukica_zadaca_1
         private List<Vozilo> vozilaZaNajam = new List<Vozilo>();
         private List<Punjenje> vozilaNaPunjenju = new List<Punjenje>();
         private List<Vozilo> iznajmljenaVozila = new List<Vozilo>();
+        private List<TvrtkaComponent> sveOrgJedinice = new List<TvrtkaComponent>();
 
+        public TvrtkaComponent ishodisna { get; set; } = null;
         private static Baza baza = null;
+
 
         private Baza(){} //konstruktor
 
@@ -177,6 +181,11 @@ namespace tjukica_zadaca_1
                 }
             }
             return retVal;
+        }
+
+        public List<TvrtkaComponent> getSveOrgJedinice()
+        {
+            return sveOrgJedinice;
         }
 
     }
