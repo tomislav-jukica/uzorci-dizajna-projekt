@@ -12,7 +12,7 @@ namespace tjukica_zadaca_1
         //Opcionalne
         private Korisnik korisnik;
         private Lokacija lokacija;
-        private Vozilo vozilo;
+        private TipVozila vozilo;
         private int brojKm;
 
 
@@ -21,7 +21,7 @@ namespace tjukica_zadaca_1
         public DateTime Vrijeme { get => vrijeme; private set => vrijeme = value; }
         public Korisnik Korisnik { get => korisnik; set => korisnik = value; }
         public Lokacija Lokacija { get => lokacija; set => lokacija = value; }
-        public Vozilo Vozilo { get => vozilo; set => vozilo = value; }
+        public TipVozila Vozilo { get => vozilo; set => vozilo = value; }
         public int BrojKm { get => brojKm; private set => brojKm = value; }
 
         private Aktivnost(Builder builder)
@@ -42,14 +42,14 @@ namespace tjukica_zadaca_1
             //Opcionalne
             private Korisnik korisnik;
             private Lokacija lokacija;
-            private Vozilo vozilo;
+            private TipVozila vozilo;
             private int brojKm;
 
             public int IdAktivnosti { get => idAktivnosti; set => idAktivnosti = value; }
             public DateTime Vrijeme { get => vrijeme; set => vrijeme = value; }
             public Korisnik Korisnik { get => korisnik; set => korisnik = value; }
             public Lokacija Lokacija { get => lokacija; set => lokacija = value; }
-            public Vozilo Vozilo { get => vozilo; set => vozilo = value; }
+            public TipVozila Vozilo { get => vozilo; set => vozilo = value; }
             public int BrojKm { get => brojKm; set => brojKm = value; }
 
             public Builder(int idAktivnosti, DateTime vrijeme)
@@ -58,7 +58,7 @@ namespace tjukica_zadaca_1
                 this.Vrijeme = vrijeme;
             }
 
-            public Builder setPodatci(Korisnik idKorisnik, Lokacija idLokacija, Vozilo idVozilo)
+            public Builder setPodatci(Korisnik idKorisnik, Lokacija idLokacija, TipVozila idVozilo)
             {
                 if (this.setKorisnik(idKorisnik) == null ||
                 this.setLokacija(idLokacija) == null ||
@@ -92,7 +92,7 @@ namespace tjukica_zadaca_1
                 this.Lokacija = lokacija;
                 return this;
             }
-            public Builder setVozilo(Vozilo vozilo)
+            public Builder setVozilo(TipVozila vozilo)
             {
                 if (vozilo == null)
                 {

@@ -12,7 +12,7 @@ namespace tjukica_zadaca_1
             this.builder = builder;
         }
 
-        public Aktivnost PregledVozila(Korisnik idKorisnik, Lokacija idLokacija, Vozilo idVozilo)
+        public Aktivnost PregledVozila(Korisnik idKorisnik, Lokacija idLokacija, TipVozila idVozilo)
         {
             Aktivnost aktivnost = null;
             builder = builder.setPodatci(idKorisnik, idLokacija, idVozilo);
@@ -32,7 +32,7 @@ namespace tjukica_zadaca_1
                 return null;
             }
         }
-        public Aktivnost Najam(Korisnik idKorisnik, Lokacija idLokacija, Vozilo idVozilo)
+        public Aktivnost Najam(Korisnik idKorisnik, Lokacija idLokacija, TipVozila idVozilo)
         {
             Aktivnost aktivnost = null;
             builder = builder.setPodatci(idKorisnik, idLokacija, idVozilo);
@@ -85,7 +85,7 @@ namespace tjukica_zadaca_1
             }
         }
 
-        public Aktivnost PregledMjesta(Korisnik idKorisnik, Lokacija idLokacija, Vozilo idVozilo)
+        public Aktivnost PregledMjesta(Korisnik idKorisnik, Lokacija idLokacija, TipVozila idVozilo)
         {
             Aktivnost aktivnost = null;
             builder = builder.setPodatci(idKorisnik, idLokacija, idVozilo);
@@ -112,7 +112,7 @@ namespace tjukica_zadaca_1
                 Console.WriteLine("GREŠKA: Korisnik " + idKorisnik.ime + " nema nijedno vozilo u najmu.");
                 return null;
             }
-            Vozilo idVozilo = Baza.getInstance().getVozilo(idKorisnik.najamVozila.id);
+            TipVozila idVozilo = Baza.getInstance().getVozilo(idKorisnik.najamVozila.id);
             if (brojKm < idKorisnik.najamVozila.kilometri)
             {
                 Console.WriteLine("GREŠKA: Vrijednost kilometara ne može biti manja od prethodne vrijednosti!");

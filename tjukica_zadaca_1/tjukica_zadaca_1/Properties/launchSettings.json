@@ -2,7 +2,7 @@
   "profiles": {
     "tjukica_zadaca_1": {
       "commandName": "Project",
-      "commandLineArgs": " -t „2020-10-16 08:00:00“ -l DZ_1_lokacije.txt -c DZ_1_cjenik.txt -k DZ_1_lokacije_kapaciteti.txt -o DZ_1_osobe.txt  -s DZ_1_aktivnosti.txt -v DZ_1_vozila.txt"
+      "commandLineArgs": " -t „2020-10-16 08:00:00“ -l DZ_2_lokacije.txt -c DZ_2_cjenik.txt -k DZ_2_lokacije_kapaciteti.txt -o DZ_2_osobe.txt  -s DZ_2_aktivnosti.txt -v DZ_2_vozila.txt"
     }
   }
 }

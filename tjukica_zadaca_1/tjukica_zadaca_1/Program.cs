@@ -364,7 +364,7 @@ namespace tjukica_zadaca_1
                             {
                                 try
                                 {
-                                    Vozilo novoVozilo = new Vozilo(int.Parse(atributi[0]), atributi[1], int.Parse(atributi[2]), int.Parse(atributi[3]));
+                                    TipVozila novoVozilo = new TipVozila(int.Parse(atributi[0]), atributi[1], int.Parse(atributi[2]), int.Parse(atributi[3]));
                                     baza.getVozila().Add(novoVozilo);
                                 }
                                 catch (Exception)
@@ -390,7 +390,7 @@ namespace tjukica_zadaca_1
                             else
                             {
                                 postoji = false;
-                                foreach (Vozilo vozilo in baza.getVozila())
+                                foreach (TipVozila vozilo in baza.getVozila())
                                 {
                                     if (vozilo.id == int.Parse(atributi[0]))
                                     {
@@ -445,7 +445,7 @@ namespace tjukica_zadaca_1
                                 if (postoji)
                                 {
                                     postoji = false;
-                                    foreach (Vozilo vozilo in baza.getVozila())
+                                    foreach (TipVozila vozilo in baza.getVozila())
                                     {
 
                                         if (vozilo.id == int.Parse(atributi[1]))
@@ -463,7 +463,7 @@ namespace tjukica_zadaca_1
                                                 baza.getLokacijaKapacitet().Add(novaLokacijaKapacitet);
                                                 for (int i = 0; i < novaLokacijaKapacitet.brojVozila; i++)
                                                 {
-                                                    NajamVozila najamVozila = new NajamVozila(vozilo.id, vozilo.naziv, vozilo.vrijemePunjenja, vozilo.domet);
+                                                    Vozilo najamVozila = new Vozilo(vozilo.id, vozilo.naziv, vozilo.vrijemePunjenja, vozilo.domet);
                                                     novaLokacijaKapacitet.trenutnaVozila.Add(najamVozila);
                                                     baza.getVozilaZaNajam().Add(najamVozila);
                                                 }

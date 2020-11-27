@@ -9,16 +9,16 @@ namespace tjukica_zadaca_1
     public class LokacijaKapacitet
     {
         public Lokacija lokacija { get; private set; }
-        public Vozilo vozilo { get; private set; }
+        public TipVozila tipVozila { get; private set; }
         public int brojMjesta { get; set; }
         public int brojVozila { get; set; }
 
-        public List<NajamVozila> trenutnaVozila = new List<NajamVozila>();
+        public List<Vozilo> trenutnaVozila = new List<Vozilo>();
 
-        public LokacijaKapacitet(Lokacija lokacija, Vozilo vozilo, int brojMjesta, int brojVozila)
+        public LokacijaKapacitet(Lokacija lokacija, TipVozila vozilo, int brojMjesta, int brojVozila)
         {
             this.lokacija = lokacija;
-            this.vozilo = vozilo;
+            this.tipVozila = vozilo;
             this.brojMjesta = brojMjesta;
             this.brojVozila = brojVozila;
         }
@@ -28,7 +28,7 @@ namespace tjukica_zadaca_1
             int retVal = trenutnaVozila.Count;
             Baza baza = Baza.getInstance();
 
-            foreach (NajamVozila v in trenutnaVozila)
+            foreach (Vozilo v in trenutnaVozila)
             {
                 if (v.iznajmljen == true)
                 {
@@ -43,10 +43,10 @@ namespace tjukica_zadaca_1
             return brojMjesta - trenutnaVozila.Count;
         }
 
-        public NajamVozila dajVoziloUNajam()
+        public Vozilo dajVoziloUNajam()
         {
-            NajamVozila vozilo = null;
-            foreach (NajamVozila v in trenutnaVozila)
+            Vozilo vozilo = null;
+            foreach (Vozilo v in trenutnaVozila)
             {
                 if (v.iznajmljen == false)
                 {
@@ -59,7 +59,7 @@ namespace tjukica_zadaca_1
             return vozilo;
         }
 
-        public void VratiVozilo(NajamVozila vozilo)
+        public void VratiVozilo(Vozilo vozilo)
         {
             if (dajBrojSlobodnihMjesta() > 0)
             {

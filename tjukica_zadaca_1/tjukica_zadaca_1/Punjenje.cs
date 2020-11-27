@@ -6,12 +6,12 @@ namespace tjukica_zadaca_1
 {
     public class Punjenje
     {
-        public NajamVozila vozilo { get; private set; }
+        public Vozilo vozilo { get; private set; }
         public LokacijaKapacitet lokacija { get; private set; }
         private DateTime vrijemeAktivnosti {  get;  set; }
         public DateTime gotovoPunjenje { get; private set; }
 
-        public Punjenje(NajamVozila vozilo, LokacijaKapacitet lokacija, DateTime vrijeme)
+        public Punjenje(Vozilo vozilo, LokacijaKapacitet lokacija, DateTime vrijeme)
         {
             this.vozilo = vozilo;
             this.lokacija = lokacija;

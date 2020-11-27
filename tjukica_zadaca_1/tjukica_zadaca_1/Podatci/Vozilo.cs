@@ -1,22 +1,30 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Text;
 
 namespace tjukica_zadaca_1
 {
-    public class Vozilo
+    public class Vozilo : TipVozila
     {
-        public int id { get; private set; }
-        public string naziv { get; private set; }
-        public int vrijemePunjenja { get; private set; }
-        public int domet { get; private set; }
+        public int idVozila { get; set; }
+        public float baterija { get; set; }
+        public int kilometri { get; set; }
+        public bool iznajmljen { get; set; }
+        public int brojUnajmljivanja { get; set; } = 0;
 
-        public Vozilo(int id, string naziv, int vrijemePunjenja, int domet)
+
+        //TODO Vozilo state
+
+
+        public Vozilo(int id, string naziv, int punjenje, int domet) 
+            : base(id, naziv, punjenje, domet)
         {
-            this.id = id;
-            this.naziv = naziv;
-            this.vrijemePunjenja = vrijemePunjenja;
-            this.domet = domet;
+            this.idVozila = Baza.getInstance().getVozilaZaNajam().Count + 1;
+            this.baterija = 1;
+            this.kilometri = 0;
+            iznajmljen = false;
         }
+
     }
 }

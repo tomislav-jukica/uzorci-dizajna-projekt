@@ -1,0 +1,11 @@
+vozila=D:\UzDiz\DZ_2\DZ_2_vozila.txt 
+lokacije=D:\UzDiz\DZ_2\DZ_2_lokacije.txt 
+cjenik=D:\UzDiz\DZ_2\DZ_2_cjenik.txt 
+kapaciteti=D:\UzDiz\DZ_2\DZ_2_lokacije_kapaciteti.txt 
+osobe=D:\UzDiz\DZ_2\DZ_2_osobe.txt 
+vrijeme=2020-10-16 08:00:00
+struktura=D:\UzDiz\DZ_2\DZ_2_tvrtka.txt
+aktivnosti=D:\UzDiz\DZ_2\DZ_2_aktivnosti.txt 
+tekst=20
+cijeli=5
+decimala=2

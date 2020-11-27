@@ -8,14 +8,14 @@ namespace tjukica_zadaca_1
     {
         private List<Korisnik> korisnici = new List<Korisnik>();
         private List<Lokacija> lokacije = new List<Lokacija>();
-        private List<Vozilo> vozila = new List<Vozilo>();
+        private List<TipVozila> vozila = new List<TipVozila>();
         private List<Cjenik> cjenik = new List<Cjenik>();
         private List<LokacijaKapacitet> kapacitetiLokacija = new List<LokacijaKapacitet>();
         private DateTime virtualnoVrijeme;
         private List<Aktivnost> aktivnosti = new List<Aktivnost>();
-        private List<NajamVozila> vozilaZaNajam = new List<NajamVozila>();
+        private List<Vozilo> vozilaZaNajam = new List<Vozilo>();
         private List<Punjenje> vozilaNaPunjenju = new List<Punjenje>();
-        private List<NajamVozila> iznajmljenaVozila = new List<NajamVozila>();
+        private List<Vozilo> iznajmljenaVozila = new List<Vozilo>();
 
         private static Baza baza = null;
 
@@ -77,10 +77,10 @@ namespace tjukica_zadaca_1
             }
             return lokacija;
         }
-        public Vozilo getVozilo(int id)
+        public TipVozila getVozilo(int id)
         {
-            Vozilo vozilo = null;
-            foreach(Vozilo v in baza.vozila)
+            TipVozila vozilo = null;
+            foreach(TipVozila v in baza.vozila)
             {
                 if(v.id == id)
                 {
@@ -89,14 +89,14 @@ namespace tjukica_zadaca_1
             }
             return vozilo;
         }
-        public LokacijaKapacitet getKapacitetLokacije(Lokacija lokacija, Vozilo vozilo)
+        public LokacijaKapacitet getKapacitetLokacije(Lokacija lokacija, TipVozila vozilo)
         {
             LokacijaKapacitet retVal = null;
             if (lokacija != null && vozilo != null)
             {
                 foreach (LokacijaKapacitet x in baza.kapacitetiLokacija)
                 {
-                    if (x.lokacija.id == lokacija.id && x.vozilo.id == vozilo.id)
+                    if (x.lokacija.id == lokacija.id && x.tipVozila.id == vozilo.id)
                     {
                         retVal = x;
                     }
@@ -113,7 +113,7 @@ namespace tjukica_zadaca_1
         {
             return baza.lokacije;
         }
-        public List<Vozilo> getVozila()
+        public List<TipVozila> getVozila()
         {
             return baza.vozila;
         }
@@ -121,11 +121,11 @@ namespace tjukica_zadaca_1
         {
             return baza.cjenik;
         }
-        public Cjenik getCjenikZaVozilo (Vozilo vozilo)
+        public Cjenik getCjenikZaVozilo (TipVozila vozilo)
         {
             foreach(Cjenik c in cjenik)
             {
-                if(c.vozilo == vozilo)
+                if(c.tipVozila == vozilo)
                 {
                     return c;
                 }
@@ -140,14 +140,14 @@ namespace tjukica_zadaca_1
         {
             return baza.aktivnosti;
         }
-        public List<NajamVozila> getVozilaZaNajam()
+        public List<Vozilo> getVozilaZaNajam()
         {
             return baza.vozilaZaNajam;
         }
-        public NajamVozila getNajamVozila(Vozilo vozilo)
+        public Vozilo getNajamVozila(TipVozila vozilo)
         {
-            NajamVozila najam = null;
-            foreach (NajamVozila n in baza.vozilaZaNajam)
+            Vozilo najam = null;
+            foreach (Vozilo n in baza.vozilaZaNajam)
             {
                 if(vozilo.id == n.id && n.iznajmljen == false)
                 {
@@ -161,7 +161,7 @@ namespace tjukica_zadaca_1
         {
             return baza.vozilaNaPunjenju;
         }
-        public List<NajamVozila> getIznajmljenaVozila()
+        public List<Vozilo> getIznajmljenaVozila()
         {
             return baza.iznajmljenaVozila;
         }
