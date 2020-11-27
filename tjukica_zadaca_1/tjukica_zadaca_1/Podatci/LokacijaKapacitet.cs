@@ -15,6 +15,8 @@ namespace tjukica_zadaca_1
 
         public List<Vozilo> trenutnaVozila = new List<Vozilo>();
 
+        private Helpers.ConsoleWriter cw = Helpers.ConsoleWriter.getInstance();
+
         public LokacijaKapacitet(Lokacija lokacija, TipVozila vozilo, int brojMjesta, int brojVozila)
         {
             this.lokacija = lokacija;
@@ -67,7 +69,7 @@ namespace tjukica_zadaca_1
             }
             else
             {
-                Console.WriteLine("Nema slobodnih mjesta.");
+                cw.Write("Trenutno nema slobodnih mjesta na lokaciji " + lokacija.naziv + "!");
             }
         }
     }

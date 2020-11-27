@@ -11,6 +11,8 @@ namespace tjukica_zadaca_1
         private DateTime vrijemeAktivnosti {  get;  set; }
         public DateTime gotovoPunjenje { get; private set; }
 
+        private Helpers.ConsoleWriter cw = Helpers.ConsoleWriter.getInstance();
+
         public Punjenje(Vozilo vozilo, LokacijaKapacitet lokacija, DateTime vrijeme)
         {
             this.vozilo = vozilo;
@@ -25,7 +27,7 @@ namespace tjukica_zadaca_1
             int postotakBaterije = IzracunajPostotakBaterije(domet, napravljeniKilometri);
             if(postotakBaterije == -1)
             {
-                //TODO error
+                cw.Write("Postotak baterije ne može biti manji od 0%!");
             }
             vozilo.kilometri += napravljeniKilometri;
             int zaNapuniti = 100 - postotakBaterije;
@@ -39,7 +41,7 @@ namespace tjukica_zadaca_1
         {
             if(kilometri > domet)
             {
-                Console.WriteLine("Greška: Prijedeni kilometri su veci od dometa vozila.");
+                cw.Write("Prijedeni kilometri su veci od dometa vozila.");
                 return -1;
             } else
             {

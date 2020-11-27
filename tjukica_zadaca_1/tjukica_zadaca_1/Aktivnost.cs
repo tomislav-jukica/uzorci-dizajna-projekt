@@ -15,8 +15,8 @@ namespace tjukica_zadaca_1
         private TipVozila vozilo;
         private int brojKm;
 
+        static Helpers.ConsoleWriter cw = Helpers.ConsoleWriter.getInstance();
 
-        
         public int IdAktivnosti { get => idAktivnosti; private set => idAktivnosti = value; }
         public DateTime Vrijeme { get => vrijeme; private set => vrijeme = value; }
         public Korisnik Korisnik { get => korisnik; set => korisnik = value; }
@@ -50,7 +50,7 @@ namespace tjukica_zadaca_1
             public Korisnik Korisnik { get => korisnik; set => korisnik = value; }
             public Lokacija Lokacija { get => lokacija; set => lokacija = value; }
             public TipVozila Vozilo { get => vozilo; set => vozilo = value; }
-            public int BrojKm { get => brojKm; set => brojKm = value; }
+            public int BrojKm { get => brojKm; set => brojKm = value; }            
 
             public Builder(int idAktivnosti, DateTime vrijeme)
             {
@@ -76,7 +76,7 @@ namespace tjukica_zadaca_1
             {
                 if (korisnik == null)
                 {
-                    Console.WriteLine("Greška: Korisnik ne postoji.");
+                    cw.Write("Greška prilikom aktivnosti: " + Aktivnost.getNazivAktivnosti(idAktivnosti) + " - Korisnik ne postoji.");
                     return null;
                 }
                 this.Korisnik = korisnik;
@@ -86,7 +86,7 @@ namespace tjukica_zadaca_1
             {
                 if (lokacija == null)
                 {
-                    Console.WriteLine("Greška: Lokacija ne postoji.");
+                    cw.Write("Greška prilikom aktivnosti: " + Aktivnost.getNazivAktivnosti(idAktivnosti) + " - Lokacija ne postoji.");
                     return null;
                 }
                 this.Lokacija = lokacija;
@@ -96,7 +96,7 @@ namespace tjukica_zadaca_1
             {
                 if (vozilo == null)
                 {
-                    Console.WriteLine("Greška: Vozilo ne postoji.");
+                    cw.Write("Greška prilikom aktivnosti: " + Aktivnost.getNazivAktivnosti(idAktivnosti) + " - Tip vozila ne postoji.");
                     return null;
                 }
                 this.Vozilo = vozilo;
@@ -106,7 +106,7 @@ namespace tjukica_zadaca_1
             {
                 if (brojKm < 0)
                 {
-                    Console.WriteLine("Broj kilometara ne može biti negativan!");
+                    cw.Write("Greška prilikom aktivnosti: " + Aktivnost.getNazivAktivnosti(idAktivnosti) + " - Broj kilometara ne može biti negativan.");
                     return null;
                 }
                 this.BrojKm = brojKm;
@@ -121,5 +121,45 @@ namespace tjukica_zadaca_1
 
         }
 
+        public static TipAktivnosti getNazivAktivnosti(int idAktivnosti)
+        {
+            switch (idAktivnosti)
+            {
+                case 0:
+                    return TipAktivnosti.kraj;
+                case 1:
+                    return TipAktivnosti.pregledVozila;
+                case 2:
+                    return TipAktivnosti.najam;
+                case 3:
+                    return TipAktivnosti.pregledMjesta;
+                case 4:
+                    return TipAktivnosti.vracanje;
+                case 5:
+                    return TipAktivnosti.prijelazUSkupni;
+                case 6:
+                    return TipAktivnosti.ispisStanja;
+                case 7:
+                    return TipAktivnosti.ispisPodatakaONajmu;
+                case 8:
+                    return TipAktivnosti.ispisPodatakaORacunima;
+            }
+
+            return TipAktivnosti.ERROR;
+        }
+
+        public enum TipAktivnosti
+        {
+            kraj,
+            pregledVozila,
+            najam,
+            pregledMjesta,
+            vracanje,
+            prijelazUSkupni,
+            ispisStanja,
+            ispisPodatakaONajmu,
+            ispisPodatakaORacunima,
+            ERROR
+        }
     }
 }

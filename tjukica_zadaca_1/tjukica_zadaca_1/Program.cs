@@ -19,15 +19,17 @@ namespace tjukica_zadaca_1
         static string dokumentLokacijeKapacitet = null;
         static string dokumentOsobe = null;
         static string dokumentAktivnosti = null;
+        static string dokumentTvrtka = null;
 
         private static bool radi = true;
         static Baza baza = Baza.getInstance();
+        static Helpers.ConsoleWriter cw = Helpers.ConsoleWriter.getInstance();
         private static bool skupni = false;
 
         static void Main(string[] args)
         {
             string pocetnaKomanda = "";
-            foreach(var x in args)
+            foreach (var x in args)
             {
                 pocetnaKomanda += " " + x;
             }
@@ -47,7 +49,8 @@ namespace tjukica_zadaca_1
                 Console.WriteLine("Skupni način izvođenja...");
                 UcitajDokumentAktivnosti();
                 Console.WriteLine("Program završava sa radom.");
-            } else
+            }
+            else
             {
                 while (radi)
                 {
@@ -79,12 +82,12 @@ namespace tjukica_zadaca_1
                     }
                     else
                     {
-                        Console.WriteLine("Pogrešna sintaksa komande!");
+                        cw.Write("Pogrešna sintaksa komande!");
                     }
                 }
                 catch (FormatException)
                 {
-                    Console.WriteLine("Pogrešan format datuma!");
+                    cw.Write("Pogrešan format datuma!");
                 }
             }
             else if (matchPodatci.Count != 0)
@@ -106,13 +109,13 @@ namespace tjukica_zadaca_1
                             AktivnostPregledMjesta(aktivnost, vrijeme, podatci.Groups[3].Value, podatci.Groups[4].Value, podatci.Groups[5].Value);
                             break;
                         default:
-                            Console.WriteLine("Pogrešna sintaksa komande!");
+                            cw.Write("Pogrešna sintaksa komande!");
                             break;
                     }
                 }
                 catch (FormatException)
                 {
-                    Console.WriteLine("Pogrešan format datuma!");
+                    cw.Write("Pogrešan format datuma!");
                 }
             }
             else if (matchKraj.Count != 0)
@@ -127,17 +130,17 @@ namespace tjukica_zadaca_1
                     }
                     else
                     {
-                        Console.WriteLine("Pogrešna sintaksa komande!");
+                        cw.Write("Pogrešna sintaksa komande!");
                     }
                 }
                 catch (FormatException)
                 {
-                    Console.WriteLine("Pogrešan format datuma!");
+                    cw.Write("Pogrešan format datuma!");
                 }
             }
             else
             {
-                Console.WriteLine("Pogrešna sintaksa komande!");
+                cw.Write("Pogrešna sintaksa komande!");
             }
         }
 
@@ -147,7 +150,7 @@ namespace tjukica_zadaca_1
         {
             if (baza.UsporediVrijeme(vrijeme))
             {
-                AktivnostDirektor direktor = new AktivnostDirektor(new Aktivnost.Builder(idAktivnosti,vrijeme));
+                AktivnostDirektor direktor = new AktivnostDirektor(new Aktivnost.Builder(idAktivnosti, vrijeme));
                 Aktivnost aktivnost = direktor.PregledVozila(
                     baza.getKorisnik(int.Parse(korisnik)),
                     baza.getLokacija(int.Parse(lokacija)),
@@ -159,14 +162,14 @@ namespace tjukica_zadaca_1
             }
             else
             {
-                Console.WriteLine("Vrijeme aktivnosti je manje od virtualnog vremena.");
+                cw.Write("Vrijeme aktivnosti je manje od virtualnog vremena.");
             }
         }
         private static void AktivnostNajam(int idAktivnosti, DateTime vrijeme, string korisnik, string lokacija, string vozilo)
         {
             if (baza.UsporediVrijeme(vrijeme))
             {
-                Aktivnost aktivnost = new AktivnostDirektor(new Aktivnost.Builder(idAktivnosti,vrijeme)).Najam(
+                Aktivnost aktivnost = new AktivnostDirektor(new Aktivnost.Builder(idAktivnosti, vrijeme)).Najam(
                     baza.getKorisnik(int.Parse(korisnik)),
                     baza.getLokacija(int.Parse(lokacija)),
                     baza.getVozilo(int.Parse(vozilo)));
@@ -177,7 +180,7 @@ namespace tjukica_zadaca_1
             }
             else
             {
-                Console.WriteLine("Vrijeme aktivnosti je manje od virtualnog vremena.");
+                cw.Write("Vrijeme aktivnosti je manje od virtualnog vremena.");
             }
         }
         private static void AktivnostPregledMjesta(int idAktivnosti, DateTime vrijeme, string korisnik, string lokacija, string vozilo)
@@ -195,7 +198,7 @@ namespace tjukica_zadaca_1
             }
             else
             {
-                Console.WriteLine("Vrijeme aktivnosti je manje od virtualnog vremena.");
+                cw.Write("Vrijeme aktivnosti je manje od virtualnog vremena.");
             }
         }
         private static void AktivnostVracanje(int idAktivnosti, DateTime vrijeme, string korisnik, string lokacija, string vozilo, string brojKm)
@@ -214,7 +217,7 @@ namespace tjukica_zadaca_1
             }
             else
             {
-                Console.WriteLine("Vrijeme aktivnosti je manje od virtualnog vremena.");
+                cw.Write("Vrijeme aktivnosti je manje od virtualnog vremena.");
             }
         }
         private static void AktivnostKraj(int idAktivnosti, DateTime vrijeme)
@@ -222,12 +225,12 @@ namespace tjukica_zadaca_1
             if (baza.UsporediVrijeme(vrijeme))
             {
                 Aktivnost aktivnost = new AktivnostDirektor(new Aktivnost.Builder(idAktivnosti, vrijeme)).Kraj();
-                Console.WriteLine("U " + vrijeme + " program završava s radom.");
+                cw.Write("U " + vrijeme + " program završava s radom.", false);
                 radi = false;
             }
             else
             {
-                Console.WriteLine("Vrijeme aktivnosti je manje od virtualnog vremena.");
+                cw.Write("Vrijeme aktivnosti je manje od virtualnog vremena.");
             }
 
         }
@@ -255,7 +258,6 @@ namespace tjukica_zadaca_1
                         dokumentOsobe = args[i + 1];
                         break;
                     case "-t":
-                        
                         string vrijeme = args[i + 1] + " " + args[i + 2];
                         MatchCollection match = REGEX_VRIJEME.Matches(vrijeme);
                         DateTime virtualnoVrijeme = new DateTime();
@@ -265,6 +267,9 @@ namespace tjukica_zadaca_1
                     case "-s":
                         skupni = true;
                         dokumentAktivnosti = args[i + 1];
+                        break;
+                    case "-os":
+                        dokumentTvrtka = args[i + 1];
                         break;
                 }
             }
@@ -276,7 +281,8 @@ namespace tjukica_zadaca_1
                 UcitajDokument(TipDatoteke.lokacije) &&
                 UcitajDokument(TipDatoteke.vozila) &&
                 UcitajDokument(TipDatoteke.cjenik) &&
-                UcitajDokument(TipDatoteke.lokacije_kapacitet))
+                UcitajDokument(TipDatoteke.lokacije_kapacitet) &&
+                UcitajDokument(TipDatoteke.tvrtka))
             {
                 retVal = true;
             }
@@ -304,7 +310,7 @@ namespace tjukica_zadaca_1
                         {
                             if (atributi.Length != 2)
                             {
-                                Console.WriteLine("Pogrešna sintaksa u liniji: " + brojac + " - " + tip);
+                                cw.Write("Pogrešan broj atributa u liniji: " + brojac + " - Datoteka: " + tip);
                             }
                             else
                             {
@@ -315,7 +321,7 @@ namespace tjukica_zadaca_1
                                 }
                                 catch (Exception)
                                 {
-                                    Console.WriteLine("Greška prilikom učitavanja " + tip + "!");
+                                    cw.Write("Linija: " + brojac + "Greška prilikom unosa novog korisnika! Datoteka: " + tip);
                                 }
                             }
                         }
@@ -331,7 +337,7 @@ namespace tjukica_zadaca_1
                         {
                             if (atributi.Length != 4)
                             {
-                                Console.WriteLine("Pogrešna sintaksa u liniji: " + brojac + " - " + tip);
+                                cw.Write("Pogrešan broj atributa u liniji: " + brojac + " - Datoteka: " + tip);
                             }
                             else
                             {
@@ -342,7 +348,7 @@ namespace tjukica_zadaca_1
                                 }
                                 catch (Exception)
                                 {
-                                    Console.WriteLine("Greška prilikom učitavanja " + tip + "!");
+                                    cw.Write("Linija: " + brojac + "Greška prilikom unosa nove lokacije! Datoteke: " + tip);
                                 }
                             }
                         }
@@ -358,7 +364,7 @@ namespace tjukica_zadaca_1
                         {
                             if (atributi.Length != 4)
                             {
-                                Console.WriteLine("Pogrešna sintaksa u liniji: " + brojac + " - " + tip);
+                                cw.Write("Pogrešan broj atributa u liniji: " + brojac + " - Datoteka: " + tip);
                             }
                             else
                             {
@@ -369,7 +375,7 @@ namespace tjukica_zadaca_1
                                 }
                                 catch (Exception)
                                 {
-                                    Console.WriteLine("Greška prilikom učitavanja " + tip + "!");
+                                    cw.Write("Linija: " + brojac + "Greška prilikom unosa tipa vozila! - Datoteka: " + tip);
                                 }
                             }
                         }
@@ -385,7 +391,7 @@ namespace tjukica_zadaca_1
                         {
                             if (atributi.Length != 4)
                             {
-                                Console.WriteLine("Pogrešna sintaksa u liniji: " + brojac + " - " + tip);
+                                cw.Write("Pogrešan broj atributa u liniji: " + brojac + " - Datoteka: " + tip);
                             }
                             else
                             {
@@ -396,19 +402,19 @@ namespace tjukica_zadaca_1
                                     {
                                         try
                                         {
-                                            Cjenik noviCjenik = new Cjenik(vozilo, int.Parse(atributi[1]), int.Parse(atributi[2]), int.Parse(atributi[3]));
+                                            Cjenik noviCjenik = new Cjenik(vozilo, float.Parse(atributi[1]), float.Parse(atributi[2]), float.Parse(atributi[3]));
                                             baza.getCjenik().Add(noviCjenik);
                                         }
                                         catch (Exception)
                                         {
-                                            Console.WriteLine("Greška prilikom učitavanja " + tip + "a!");
+                                            cw.Write("Linija: " + brojac + "Greška prilikom unosa novog cjenika! Datoteka: " + tip);
                                         }
                                         postoji = true;
                                     }
                                 }
                                 if (!postoji)
                                 {
-                                    Console.WriteLine("Linija: " + brojac + " - Greška u kreiranju cjenika! Ne postoji vozilo s ID-jem " + int.Parse(atributi[0]) + ".");
+                                    cw.Write("Linija: " + brojac + " - Greška u kreiranju cjenika! Ne postoji tip vozila s ID-jem " + int.Parse(atributi[0]) + ".");
                                 }
                             }
                         }
@@ -424,7 +430,7 @@ namespace tjukica_zadaca_1
                         {
                             if (atributi.Length != 4)
                             {
-                                Console.WriteLine("Pogrešna sintaksa u liniji: " + brojac + " - " + tip);
+                                cw.Write("Pogrešan broj atributa u liniji: " + brojac + " - Datoteka: " + tip);
                             }
                             else
                             {
@@ -440,7 +446,7 @@ namespace tjukica_zadaca_1
                                 }
                                 if (!postoji)
                                 {
-                                    Console.WriteLine("Linija: " + brojac + " - Greška u kreiranju kapaciteta lokacija! Ne postoji lokacija s ID-jem " + int.Parse(atributi[0]) + ".");
+                                    cw.Write("Linija: " + brojac + " - Greška u kreiranju kapaciteta lokacija! Ne postoji lokacija s ID-jem " + int.Parse(atributi[0]) + ".");
                                 }
                                 if (postoji)
                                 {
@@ -456,30 +462,58 @@ namespace tjukica_zadaca_1
                                                 LokacijaKapacitet novaLokacijaKapacitet = new LokacijaKapacitet(lokacijaUnos, vozilo, int.Parse(atributi[2]), int.Parse(atributi[3]));
                                                 if (novaLokacijaKapacitet.brojVozila > novaLokacijaKapacitet.brojMjesta)
                                                 {
-                                                    Console.WriteLine("Linija: " + brojac + " - Greška u kreiranju kapaciteta lokacija! - Broj vozila ne moze biti veci od broja mjesta!");
+                                                    cw.Write("Linija: " + brojac + " - Greška u kreiranju kapaciteta lokacija! - Broj vozila ne moze biti veci od broja mjesta!");
                                                     novaLokacijaKapacitet.brojMjesta = 0;
                                                     novaLokacijaKapacitet.brojVozila = 0;
-                                                }
-                                                baza.getLokacijaKapacitet().Add(novaLokacijaKapacitet);
-                                                for (int i = 0; i < novaLokacijaKapacitet.brojVozila; i++)
+                                                } else
                                                 {
-                                                    Vozilo najamVozila = new Vozilo(vozilo.id, vozilo.naziv, vozilo.vrijemePunjenja, vozilo.domet);
-                                                    novaLokacijaKapacitet.trenutnaVozila.Add(najamVozila);
-                                                    baza.getVozilaZaNajam().Add(najamVozila);
-                                                }
+                                                    baza.getLokacijaKapacitet().Add(novaLokacijaKapacitet);
+                                                    for (int i = 0; i < novaLokacijaKapacitet.brojVozila; i++)
+                                                    {
+                                                        Vozilo najamVozila = new Vozilo(vozilo.id, vozilo.naziv, vozilo.vrijemePunjenja, vozilo.domet);
+                                                        novaLokacijaKapacitet.trenutnaVozila.Add(najamVozila);
+                                                        baza.getVozilaZaNajam().Add(najamVozila);
+                                                    }
+                                                }                                                
                                             }
                                             catch (Exception)
                                             {
-                                                Console.WriteLine("Linija: " + brojac + " - Greška u kreiranju kapaciteta lokacija!");
+                                                cw.Write("Linija: " + brojac + " - Greška prilikom unosa kapaciteta lokacije! Datoteka: " + tip);
                                             }
                                         }
                                     }
                                     if (!postoji)
                                     {
-                                        Console.WriteLine("Linija: " + brojac + " - Greška u kreiranju kapaciteta lokacija! Ne postoji vozilo s ID-jem " + int.Parse(atributi[1]) + ".");
+                                        cw.Write("Linija: " + brojac + " - Greška u kreiranju kapaciteta lokacija! Ne postoji tip vozila s ID-jem " + int.Parse(atributi[1]) + ".");
                                     }
                                 }
 
+                            }
+                        }
+                        brojac++;
+                    }
+                    return true;
+                case TipDatoteke.tvrtka:
+                    brojac = 1;
+                    while ((line = file.ReadLine()) != null)
+                    {
+                        string[] atributi = Array.ConvertAll(line.Split(";"), p => p.Trim());
+                        if (brojac > 1) //Preskacemo prvu liniju u datoteci
+                        {
+                            if (atributi.Length != 4)
+                            {
+                                cw.Write("Pogrešan broj atributa u liniji: " + brojac + " - Datoteka: " + tip);
+                            }
+                            else
+                            {
+                                try
+                                {
+                                    //TODO tvrtka
+                                }
+                                catch (Exception)
+                                {
+                                    //TODO
+                                }
                             }
                         }
                         brojac++;
@@ -508,7 +542,7 @@ namespace tjukica_zadaca_1
                 {
                     if (atributi.Length != 5 && atributi.Length != 6)
                     {
-                        Console.WriteLine("Pogrešna sintaksa u liniji: " + brojac + " - aktivnosti");
+                        cw.Write("Pogrešna broj atributa u liniji: " + brojac + " - Dokument: aktivnosti");
                     }
                     else
                     {
@@ -518,7 +552,7 @@ namespace tjukica_zadaca_1
                         }
                         catch (Exception)
                         {
-                            Console.WriteLine("Greška prilikom učitavanja aktivnosti!");
+                            cw.Write("Greška prilikom učitavanja aktivnosti u liniji: " + brojac);
                         }
                     }
                 }
@@ -546,15 +580,21 @@ namespace tjukica_zadaca_1
                         return new System.IO.StreamReader(dokumentLokacijeKapacitet);
                     case TipDatoteke.aktivnosti:
                         return new System.IO.StreamReader(dokumentAktivnosti);
+                    case TipDatoteke.tvrtka:
+                        return new System.IO.StreamReader(dokumentTvrtka);
                 }
             }
             catch (FileNotFoundException)
             {
-                Console.WriteLine("Greška prilikom unosa osoba. Datoteka ne postoji!");
+                cw.Write("Greška prilikom unosa datoteke tipa: " + tip + " - Datoteka ne postoji!");
             }
             catch (DirectoryNotFoundException)
             {
-                Console.WriteLine("Greška prilikom unosa osoba. Datoteka ne postoji!");
+                cw.Write("Greška prilikom unosa datoteke tipa: " + tip + " - Direktorij ne postoji!");
+            }
+            catch (ArgumentNullException)
+            {
+                cw.Write("Greška prilikom unosa datoteke tipa: " + tip + " - Ne postoji taj argument!");
             }
             return null;
         }
@@ -566,7 +606,8 @@ namespace tjukica_zadaca_1
             lokacije,
             cjenik,
             lokacije_kapacitet,
-            aktivnosti
+            aktivnosti,
+            tvrtka
         }
 
 

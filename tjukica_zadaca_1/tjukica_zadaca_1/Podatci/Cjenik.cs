@@ -7,11 +7,11 @@ namespace tjukica_zadaca_1
     public class Cjenik
     {
         public TipVozila tipVozila { get; private set; }
-        public int najam { get; private set; }
-        public int cijenaSat { get; private set; }
-        public int cijenaKm { get; private set; }
+        public float najam { get; private set; }
+        public float cijenaSat { get; private set; }
+        public float cijenaKm { get; private set; }
 
-        public Cjenik(TipVozila vozilo, int najam, int cijenaSat, int cijenaKm)
+        public Cjenik(TipVozila vozilo, float najam, float cijenaSat, float cijenaKm)
         {
             this.tipVozila = vozilo;
             this.najam = najam;
