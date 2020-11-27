@@ -188,5 +188,28 @@ namespace tjukica_zadaca_1
             return sveOrgJedinice;
         }
 
+        public void DodajDijeteRoditelju(OrgJedinica dijete, int idRoditelja)
+        {
+            foreach (OrgJedinica o in sveOrgJedinice)
+            {
+                if(o.id == idRoditelja)
+                {
+                    o.getChildrenComponents().Add(dijete);
+                }
+            }
+        }
+
+        public bool PostojiOrgJedinica(int idOrgJedinice)
+        {
+            foreach (var o in sveOrgJedinice)
+            {
+                if(o.id == idOrgJedinice)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
     }
 }
