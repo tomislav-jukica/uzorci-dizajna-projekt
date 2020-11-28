@@ -5,6 +5,7 @@ using System.IO;
 using System.Text.RegularExpressions;
 using tjukica_zadaca_1.Composite;
 using tjukica_zadaca_1.Composite.Iterator;
+using tjukica_zadaca_1.State;
 
 namespace tjukica_zadaca_1
 {
@@ -49,20 +50,22 @@ namespace tjukica_zadaca_1
 
             if (skupni)//skupni način
             {
-                Console.WriteLine("Skupni način izvođenja...");
+                cw.Write("SKUPNI NAČIN IZVOĐENJA", false);
                 UcitajDokumentAktivnosti();
-                Console.WriteLine("Program završava sa radom.");
+                skupni = false;
             }
-            else
+
+            if (!skupni)
             {
                 while (radi)
                 {
-                    Console.WriteLine("Unesite komandu: ");
+                    cw.Write("INTERAKTIVNI NAČIN IZVOĐENJA", false);
+                    cw.Write("Unesite komandu: ", false);
                     string komanda = Console.ReadLine();
                     CitajKomandu(komanda);
                 }
             }
-
+            /*
             List<TvrtkaComponent> temp = baza.ishodisna.GetIterator().DFS();
             foreach (var item in temp)
             {
@@ -71,12 +74,12 @@ namespace tjukica_zadaca_1
                     Console.Write("-");
                 }
                 cw.Write(item.getComponentName());                
-            }
+            }*/
         }
 
         private static void PostaviRoditeljeLokacijama()
         {
-            
+
             Iterator iterator = baza.ishodisna.GetIterator();
             List<TvrtkaComponent> kolekcija = iterator.DFS();
             for (int i = 0; i < kolekcija.Count; i++)
@@ -123,7 +126,7 @@ namespace tjukica_zadaca_1
                     }
                     else
                     {
-                        cw.Write("Pogrešna sintaksa komande!");
+                        cw.Write("Pogrešna sintaksa komande! - Aktivnost: " + aktivnost);
                     }
                 }
                 catch (FormatException)
@@ -150,7 +153,7 @@ namespace tjukica_zadaca_1
                             AktivnostPregledMjesta(aktivnost, vrijeme, podatci.Groups[3].Value, podatci.Groups[4].Value, podatci.Groups[5].Value);
                             break;
                         default:
-                            cw.Write("Pogrešna sintaksa komande!");
+                            cw.Write("Pogrešna sintaksa komande! - Aktivnost: " + aktivnost);
                             break;
                     }
                 }
@@ -171,7 +174,7 @@ namespace tjukica_zadaca_1
                     }
                     else
                     {
-                        cw.Write("Pogrešna sintaksa komande!");
+                        cw.Write("Pogrešna sintaksa komande! - Aktivnost: " + aktivnost);
                     }
                 }
                 catch (FormatException)
@@ -181,7 +184,14 @@ namespace tjukica_zadaca_1
             }
             else
             {
-                cw.Write("Pogrešna sintaksa komande!");
+                if (komanda == "")
+                {
+                    cw.Write("Unjeli ste praznu komandu.");
+                } else
+                {
+                    cw.Write("Pogrešna sintaksa komande! - Komanda: " + komanda);
+                }
+                
             }
         }
 
@@ -268,6 +278,7 @@ namespace tjukica_zadaca_1
                 Aktivnost aktivnost = new AktivnostDirektor(new Aktivnost.Builder(idAktivnosti, vrijeme)).Kraj();
                 cw.Write("U " + vrijeme + " program završava s radom.", false);
                 radi = false;
+                Environment.Exit(0);
             }
             else
             {
@@ -674,20 +685,13 @@ namespace tjukica_zadaca_1
                 string[] atributi = Array.ConvertAll(line.Split(";"), p => p.Trim());
                 if (brojac > 1) //Preskacemo prvu liniju u datoteci
                 {
-                    if (atributi.Length != 5 && atributi.Length != 6)
+                    try
                     {
-                        cw.Write("Pogrešna broj atributa u liniji: " + brojac + " - Dokument: aktivnosti");
+                        CitajKomandu(line);
                     }
-                    else
+                    catch (Exception)
                     {
-                        try
-                        {
-                            CitajKomandu(line);
-                        }
-                        catch (Exception)
-                        {
-                            cw.Write("Greška prilikom učitavanja aktivnosti u liniji: " + brojac);
-                        }
+                        cw.Write("Greška prilikom učitavanja aktivnosti u liniji: " + brojac);
                     }
                 }
                 brojac++;
