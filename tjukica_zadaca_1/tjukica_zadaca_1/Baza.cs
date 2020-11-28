@@ -18,6 +18,7 @@ namespace tjukica_zadaca_1
         private List<Punjenje> vozilaNaPunjenju = new List<Punjenje>();
         private List<Vozilo> iznajmljenaVozila = new List<Vozilo>();
         private List<TvrtkaComponent> sveOrgJedinice = new List<TvrtkaComponent>();
+        public List<Lokacija> lokacijeZaDodjelu { get; set; } = new List<Lokacija>();
 
         public TvrtkaComponent ishodisna { get; set; } = null;
         private static Baza baza = null;

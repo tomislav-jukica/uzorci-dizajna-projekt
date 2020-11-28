@@ -396,6 +396,7 @@ namespace tjukica_zadaca_1
                         }
                         brojac++;
                     }
+                    baza.lokacijeZaDodjelu = new List<Lokacija>(baza.getLokacije());
                     return true;
                 case TipDatoteke.vozila:
                     brojac = 1;
@@ -540,7 +541,7 @@ namespace tjukica_zadaca_1
                     
                     int brojPrijelaza = 0;
                     TvrtkaComponent tvrtka = null;
-
+                    List<TvrtkaComponent> temp = new List<TvrtkaComponent>();
                     while ((line = file.ReadLine()) != null)
                     {
                         brojPrijelaza++;
@@ -549,6 +550,7 @@ namespace tjukica_zadaca_1
                     {
                         file = UcitajDatoteku(tip);
                         brojac = 1;
+                        
                         while ((line = file.ReadLine()) != null)
                         {
                             string[] atributi = Array.ConvertAll(line.Split(";"), p => p.Trim());
@@ -564,19 +566,49 @@ namespace tjukica_zadaca_1
                                     {
                                         string[] lokacije = Array.ConvertAll(atributi[3].Split(","), p => p.Trim());
                                         List<TvrtkaComponent> lokacijeComponents = new List<TvrtkaComponent>();
+                                        
+                                        List<int> greske = new List<int>();
                                         foreach (string x in lokacije)
                                         {
-                                            foreach (TvrtkaComponent t in baza.getLokacije())
+
+                                            foreach (var item in temp)
                                             {
-                                                if (x == "")
+                                                if (x == "") continue;
+                                                if (int.Parse(x) == item.id)
                                                 {
-                                                    continue;
+                                                    cw.Write("Linija: " + brojac + " - Lokacija sa ID-jem " + item.id + " već ima nadređenu organizacijsku jedinicu.");
                                                 }
-                                                if (t.id == int.Parse(x))
+                                            }
+
+                                            foreach (TvrtkaComponent t in baza.lokacijeZaDodjelu)
+                                            {
+                                                try
                                                 {
-                                                    lokacijeComponents.Add(t);
-                                                    break;
+                                                    if (x == "")
+                                                    {
+                                                        continue;
+                                                    }
+                                                    if (t.id == int.Parse(x))
+                                                    {
+                                                        
+                                                        lokacijeComponents.Add(t);
+                                                        temp.Add(t);
+                                                        break;
+                                                    }
                                                 }
+                                                catch (Exception)
+                                                {
+                                                    if (!greske.Contains(brojac))
+                                                    {
+                                                        cw.Write("Linija: " + brojac + " - Pogrešno formatirana linija.");
+                                                        greske.Add(brojac);
+                                                    }                                                    
+                                                }
+                                            }
+
+                                            foreach (var item in temp)
+                                            {
+                                                baza.lokacijeZaDodjelu.Remove((Lokacija)item);
                                             }
                                         }
 
@@ -604,8 +636,8 @@ namespace tjukica_zadaca_1
                                             }
                                             try
                                             {
-                                                OrgJedinica novaOrgJedinica = new OrgJedinica(int.Parse(atributi[0]), atributi[1], tvrtka, lokacijeComponents);
-                                                baza.DodajDijeteRoditelju(novaOrgJedinica, tvrtka.id);
+                                                OrgJedinica novaOrgJedinica = new OrgJedinica(int.Parse(atributi[0]), atributi[1], tvrtka, lokacijeComponents);                                               
+                                                baza.DodajDijeteRoditelju(novaOrgJedinica, tvrtka.id);                                                                                                
                                                 baza.getSveOrgJedinice().Add(novaOrgJedinica);
                                             }
                                             catch (Exception)
