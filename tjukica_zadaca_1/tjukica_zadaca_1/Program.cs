@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Text.RegularExpressions;
 using tjukica_zadaca_1.Composite;
+using tjukica_zadaca_1.Composite.Iterator;
 
 namespace tjukica_zadaca_1
 {
@@ -62,30 +63,29 @@ namespace tjukica_zadaca_1
                 }
             }
 
-            foreach (OrgJedinica item in baza.getSveOrgJedinice())
+            List<TvrtkaComponent> temp = baza.ishodisna.GetIterator().DFS();
+            foreach (var item in temp)
             {
-                cw.Write(item.getComponentName());
-                
-                foreach (var x in item.getChildrenComponents())
+                for (int i = 0; i < item.razina; i++)
                 {
-                    cw.Write(x.getComponentName(),false);
+                    Console.Write("-");
                 }
+                cw.Write(item.getComponentName());                
             }
         }
 
-        private static void PostaviRoditeljeLokacijama()//TODO iterator
+        private static void PostaviRoditeljeLokacijama()
         {
-            foreach (Lokacija l in baza.getLokacije())
+            
+            Iterator iterator = baza.ishodisna.GetIterator();
+            List<TvrtkaComponent> kolekcija = iterator.DFS();
+            for (int i = 0; i < kolekcija.Count; i++)
             {
-                foreach (OrgJedinica o in baza.getSveOrgJedinice())
+                List<TvrtkaComponent> children = kolekcija[i].getChildrenComponents();
+                foreach (TvrtkaComponent c in children)
                 {
-                    foreach (var x in o.getChildrenComponents())
-                    {
-                        if (x.id == l.id)
-                        {
-                            l.nadredeni = o;
-                        }
-                    }
+                    c.razina = kolekcija[i].razina + 1;
+                    c.nadredeni = kolekcija[i];
                 }
             }
             List<Lokacija> temp = new List<Lokacija>();
@@ -538,7 +538,7 @@ namespace tjukica_zadaca_1
                     }
                     return true;
                 case TipDatoteke.tvrtka:
-                    
+
                     int brojPrijelaza = 0;
                     TvrtkaComponent tvrtka = null;
                     List<TvrtkaComponent> temp = new List<TvrtkaComponent>();
@@ -550,7 +550,7 @@ namespace tjukica_zadaca_1
                     {
                         file = UcitajDatoteku(tip);
                         brojac = 1;
-                        
+
                         while ((line = file.ReadLine()) != null)
                         {
                             string[] atributi = Array.ConvertAll(line.Split(";"), p => p.Trim());
@@ -566,7 +566,7 @@ namespace tjukica_zadaca_1
                                     {
                                         string[] lokacije = Array.ConvertAll(atributi[3].Split(","), p => p.Trim());
                                         List<TvrtkaComponent> lokacijeComponents = new List<TvrtkaComponent>();
-                                        
+
                                         List<int> greske = new List<int>();
                                         foreach (string x in lokacije)
                                         {
@@ -590,7 +590,7 @@ namespace tjukica_zadaca_1
                                                     }
                                                     if (t.id == int.Parse(x))
                                                     {
-                                                        
+
                                                         lokacijeComponents.Add(t);
                                                         temp.Add(t);
                                                         break;
@@ -602,7 +602,7 @@ namespace tjukica_zadaca_1
                                                     {
                                                         cw.Write("Linija: " + brojac + " - Pogrešno formatirana linija.");
                                                         greske.Add(brojac);
-                                                    }                                                    
+                                                    }
                                                 }
                                             }
 
@@ -636,8 +636,8 @@ namespace tjukica_zadaca_1
                                             }
                                             try
                                             {
-                                                OrgJedinica novaOrgJedinica = new OrgJedinica(int.Parse(atributi[0]), atributi[1], tvrtka, lokacijeComponents);                                               
-                                                baza.DodajDijeteRoditelju(novaOrgJedinica, tvrtka.id);                                                                                                
+                                                OrgJedinica novaOrgJedinica = new OrgJedinica(int.Parse(atributi[0]), atributi[1], tvrtka, lokacijeComponents);
+                                                baza.DodajDijeteRoditelju(novaOrgJedinica, tvrtka.id);
                                                 baza.getSveOrgJedinice().Add(novaOrgJedinica);
                                             }
                                             catch (Exception)
@@ -646,11 +646,11 @@ namespace tjukica_zadaca_1
                                             }
                                         }
 
-                                    } 
+                                    }
                                 }
                             }
                             brojac++;
-                        }                        
+                        }
                     }
                     return true;
                 default:

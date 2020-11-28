@@ -1,22 +1,29 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using tjukica_zadaca_1.Composite.Iterator;
 
 namespace tjukica_zadaca_1.Composite
 {
-    public class OrgJedinica : TvrtkaComponent
+    public class OrgJedinica : TvrtkaComponent, IterableCollection
     {
 
         public string orgJedinicaNaziv { get; private set; }
-        TvrtkaComponent nadredenaJedinica;
         List<TvrtkaComponent> tvrtkaComponents = new List<TvrtkaComponent>();
         Baza baza = Baza.getInstance();
 
         public OrgJedinica(int id, string naziv, TvrtkaComponent nadredena, List<TvrtkaComponent> lokacije): base(id, nadredena)
         {            
             orgJedinicaNaziv = naziv;
-            nadredenaJedinica = nadredena;
+            nadredeni = nadredena;
             tvrtkaComponents = lokacije;
+            if(nadredena != null) this.razina = nadredeni.razina + 1;
+
+        }
+
+        public Iterator.Iterator GetIterator()
+        {
+            return new ConcreteIterator(this);
         }
 
         public void Add(TvrtkaComponent newTvrtkaComponent)
@@ -29,14 +36,14 @@ namespace tjukica_zadaca_1.Composite
             tvrtkaComponents.Remove(tvrtkaComponent);
         }
 
-        public List<TvrtkaComponent> getChildrenComponents()
+        public override List<TvrtkaComponent> getChildrenComponents()
         {
             return tvrtkaComponents;
         }
 
-        public override TvrtkaComponent getComponent(int id)
+        public override TvrtkaComponent getComponent()
         {
-            throw new NotImplementedException();
+            return this;
         }
 
         public override string getComponentName()
@@ -50,7 +57,12 @@ namespace tjukica_zadaca_1.Composite
             {
                 return this;
             }
-            return nadredenaJedinica;
+            return nadredeni;
+        }
+
+        public override int getRazina()
+        {
+            return razina;
         }
     }
 }

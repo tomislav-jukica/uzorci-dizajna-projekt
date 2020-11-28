@@ -19,11 +19,12 @@ namespace tjukica_zadaca_1.Composite
             this.geoSirina = double.Parse(temp[0], System.Globalization.CultureInfo.InvariantCulture);
             this.geoDuzina = double.Parse(temp[1], System.Globalization.CultureInfo.InvariantCulture);
             this.nadredeni = nadredeni;
+            //this.razina = nadredeni.razina + 1;
         }
 
-        public override TvrtkaComponent getComponent(int componentId)
+        public override TvrtkaComponent getComponent()
         {
-            throw new NotImplementedException();
+            return this;
         }
 
         public override string getComponentName()
@@ -34,6 +35,16 @@ namespace tjukica_zadaca_1.Composite
         public override TvrtkaComponent getParentComponent()
         {
             return nadredeni;
+        }
+
+        public override List<TvrtkaComponent> getChildrenComponents()
+        {
+            return new List<TvrtkaComponent>();
+        }
+
+        public override int getRazina()
+        {
+            return razina;
         }
     }
 }

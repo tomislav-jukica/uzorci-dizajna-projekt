@@ -8,14 +8,17 @@ namespace tjukica_zadaca_1.Composite
     {
         public int id;
         public TvrtkaComponent nadredeni;
+        public int razina = 0;
         public TvrtkaComponent(int componentId, TvrtkaComponent nadred)
         {
             id = componentId;
             nadredeni = nadred;
         }
         public abstract TvrtkaComponent getParentComponent();
-        public abstract TvrtkaComponent getComponent(int componentId);
+        public abstract TvrtkaComponent getComponent();
+        public abstract List<TvrtkaComponent> getChildrenComponents();
         public abstract string getComponentName();
+        public abstract int getRazina();
 
     }
 }

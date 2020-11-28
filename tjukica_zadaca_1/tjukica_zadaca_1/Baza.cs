@@ -20,7 +20,7 @@ namespace tjukica_zadaca_1
         private List<TvrtkaComponent> sveOrgJedinice = new List<TvrtkaComponent>();
         public List<Lokacija> lokacijeZaDodjelu { get; set; } = new List<Lokacija>();
 
-        public TvrtkaComponent ishodisna { get; set; } = null;
+        public OrgJedinica ishodisna { get; set; } = null;
         private static Baza baza = null;
 
 
