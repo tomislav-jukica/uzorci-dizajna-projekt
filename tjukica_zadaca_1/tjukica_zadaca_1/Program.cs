@@ -259,6 +259,7 @@ namespace tjukica_zadaca_1
                 Aktivnost aktivnost = new AktivnostDirektor(new Aktivnost.Builder(idAktivnosti, vrijeme)).Vracanje(
                     baza.getKorisnik(int.Parse(korisnik)),
                     baza.getLokacija(int.Parse(lokacija)),
+                    baza.getVozilo(int.Parse(vozilo)),
                     int.Parse(brojKm));
                 if (aktivnost != null)
                 {

@@ -29,14 +29,16 @@ namespace tjukica_zadaca_1
 
         public int dajBrojSlobodnihVozila()
         {
-            int retVal = trenutnaVozila.Count;
+            //int retVal = trenutnaVozila.Count;
+            int retVal = 0;
             Baza baza = Baza.getInstance();
 
             foreach (Vozilo v in trenutnaVozila)
             {
-                if (v.iznajmljen == true)
+                if (v.state.GetType() == new SlobodnoState().GetType())
                 {
-                    retVal -= 1;
+                    //retVal -= 1;
+                    retVal += 1;
                 }
             }
             return retVal;
@@ -52,27 +54,69 @@ namespace tjukica_zadaca_1
             Vozilo vozilo = null;
             foreach (Vozilo v in trenutnaVozila)
             {
-                if (v.iznajmljen == false)
+                if (v.state.GetType() == new SlobodnoState().GetType())
                 {
+
                     vozilo = v;
-                    v.iznajmljen = true;
+                    //v.iznajmljen = true;
                     break;
                 }
             }
             trenutnaVozila.Remove(vozilo);
+            vozilo.state.Iznajmi();
             return vozilo;
         }
 
-        public void VratiVozilo(Vozilo vozilo)
+        public void VratiVozilo(Vozilo vozilo, DateTime vrijeme, int kilometri)
         {
             if (dajBrojSlobodnihMjesta() > 0)
             {
                 trenutnaVozila.Add(vozilo);
+                vozilo.state.Vrati(this, vrijeme, kilometri);
             }
             else
             {
                 cw.Write("Trenutno nema slobodnih mjesta na lokaciji " + lokacija.naziv + "!");
             }
+        }
+
+        private Vozilo dajVoziloZaIznajmiti()
+        {
+            Vozilo retVal = null;            
+            foreach (Vozilo v in dajSlobodnaVozila())
+            {
+                if (retVal == null) retVal = v;
+                if(retVal.brojUnajmljivanja > v.brojUnajmljivanja)
+                {
+                    retVal = v;
+                } else if(retVal.brojUnajmljivanja == v.brojUnajmljivanja)
+                {
+                    if(retVal.kilometri > v.kilometri)
+                    {
+                        retVal = v;
+                    } else if(retVal.kilometri == v.kilometri)
+                    {
+                        if(retVal.idVozila > v.idVozila)
+                        {
+                            retVal = v;
+                        }
+                    }
+                }
+            }
+            return retVal;
+        }
+
+        private List<Vozilo> dajSlobodnaVozila()
+        {
+            List<Vozilo> retVal = new List<Vozilo>();
+            foreach (Vozilo v in trenutnaVozila)
+            {
+                if (v.state.GetType() == new SlobodnoState().GetType())
+                {
+                    retVal.Add(v);
+                }
+            }
+            return retVal;
         }
     }
 }

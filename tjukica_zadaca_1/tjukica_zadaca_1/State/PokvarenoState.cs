@@ -8,22 +8,22 @@ namespace tjukica_zadaca_1.State
     {
         public override void Iznajmi()
         {
-            throw new NotImplementedException();
+            cw.Write("Nije moguće iznajmiti pokvareno vozilo.");
         }
 
         public override void Napuni()
         {
-            throw new NotImplementedException();
+            cw.Write("Nije moguće puniti pokvareno vozilo.");
         }
 
-        public override void Vrati()
+        public override void Vrati(LokacijaKapacitet lokacija, DateTime vrijeme, int prijedeniKilometri)
         {
-            throw new NotImplementedException();
+            cw.Write("Nije moguće vratiti vozilo koje nije iznajmljeno.");
         }
 
         public override void VratiPokvareno()
         {
-            throw new NotImplementedException();
+            cw.Write("Nije moguće vratiti vozilo koje nije iznajmljeno.");
         }
     }
 }

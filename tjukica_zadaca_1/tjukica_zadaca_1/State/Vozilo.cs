@@ -10,10 +10,10 @@ namespace tjukica_zadaca_1.State
         public int idVozila { get; set; }
         public float baterija { get; set; }
         public int kilometri { get; set; }
-        public bool iznajmljen { get; set; }
+        //public bool iznajmljen { get; set; }
         public int brojUnajmljivanja { get; set; } = 0;
 
-        private VoziloState state = new SlobodnoState();
+        public VoziloState state = new SlobodnoState();
 
         
 
@@ -24,9 +24,13 @@ namespace tjukica_zadaca_1.State
             this.idVozila = Baza.getInstance().getVozilaZaNajam().Count + 1;
             this.baterija = 1;
             this.kilometri = 0;
-            iznajmljen = false;
+            //iznajmljen = false;
+            this.state.SetVozilo(this);
         }
-
+        public VoziloState GetState()
+        {
+            return this.state;
+        }
         public void TransitionTo(VoziloState voziloState)
         {
             this.state = voziloState;
@@ -37,9 +41,9 @@ namespace tjukica_zadaca_1.State
         {
             this.state.Iznajmi();
         }
-        public void Vrati()
+        public void Vrati(LokacijaKapacitet lokacija, DateTime vrijeme, int prijedeniKilometri)
         {
-            this.state.Vrati();
+            this.state.Vrati(lokacija, vrijeme, prijedeniKilometri);
         }
         public void VratiPokvareno()
         {

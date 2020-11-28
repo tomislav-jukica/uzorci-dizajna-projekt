@@ -8,22 +8,26 @@ namespace tjukica_zadaca_1.State
     {
         public override void Iznajmi()
         {
-            throw new NotImplementedException();
+            cw.Write("Nije moguće iznajmiti već iznajmljeno vozilo.");
         }
 
         public override void Napuni()
         {
-            throw new NotImplementedException();
+            cw.Write("Nije moguće puniti bateriju dok je vozilo iznajmljeno.");
         }
 
-        public override void Vrati()
+        public override void Vrati(LokacijaKapacitet lokacija, DateTime vrijeme, int prijedeniKilometri)
         {
-            throw new NotImplementedException();
+            NaPunjenjuState nps = new NaPunjenjuState(this.vozilo, lokacija, vrijeme, prijedeniKilometri);
+            nps.IzracunajVrijemePunjenja(prijedeniKilometri);
+            Baza.getInstance().getVozilaNaPunjenju().Add(nps);
+            this.vozilo.TransitionTo(nps);
+
         }
 
         public override void VratiPokvareno()
         {
-            throw new NotImplementedException();
+            this.vozilo.TransitionTo(new PokvarenoState());
         }
     }
 }

@@ -16,7 +16,7 @@ namespace tjukica_zadaca_1
         private DateTime virtualnoVrijeme;
         private List<Aktivnost> aktivnosti = new List<Aktivnost>();
         private List<Vozilo> vozilaZaNajam = new List<Vozilo>();
-        private List<Punjenje> vozilaNaPunjenju = new List<Punjenje>();
+        private List<NaPunjenjuState> vozilaNaPunjenju = new List<NaPunjenjuState>();
         private List<Vozilo> iznajmljenaVozila = new List<Vozilo>();
         private List<TvrtkaComponent> sveOrgJedinice = new List<TvrtkaComponent>();
         public List<Lokacija> lokacijeZaDodjelu { get; set; } = new List<Lokacija>();
@@ -155,7 +155,7 @@ namespace tjukica_zadaca_1
             Vozilo najam = null;
             foreach (Vozilo n in baza.vozilaZaNajam)
             {
-                if(vozilo.id == n.id && n.iznajmljen == false)
+                if(vozilo.id == n.id && n.state.GetType() == new SlobodnoState().GetType())
                 {
                     najam = n;
                 }
@@ -163,7 +163,7 @@ namespace tjukica_zadaca_1
             return najam;
         }
 
-        public List<Punjenje> getVozilaNaPunjenju()
+        public List<NaPunjenjuState> getVozilaNaPunjenju()
         {
             return baza.vozilaNaPunjenju;
         }
@@ -175,7 +175,7 @@ namespace tjukica_zadaca_1
         public int brojVozilaKojaSePune(LokacijaKapacitet lokacija)
         {
             int retVal = 0;
-            foreach (Punjenje v in baza.vozilaNaPunjenju)
+            foreach (NaPunjenjuState v in baza.vozilaNaPunjenju)
             {
                 if(v.lokacija == lokacija)
                 {
