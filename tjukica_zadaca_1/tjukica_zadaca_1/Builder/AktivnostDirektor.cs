@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using tjukica_zadaca_1.Composite;
 using tjukica_zadaca_1.State;
+using tjukica_zadaca_1.Proxy;
 
 namespace tjukica_zadaca_1
 {
@@ -147,19 +148,17 @@ namespace tjukica_zadaca_1
                    // punjenje.IzracunajVrijemePunjenja(prijedeniKilometri);
                   //  Baza.getInstance().getVozilaNaPunjenju().Add(punjenje);
 
-                    float cijenaNajma = Baza.getInstance().getCjenikZaVozilo(tipVozila).najam;
+                  //  float cijenaNajma = Baza.getInstance().getCjenikZaVozilo(tipVozila).najam;
                     DateTime vrijemeNajma = stariNajam.Vrijeme;                 
                     
                     long razlikaVremena = builder.Vrijeme.Subtract(vrijemeNajma).Ticks;
                     double sati = TimeSpan.FromTicks(razlikaVremena).TotalHours;
-                    float cijenaSati = Baza.getInstance().getCjenikZaVozilo(tipVozila).cijenaSat * (int)Math.Ceiling(sati);
-                    float cijenaKilometri = Baza.getInstance().getCjenikZaVozilo(tipVozila).cijenaKm * prijedeniKilometri;
-                    //TODO napravi račun
-                    Console.WriteLine("Račun:");
-                    Console.WriteLine("1. Najam - " + cijenaNajma + " KN");
-                    Console.WriteLine("2. Po satu - " + (int)Math.Ceiling(sati) + " sata = " + cijenaSati + " KN");
-                    Console.WriteLine("3. Po km - " + prijedeniKilometri + " kilometara  = " + cijenaKilometri + " KN");
-                    Console.WriteLine("UKUPNO: " + (cijenaNajma + cijenaSati + cijenaKilometri) + " KN");
+                 //   float cijenaSati = Baza.getInstance().getCjenikZaVozilo(tipVozila).cijenaSat * (int)Math.Ceiling(sati);
+                 //   float cijenaKilometri = Baza.getInstance().getCjenikZaVozilo(tipVozila).cijenaKm * prijedeniKilometri;
+
+                    RacunovodstvoProxy rac = new RacunovodstvoProxy(Racunovodstvo.getInstance());
+                    rac.IzdajRacun(stariNajam.Lokacija.id, idLokacija.id, tipVozila.id, sati, brojKm);
+
                     idKorisnik.VratiVozilo(idKorisnik.getVoziloUNajmu(tipVozila));                    
                     aktivnost = builder.build();
                     return aktivnost;

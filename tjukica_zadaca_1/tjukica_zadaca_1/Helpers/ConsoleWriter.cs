@@ -25,5 +25,14 @@ namespace tjukica_zadaca_1.Helpers
             Console.WriteLine(msg);
             Console.ForegroundColor = ConsoleColor.White;
         }
+
+        public void HorizontalLine(int length = 60)
+        {
+            for (int i = 0; i < length; i++)
+            {
+                Console.Write("-");                
+            }
+            Console.Write("\n");
+        }
     }
 }

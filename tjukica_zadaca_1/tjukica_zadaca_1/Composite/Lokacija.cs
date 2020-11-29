@@ -10,6 +10,7 @@ namespace tjukica_zadaca_1.Composite
         private string adresa;
         private double geoSirina;
         private double geoDuzina;
+        public double zarada = 0;
 
         public Lokacija(int id, string naziv, string adresa, string koordinata, TvrtkaComponent nadredeni):base(id, nadredeni)
         {
