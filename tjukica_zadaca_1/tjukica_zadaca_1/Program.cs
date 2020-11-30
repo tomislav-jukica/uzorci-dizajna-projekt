@@ -369,49 +369,109 @@ namespace tjukica_zadaca_1
         private static void AktivnostIspisStanja(Match match)
         {
             int idOrgJedinice = 1;
-            string komanda1;
-            string komanda2;
+            string komanda1 = "";
+            string komanda2 = "";
 
             if (match.Groups[2].Value != "") komanda1 = match.Groups[2].Value.Trim();
             if (match.Groups[3].Value != "") komanda2 = match.Groups[3].Value.Trim();
             if (match.Groups[4].Value != "") idOrgJedinice = int.Parse(match.Groups[4].Value);
 
-
-
             Iterator iterator = baza.ishodisna.GetIterator();
-            IspisiPodatkeStanja(iterator.DFS());
-            /*
-            if (baza.ishodisna.id == idOrgJedinice)
+            if (komanda1 == "struktura")
             {
-                IspisiStrukturuStanja(iterator.DFS());
-                
-            }
-            else
-            {
-                bool flag = true;
-                iterator.DFS();
-                while (flag)
+                if (baza.ishodisna.id == idOrgJedinice)
                 {
-                    if (iterator.Current().orgJedinica)
+                    if (komanda2 == "stanje")
                     {
-                        if (iterator.Current().id == idOrgJedinice)
+                        IspisiSveStanja(iterator.DFS());
+                    }
+                    else
+                    {
+                        IspisiStrukturuStanja(iterator.DFS());
+                    }
+
+                }
+                else
+                {
+                    bool flag = true;
+                    iterator.DFS();
+                    while (flag)
+                    {
+                        if (iterator.Current().orgJedinica)
                         {
-                            IspisiStrukturuStanja(iterator.DFS
-                                (new List<TvrtkaComponent>(iterator.Current().getChildrenComponents())));
-                            iterator.MoveNext();
+                            if (iterator.Current().id == idOrgJedinice)
+                            {
+                                if (komanda2 == "stanje")
+                                {
+                                    IspisiSveStanja(iterator
+                                        .DFS(new List<TvrtkaComponent>(iterator.Current().getChildrenComponents())));
+                                }
+                                else
+                                {
+                                    IspisiStrukturuStanja(iterator
+                                        .DFS(new List<TvrtkaComponent>(iterator.Current().getChildrenComponents())));
+                                }
+
+                                iterator.MoveNext();
+                                flag = false;
+                            }
+                        }
+                        iterator.MoveNext();
+                        if (iterator.IsEnd())
+                        {
+                            cw.Write("Ne postoji organizacijska jedinica sa ID-jem: " + idOrgJedinice);
                             flag = false;
                         }
                     }
-                    iterator.MoveNext();
-                    if (iterator.IsEnd())
+                }
+            }
+            else if (komanda1 == "stanje")
+            {
+                if (baza.ishodisna.id == idOrgJedinice)
+                {
+                    if (komanda2 == "struktura")
                     {
-                        cw.Write("Ne postoji organizacijska jedinica sa ID-jem: " + idOrgJedinice);
-                        flag = false;
+                        IspisiSveStanja(iterator.DFS());
+                    }
+                    else
+                    {
+                        IspisiPodatkeStanja(iterator.DFS());
                     }
                 }
-            }*/
+                else
+                {
+                    bool flag = true;
+                    iterator.DFS();
+                    while (flag)
+                    {
+                        if (iterator.Current().orgJedinica)
+                        {
+                            if (iterator.Current().id == idOrgJedinice)
+                            {
+                                if (komanda2 == "struktura")
+                                {
+                                    IspisiSveStanja(iterator
+                                        .DFS(new List<TvrtkaComponent>(iterator.Current().getChildrenComponents())));
+                                }
+                                else
+                                {
+                                    IspisiPodatkeStanja(iterator
+                                        .DFS(new List<TvrtkaComponent>(iterator.Current().getChildrenComponents())));
+                                }
 
-
+                                iterator.MoveNext();
+                                flag = false;
+                            }
+                        }
+                        iterator.MoveNext();
+                        if (iterator.IsEnd())
+                        {
+                            cw.Write("Ne postoji organizacijska jedinica sa ID-jem: " + idOrgJedinice);
+                            flag = false;
+                        }
+                    }
+                }
+            }
         }
 
         private static void IspisiStrukturuStanja(List<TvrtkaComponent> lista)
@@ -432,25 +492,58 @@ namespace tjukica_zadaca_1
         }
         private static void IspisiPodatkeStanja(List<TvrtkaComponent> lista)
         {
-            
+
             Console.WriteLine("");
-            Console.WriteLine("{0,10} {1,20} {2,20} {3,20} {4,20}  \n", "Naziv", "Vozilo", "Slobodna mjesta", "Slobodna vozila", "Neispravna vozila");
+            Console.WriteLine("{0, -" + baza.dt + "} {1, -" + baza.dt + "} {2, " + baza.dc + "} {3, " + baza.dc + "} {4, " + baza.dc + "}  \n", "Naziv", "Vozilo", "SM", "SV", "NV");
             for (int ctr = 0; ctr < lista.Count; ctr++)
             {
                 foreach (var tipVozila in baza.getTipoviVozila())
                 {
-                    Console.WriteLine("{0, -20} {1, -20} {2, 20} {3, 20} {4, 20} ", 
-                        lista[ctr].getComponentName(),
-                        tipVozila.naziv,
+                    string name = lista[ctr].getComponentName();
+                    string voziloName = tipVozila.naziv;
+
+                    if (name.Length > baza.dt) name = name.Substring(0, baza.dt);
+                    if (voziloName.Length > baza.dt) voziloName = voziloName.Substring(0, baza.dt);
+
+                    Console.WriteLine("{0, -" + baza.dt + "} {1, -" + baza.dt + "} {2, " + baza.dc + "} {3, " + baza.dc + "} {4, " + baza.dc + "} ",
+                        name,
+                        voziloName,
                         lista[ctr].DajSlobodnaMjesta(tipVozila),
                         lista[ctr].DajSlobodnaVozila(tipVozila),
-                        lista[ctr].DajPokvarenaVozila(tipVozila)); 
+                        lista[ctr].DajPokvarenaVozila(tipVozila));
                 }
             }
             Console.WriteLine("");
-            
         }
+        private static void IspisiSveStanja(List<TvrtkaComponent> lista)
+        {
+            Console.WriteLine("");
+            Console.WriteLine("{0, 10} {1, -" + baza.dt + "} {2, -" + baza.dt + "} {3, " + baza.dc + "} {4, " + baza.dc + "} {5, " + baza.dc + "}  \n", "Razina", "Naziv", "Vozilo", "SM", "SV", "NV");
+            for (int ctr = 0; ctr < lista.Count; ctr++)
+            {
+                foreach (var tipVozila in baza.getTipoviVozila())
+                {
+                    string name = lista[ctr].getComponentName();
+                    string voziloName = tipVozila.naziv;
 
+                    if (name.Length > baza.dt) name = name.Substring(0, baza.dt);
+                    if (voziloName.Length > baza.dt) voziloName = voziloName.Substring(0, baza.dt);
+                    string razinaIcon = "";
+                    for (int i = 0; i < lista[ctr].razina; i++)
+                    {
+                        razinaIcon += "-";
+                    }
+                    Console.WriteLine("{0,10} {1, -" + baza.dt + "} {2, -" + baza.dt + "} {3, " + baza.dc + "} {4, " + baza.dc + "} {5, " + baza.dc + "} ",
+                        razinaIcon,
+                        name,
+                        voziloName,
+                        lista[ctr].DajSlobodnaMjesta(tipVozila),
+                        lista[ctr].DajSlobodnaVozila(tipVozila),
+                        lista[ctr].DajPokvarenaVozila(tipVozila)); ;
+                }
+            }
+            Console.WriteLine("");
+        }
         static void UnesiDokumente(string[] args)
         {
             for (int i = 0; i < args.Length; i++)
