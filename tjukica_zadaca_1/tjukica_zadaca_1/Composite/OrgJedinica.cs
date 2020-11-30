@@ -10,7 +10,6 @@ namespace tjukica_zadaca_1.Composite
 
         public string orgJedinicaNaziv { get; private set; }
         List<TvrtkaComponent> tvrtkaComponents = new List<TvrtkaComponent>();
-        Baza baza = Baza.getInstance();
 
         public OrgJedinica(int id, string naziv, TvrtkaComponent nadredena, List<TvrtkaComponent> lokacije): base(id, nadredena)
         {            
@@ -63,6 +62,39 @@ namespace tjukica_zadaca_1.Composite
         public override int getRazina()
         {
             return razina;
+        }
+
+        public override int DajSlobodnaMjesta(TipVozila tipVozila)
+        {
+            int retVal = 0;
+            foreach (var item in this.getChildrenComponents())
+            {
+                retVal += item.DajSlobodnaMjesta(tipVozila);
+               
+            }
+            return retVal;
+        }
+
+        public override int DajSlobodnaVozila(TipVozila tipVozila)
+        {
+            int retVal = 0;
+            foreach (var item in this.getChildrenComponents())
+            {
+                retVal += item.DajSlobodnaVozila(tipVozila);
+
+            }
+            return retVal;
+        }
+
+        public override int DajPokvarenaVozila(TipVozila tipVozila)
+        {
+            int retVal = 0;
+            foreach (var item in this.getChildrenComponents())
+            {
+                retVal += item.DajPokvarenaVozila(tipVozila);
+
+            }
+            return retVal;
         }
     }
 }

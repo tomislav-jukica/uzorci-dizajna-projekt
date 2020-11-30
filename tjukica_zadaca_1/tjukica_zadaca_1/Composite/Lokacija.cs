@@ -12,7 +12,7 @@ namespace tjukica_zadaca_1.Composite
         private double geoDuzina;
         public double zarada = 0;
 
-        public Lokacija(int id, string naziv, string adresa, string koordinata, TvrtkaComponent nadredeni):base(id, nadredeni)
+        public Lokacija(int id, string naziv, string adresa, string koordinata, TvrtkaComponent nadredeni) : base(id, nadredeni)
         {
             string[] temp = Array.ConvertAll(koordinata.Split(","), p => p.Trim());
             this.naziv = naziv;
@@ -46,6 +46,21 @@ namespace tjukica_zadaca_1.Composite
         public override int getRazina()
         {
             return razina;
+        }
+
+        public override int DajSlobodnaMjesta(TipVozila tipVozila)
+        {
+            return baza.getKapacitetLokacije(this, tipVozila).dajBrojSlobodnihMjesta();
+        }
+
+        public override int DajSlobodnaVozila(TipVozila tipVozila)
+        {
+            return baza.getKapacitetLokacije(this, tipVozila).dajBrojSlobodnihVozila();
+        }
+
+        public override int DajPokvarenaVozila(TipVozila tipVozila)
+        {
+            return baza.getKapacitetLokacije(this, tipVozila).dajBrojPokvarenihVozila();
         }
     }
 }

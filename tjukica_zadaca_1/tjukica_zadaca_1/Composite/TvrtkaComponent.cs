@@ -10,6 +10,7 @@ namespace tjukica_zadaca_1.Composite
         public TvrtkaComponent nadredeni;
         public int razina = 0;
         public bool orgJedinica = false;
+        protected Baza baza = Baza.getInstance();
         public TvrtkaComponent(int componentId, TvrtkaComponent nadred)
         {
             id = componentId;
@@ -20,6 +21,8 @@ namespace tjukica_zadaca_1.Composite
         public abstract List<TvrtkaComponent> getChildrenComponents();
         public abstract string getComponentName();
         public abstract int getRazina();
-
+        public abstract int DajSlobodnaMjesta(TipVozila tipVozila);
+        public abstract int DajSlobodnaVozila(TipVozila tipVozila);
+        public abstract int DajPokvarenaVozila(TipVozila tipVozila);
     }
 }

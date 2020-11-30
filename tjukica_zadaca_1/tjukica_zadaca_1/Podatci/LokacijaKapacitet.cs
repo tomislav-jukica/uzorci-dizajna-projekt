@@ -49,6 +49,19 @@ namespace tjukica_zadaca_1
             return brojMjesta - trenutnaVozila.Count;
         }
 
+        public int dajBrojPokvarenihVozila()
+        {
+            int retVal = 0;
+            foreach (Vozilo v in trenutnaVozila)
+            {
+                if(v.state.GetType() == new PokvarenoState().GetType())
+                {
+                    retVal++;
+                }
+            }
+            return retVal;
+        }
+
         public Vozilo dajVoziloUNajam()
         {
             Vozilo vozilo = null;

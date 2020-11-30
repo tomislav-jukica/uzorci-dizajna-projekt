@@ -379,9 +379,12 @@ namespace tjukica_zadaca_1
 
 
             Iterator iterator = baza.ishodisna.GetIterator();
+            IspisiPodatkeStanja(iterator.DFS());
+            /*
             if (baza.ishodisna.id == idOrgJedinice)
             {
                 IspisiStrukturuStanja(iterator.DFS());
+                
             }
             else
             {
@@ -406,7 +409,7 @@ namespace tjukica_zadaca_1
                         flag = false;
                     }
                 }
-            }
+            }*/
 
 
         }
@@ -429,20 +432,23 @@ namespace tjukica_zadaca_1
         }
         private static void IspisiPodatkeStanja(List<TvrtkaComponent> lista)
         {
-            /*
+            
             Console.WriteLine("");
-            Console.WriteLine("{0,10} {1,10} {2,10} {3,10} {4,10}  \n", "Naziv", "Vozilo", "Broj mjesta", "Raspoloziva vozila", "Neispravna vozila");
+            Console.WriteLine("{0,10} {1,20} {2,20} {3,20} {4,20}  \n", "Naziv", "Vozilo", "Slobodna mjesta", "Slobodna vozila", "Neispravna vozila");
             for (int ctr = 0; ctr < lista.Count; ctr++)
             {
                 foreach (var tipVozila in baza.getTipoviVozila())
                 {
-                    Console.WriteLine("{0,-20} {1,20} {2, 20} {3, 20} {4, 20} ", 
-                        lista[ctr].getComponentName(), 
-                        baza.getKapacitetLokacije(baza.getLokacija(lista[ctr].getComponent().; 
+                    Console.WriteLine("{0, -20} {1, -20} {2, 20} {3, 20} {4, 20} ", 
+                        lista[ctr].getComponentName(),
+                        tipVozila.naziv,
+                        lista[ctr].DajSlobodnaMjesta(tipVozila),
+                        lista[ctr].DajSlobodnaVozila(tipVozila),
+                        lista[ctr].DajPokvarenaVozila(tipVozila)); 
                 }
             }
             Console.WriteLine("");
-            */
+            
         }
 
         static void UnesiDokumente(string[] args)
