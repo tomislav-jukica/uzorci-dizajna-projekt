@@ -14,7 +14,7 @@ namespace tjukica_zadaca_1.Proxy
         int brojKm;
         double ukupno;
 
-        public Racun(int id, int lokacijaIdNajam, int lokacijaIdVracanje, int voziloId, double brojSati, int brojKm, double ukupno)
+        public Racun(int id, int lokacijaIdNajam, int lokacijaIdVracanje, int voziloId, double brojSati, int brojKm, int korisnikId, DateTime vrijeme, double ukupno)
         {
             this.id = id;
             this.idLokacijeNajma = lokacijaIdNajam;

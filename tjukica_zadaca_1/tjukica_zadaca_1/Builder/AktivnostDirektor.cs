@@ -29,7 +29,7 @@ namespace tjukica_zadaca_1
                 int brojVozila = kapacitet.dajBrojSlobodnihVozila();
                 cw.Write("Na lokaciji " + idLokacija.naziv +
                 " trenutno se nalazi " + brojVozila +
-                " vozila tipa " + idVozilo.naziv + ".",false);
+                " vozila tipa " + idVozilo.naziv + ".", false);
                 return aktivnost;
             }
             else
@@ -84,17 +84,17 @@ namespace tjukica_zadaca_1
                 return null;
             }
         }
-        public Aktivnost Vracanje(Korisnik idKorisnik, Lokacija idLokacija, TipVozila tipVozila, int brojKm)
+        public Aktivnost Vracanje(Korisnik idKorisnik, Lokacija idLokacija, TipVozila tipVozila, int brojKm, string opisProblema = null)
         {
             Aktivnost aktivnost = null;
-            
-            if (idKorisnik.najmovi.Count == 0) 
+
+            if (idKorisnik.najmovi.Count == 0)
             {
                 cw.Write("Korisnik " + idKorisnik.ime + " nema nijedno vozilo u najmu.");
                 return null;
             }
-            //TipVozila idVozilo = Baza.getInstance().getVozilo(idKorisnik.najamVozila.id);
-            if(idKorisnik.getVoziloUNajmu(tipVozila) == null)
+
+            if (idKorisnik.getVoziloUNajmu(tipVozila) == null)
             {
                 cw.Write("Korisnik " + idKorisnik.ime + " nema u najmu vozilo tipa " + tipVozila.naziv + ".");
                 return null;
@@ -104,17 +104,17 @@ namespace tjukica_zadaca_1
                 cw.Write("Vrijednost kilometara ne može biti manja od prethodne vrijednosti!");
                 return null;
             }
-            if(brojKm > tipVozila.domet)
+            if (brojKm > tipVozila.domet)
             {
                 cw.Write("Vrijednost kilometara ne može biti veća od dometa vozila!");
                 return null;
             }
-            
+
             builder = builder.setPodatci(idKorisnik, idLokacija, tipVozila).setBrojKm(brojKm);
             if (builder != null)
             {
                 ProvjeriPunjenje(builder.Vrijeme);
-                if (idKorisnik.getVoziloUNajmu(tipVozila) == null)//TODO promijeni
+                if (idKorisnik.getVoziloUNajmu(tipVozila) == null)
                 {
                     cw.Write("Korisnik " + idKorisnik.ime + " nema u najmu vozilo tipa " + tipVozila.naziv);
                     return null;
@@ -124,7 +124,8 @@ namespace tjukica_zadaca_1
                 {
                     cw.Write("Na lokaciji " + idLokacija.naziv + " nema slobodnog mjesta za vozilo tipa " + tipVozila.naziv + ".");
                     return null;
-                } else
+                }
+                else
                 {
                     Aktivnost stariNajam = null;
                     foreach (Aktivnost a in Baza.getInstance().getAktivnosti())
@@ -138,32 +139,25 @@ namespace tjukica_zadaca_1
                     cw.Write("Korisnik " + idKorisnik.ime + " vratio je vozilo tipa " + tipVozila.naziv + " na lokaciju " + idLokacija.naziv + ".", false);
                     kapacitet.VratiVozilo(idKorisnik.getVoziloUNajmu(tipVozila), builder.Vrijeme, brojKm);
 
-                    //NaPunjenjuState punjenje = new NaPunjenjuState(idKorisnik.najamVozila, kapacitet, builder.Vrijeme);
 
-
-                    
-                    int prijedeniKilometri = brojKm - idKorisnik.getVoziloUNajmu(tipVozila).kilometri;
-
-                    
-                   // punjenje.IzracunajVrijemePunjenja(prijedeniKilometri);
-                  //  Baza.getInstance().getVozilaNaPunjenju().Add(punjenje);
-
-                  //  float cijenaNajma = Baza.getInstance().getCjenikZaVozilo(tipVozila).najam;
-                    DateTime vrijemeNajma = stariNajam.Vrijeme;                 
-                    
+                    DateTime vrijemeNajma = stariNajam.Vrijeme;
                     long razlikaVremena = builder.Vrijeme.Subtract(vrijemeNajma).Ticks;
                     double sati = TimeSpan.FromTicks(razlikaVremena).TotalHours;
-                 //   float cijenaSati = Baza.getInstance().getCjenikZaVozilo(tipVozila).cijenaSat * (int)Math.Ceiling(sati);
-                 //   float cijenaKilometri = Baza.getInstance().getCjenikZaVozilo(tipVozila).cijenaKm * prijedeniKilometri;
 
                     RacunovodstvoProxy rac = new RacunovodstvoProxy(Racunovodstvo.getInstance());
-                    rac.IzdajRacun(stariNajam.Lokacija.id, idLokacija.id, tipVozila.id, sati, brojKm);
+                    rac.IzdajRacun(stariNajam.Lokacija.id, idLokacija.id, tipVozila.id, sati, brojKm, builder.Vrijeme, idKorisnik.id);
 
-                    idKorisnik.VratiVozilo(idKorisnik.getVoziloUNajmu(tipVozila));                    
+                    if(opisProblema != null)
+                    {
+                        idKorisnik.brojNeispravnihVracanja++;
+                        idKorisnik.getVoziloUNajmu(tipVozila).state.VratiPokvareno();
+                        builder = builder.setOpis(opisProblema);
+                    }
+                    idKorisnik.VratiVozilo(idKorisnik.getVoziloUNajmu(tipVozila));
                     aktivnost = builder.build();
                     return aktivnost;
                 }
-                
+
             }
             else
             {
@@ -184,7 +178,8 @@ namespace tjukica_zadaca_1
                 {
                     if (p.gotovoPunjenje.CompareTo(vrijeme) < 0)
                     {
-                        p.vozilo.TransitionTo(new SlobodnoState());
+                        //p.vozilo.TransitionTo(new SlobodnoState());
+                        p.vozilo.state.Napuni();
                         temp.Add(p);
                     }
                 }

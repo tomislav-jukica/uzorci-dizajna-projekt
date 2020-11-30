@@ -45,13 +45,14 @@ namespace tjukica_zadaca_1
             private Lokacija lokacija;
             private TipVozila vozilo;
             private int brojKm;
+            private string opis;
 
             public int IdAktivnosti { get => idAktivnosti; set => idAktivnosti = value; }
             public DateTime Vrijeme { get => vrijeme; set => vrijeme = value; }
             public Korisnik Korisnik { get => korisnik; set => korisnik = value; }
             public Lokacija Lokacija { get => lokacija; set => lokacija = value; }
             public TipVozila Vozilo { get => vozilo; set => vozilo = value; }
-            public int BrojKm { get => brojKm; set => brojKm = value; }            
+            public int BrojKm { get => brojKm; set => brojKm = value; }
 
             public Builder(int idAktivnosti, DateTime vrijeme)
             {
@@ -111,6 +112,16 @@ namespace tjukica_zadaca_1
                     return null;
                 }
                 this.BrojKm = brojKm;
+                return this;
+            }
+            public Builder setOpis(string opis)
+            {
+                if(opis == "")
+                {
+                    cw.Write("Greška prilikom vraćanja neispravnog vozila. Niste unjeli opis problema.");
+                    return null;
+                }
+                this.opis = opis;
                 return this;
             }
 

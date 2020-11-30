@@ -9,6 +9,7 @@ namespace tjukica_zadaca_1.State
     {
         public Vozilo vozilo;
         protected ConsoleWriter cw = ConsoleWriter.getInstance();
+        protected Baza baza = Baza.getInstance();
         public void SetVozilo(Vozilo vozilo)
         {
             this.vozilo = vozilo;

@@ -10,7 +10,7 @@ namespace tjukica_zadaca_1
     {
         private List<Korisnik> korisnici = new List<Korisnik>();
         private List<Lokacija> lokacije = new List<Lokacija>();
-        private List<TipVozila> vozila = new List<TipVozila>();
+        private List<TipVozila> tipoviVozila = new List<TipVozila>();
         private List<Cjenik> cjenik = new List<Cjenik>();
         private List<LokacijaKapacitet> kapacitetiLokacija = new List<LokacijaKapacitet>();
         private DateTime virtualnoVrijeme;
@@ -86,7 +86,7 @@ namespace tjukica_zadaca_1
         public TipVozila getVozilo(int id)
         {
             TipVozila vozilo = null;
-            foreach(TipVozila v in baza.vozila)
+            foreach(TipVozila v in baza.tipoviVozila)
             {
                 if(v.id == id)
                 {
@@ -119,9 +119,9 @@ namespace tjukica_zadaca_1
         {
             return baza.lokacije;
         }
-        public List<TipVozila> getVozila()
+        public List<TipVozila> getTipoviVozila()
         {
-            return baza.vozila;
+            return baza.tipoviVozila;
         }
         public List<Cjenik> getCjenik()
         {

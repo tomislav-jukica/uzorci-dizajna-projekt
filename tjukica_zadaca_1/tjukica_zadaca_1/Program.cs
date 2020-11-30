@@ -15,6 +15,9 @@ namespace tjukica_zadaca_1
         private static Regex REGEX_KRAJ = new Regex("(\\d); .(\\d+-\\d+-\\d+ \\d+:\\d+:\\d+).");
         private static Regex REGEX_PODATCI = new Regex("(\\d); .(\\d+-\\d+-\\d+ \\d+:\\d+:\\d+).; (\\d+); (\\d+); (\\d+)");
         private static Regex REGEX_VRACANJE = new Regex("(\\d); .(\\d+-\\d+-\\d+ \\d+:\\d+:\\d+).; (\\d+); (\\d+); (\\d+); (\\d+)");
+        private static Regex REGEX_VRACANJE_NEISPRAVNO = new Regex("(\\d); .(\\d+-\\d+-\\d+ \\d+:\\d+:\\d+).; (\\d+); (\\d+); (\\d+); (\\d+); (.+)");
+        private static Regex REGEX_SKUPNI = new Regex("(5); (.+\\.txt)");
+        private static Regex REGEX_ISPIS_STANJE = new Regex("(\\d); (struktura|stanje)? (struktura|stanje)?\\s?(\\d*)");
 
         static string dokumentVozila = null;
         static string dokumentLokacije = null;
@@ -46,13 +49,9 @@ namespace tjukica_zadaca_1
             }
             PostaviRoditeljeLokacijama();
 
-
-
-            if (skupni)//skupni način
+            if (skupni)
             {
-                cw.Write("SKUPNI NAČIN IZVOĐENJA", false);
-                UcitajDokumentAktivnosti();
-                skupni = false;
+                PokreniSkupniNacinRada();
             }
 
             if (!skupni)
@@ -77,6 +76,12 @@ namespace tjukica_zadaca_1
             }*/
         }
 
+        private static void PokreniSkupniNacinRada()
+        {
+            cw.Write("SKUPNI NAČIN IZVOĐENJA", false);
+            UcitajDokumentAktivnosti();
+            skupni = false;
+        }
         private static void PostaviRoditeljeLokacijama()
         {
 
@@ -111,10 +116,35 @@ namespace tjukica_zadaca_1
         {
             MatchCollection matchPodatci = REGEX_PODATCI.Matches(komanda);
             MatchCollection matchVracanje = REGEX_VRACANJE.Matches(komanda);
+            MatchCollection matchVracanjeNeispravno = REGEX_VRACANJE_NEISPRAVNO.Matches(komanda);
             MatchCollection matchKraj = REGEX_KRAJ.Matches(komanda);
+            MatchCollection matchSkupni = REGEX_SKUPNI.Matches(komanda);
+            MatchCollection matchIspisStanje = REGEX_ISPIS_STANJE.Matches(komanda);
 
-            if (matchVracanje.Count != 0)
+            if (matchVracanjeNeispravno.Count != 0)
             {
+                try
+                {
+                    int aktivnost = int.Parse(matchVracanjeNeispravno[0].Groups[1].Value);
+                    DateTime vrijeme = DateTime.Parse(matchVracanjeNeispravno[0].Groups[2].Value);
+                    Match podatci = matchVracanjeNeispravno[0];
+                    if (aktivnost == 4)
+                    {
+                        AktivnostVracanje(aktivnost, vrijeme, podatci.Groups[3].Value, podatci.Groups[4].Value, podatci.Groups[5].Value, podatci.Groups[6].Value, podatci.Groups[7].Value);
+                    }
+                    else
+                    {
+                        cw.Write("Pogrešna sintaksa komande! - Aktivnost: " + aktivnost);
+                    }
+                }
+                catch (FormatException)
+                {
+                    cw.Write("Pogrešan format datuma!");
+                }
+            }
+            else if (matchVracanje.Count != 0)
+            {
+
                 try
                 {
                     int aktivnost = int.Parse(matchVracanje[0].Groups[1].Value);
@@ -162,6 +192,38 @@ namespace tjukica_zadaca_1
                     cw.Write("Pogrešan format datuma!");
                 }
             }
+            else if (matchSkupni.Count != 0)
+            {
+                try
+                {
+                    int aktivnost = int.Parse(matchSkupni[0].Groups[1].Value);
+                    if (aktivnost == 5)
+                    {
+                        dokumentAktivnosti = matchSkupni[0].Groups[2].Value;
+                        PokreniSkupniNacinRada();
+                    }
+                    else
+                    {
+                        cw.Write("Pogrešna sintaksa komande! - Aktivnost: " + aktivnost);
+                    }
+                }
+                catch (FormatException)
+                {
+                    cw.Write("Pogrešan format datuma!");
+                }
+            }
+            else if (matchIspisStanje.Count != 0)
+            {
+                int aktivnost = int.Parse(matchIspisStanje[0].Groups[1].Value);
+                if (aktivnost == 6)
+                {
+                    AktivnostIspisStanja(matchIspisStanje[0]);
+                }
+                else
+                {
+                    cw.Write("Pogrešna sintaksa komande! - Aktivnost: " + aktivnost);
+                }
+            }
             else if (matchKraj.Count != 0)
             {
                 try
@@ -187,11 +249,12 @@ namespace tjukica_zadaca_1
                 if (komanda == "")
                 {
                     cw.Write("Unjeli ste praznu komandu.");
-                } else
+                }
+                else
                 {
                     cw.Write("Pogrešna sintaksa komande! - Komanda: " + komanda);
                 }
-                
+
             }
         }
 
@@ -252,18 +315,34 @@ namespace tjukica_zadaca_1
                 cw.Write("Vrijeme aktivnosti je manje od virtualnog vremena.");
             }
         }
-        private static void AktivnostVracanje(int idAktivnosti, DateTime vrijeme, string korisnik, string lokacija, string vozilo, string brojKm)
+        private static void AktivnostVracanje(int idAktivnosti, DateTime vrijeme, string korisnik, string lokacija, string vozilo, string brojKm, string opisProblema = null)
         {
             if (baza.UsporediVrijeme(vrijeme))
             {
-                Aktivnost aktivnost = new AktivnostDirektor(new Aktivnost.Builder(idAktivnosti, vrijeme)).Vracanje(
-                    baza.getKorisnik(int.Parse(korisnik)),
-                    baza.getLokacija(int.Parse(lokacija)),
-                    baza.getVozilo(int.Parse(vozilo)),
-                    int.Parse(brojKm));
-                if (aktivnost != null)
+                if (opisProblema != null)
                 {
-                    baza.getAktivnosti().Add(aktivnost);
+                    Aktivnost aktivnost = new AktivnostDirektor(new Aktivnost.Builder(idAktivnosti, vrijeme)).Vracanje(
+                                baza.getKorisnik(int.Parse(korisnik)),
+                                baza.getLokacija(int.Parse(lokacija)),
+                                baza.getVozilo(int.Parse(vozilo)),
+                                int.Parse(brojKm),
+                                opisProblema);
+                    if (aktivnost != null)
+                    {
+                        baza.getAktivnosti().Add(aktivnost);
+                    }
+                }
+                else
+                {
+                    Aktivnost aktivnost = new AktivnostDirektor(new Aktivnost.Builder(idAktivnosti, vrijeme)).Vracanje(
+                                baza.getKorisnik(int.Parse(korisnik)),
+                                baza.getLokacija(int.Parse(lokacija)),
+                                baza.getVozilo(int.Parse(vozilo)),
+                                int.Parse(brojKm));
+                    if (aktivnost != null)
+                    {
+                        baza.getAktivnosti().Add(aktivnost);
+                    }
                 }
 
             }
@@ -286,6 +365,84 @@ namespace tjukica_zadaca_1
                 cw.Write("Vrijeme aktivnosti je manje od virtualnog vremena.");
             }
 
+        }
+        private static void AktivnostIspisStanja(Match match)
+        {
+            int idOrgJedinice = 1;
+            string komanda1;
+            string komanda2;
+
+            if (match.Groups[2].Value != "") komanda1 = match.Groups[2].Value.Trim();
+            if (match.Groups[3].Value != "") komanda2 = match.Groups[3].Value.Trim();
+            if (match.Groups[4].Value != "") idOrgJedinice = int.Parse(match.Groups[4].Value);
+
+
+
+            Iterator iterator = baza.ishodisna.GetIterator();
+            if (baza.ishodisna.id == idOrgJedinice)
+            {
+                IspisiStrukturuStanja(iterator.DFS());
+            }
+            else
+            {
+                bool flag = true;
+                iterator.DFS();
+                while (flag)
+                {
+                    if (iterator.Current().orgJedinica)
+                    {
+                        if (iterator.Current().id == idOrgJedinice)
+                        {
+                            IspisiStrukturuStanja(iterator.DFS
+                                (new List<TvrtkaComponent>(iterator.Current().getChildrenComponents())));
+                            iterator.MoveNext();
+                            flag = false;
+                        }
+                    }
+                    iterator.MoveNext();
+                    if (iterator.IsEnd())
+                    {
+                        cw.Write("Ne postoji organizacijska jedinica sa ID-jem: " + idOrgJedinice);
+                        flag = false;
+                    }
+                }
+            }
+
+
+        }
+
+        private static void IspisiStrukturuStanja(List<TvrtkaComponent> lista)
+        {
+            Console.WriteLine("");
+            Console.WriteLine("{0,10}\n", "Naziv");
+            for (int ctr = 0; ctr < lista.Count; ctr++)
+            {
+                string razinaIcon = "";
+                for (int i = 0; i < lista[ctr].razina; i++)
+                {
+                    razinaIcon += "-";
+                }
+
+                Console.WriteLine("{0,-20}", razinaIcon + "  " + lista[ctr].getComponentName());
+            }
+            Console.WriteLine("");
+        }
+        private static void IspisiPodatkeStanja(List<TvrtkaComponent> lista)
+        {
+            /*
+            Console.WriteLine("");
+            Console.WriteLine("{0,10} {1,10} {2,10} {3,10} {4,10}  \n", "Naziv", "Vozilo", "Broj mjesta", "Raspoloziva vozila", "Neispravna vozila");
+            for (int ctr = 0; ctr < lista.Count; ctr++)
+            {
+                foreach (var tipVozila in baza.getTipoviVozila())
+                {
+                    Console.WriteLine("{0,-20} {1,20} {2, 20} {3, 20} {4, 20} ", 
+                        lista[ctr].getComponentName(), 
+                        baza.getKapacitetLokacije(baza.getLokacija(lista[ctr].getComponent().; 
+                }
+            }
+            Console.WriteLine("");
+            */
         }
 
         static void UnesiDokumente(string[] args)
@@ -426,7 +583,7 @@ namespace tjukica_zadaca_1
                                 try
                                 {
                                     TipVozila novoVozilo = new TipVozila(int.Parse(atributi[0]), atributi[1], int.Parse(atributi[2]), int.Parse(atributi[3]));
-                                    baza.getVozila().Add(novoVozilo);
+                                    baza.getTipoviVozila().Add(novoVozilo);
                                 }
                                 catch (Exception)
                                 {
@@ -451,7 +608,7 @@ namespace tjukica_zadaca_1
                             else
                             {
                                 postoji = false;
-                                foreach (TipVozila vozilo in baza.getVozila())
+                                foreach (TipVozila vozilo in baza.getTipoviVozila())
                                 {
                                     if (vozilo.id == int.Parse(atributi[0]))
                                     {
@@ -506,7 +663,7 @@ namespace tjukica_zadaca_1
                                 if (postoji)
                                 {
                                     postoji = false;
-                                    foreach (TipVozila vozilo in baza.getVozila())
+                                    foreach (TipVozila vozilo in baza.getTipoviVozila())
                                     {
 
                                         if (vozilo.id == int.Parse(atributi[1]))
@@ -636,6 +793,7 @@ namespace tjukica_zadaca_1
                                         if (baza.ishodisna == null && atributi[2] == "")
                                         {
                                             OrgJedinica novaOrgJedinica = new OrgJedinica(int.Parse(atributi[0]), atributi[1], tvrtka, lokacijeComponents);
+                                            novaOrgJedinica.orgJedinica = true;
                                             baza.ishodisna = novaOrgJedinica;
                                             baza.getSveOrgJedinice().Add(novaOrgJedinica);
                                         }
@@ -649,6 +807,7 @@ namespace tjukica_zadaca_1
                                             try
                                             {
                                                 OrgJedinica novaOrgJedinica = new OrgJedinica(int.Parse(atributi[0]), atributi[1], tvrtka, lokacijeComponents);
+                                                novaOrgJedinica.orgJedinica = true;
                                                 baza.DodajDijeteRoditelju(novaOrgJedinica, tvrtka.id);
                                                 baza.getSveOrgJedinice().Add(novaOrgJedinica);
                                             }
@@ -669,7 +828,6 @@ namespace tjukica_zadaca_1
                     return false;
             }
         }
-
         static bool UcitajDokumentAktivnosti()
         {
             System.IO.StreamReader file = null;

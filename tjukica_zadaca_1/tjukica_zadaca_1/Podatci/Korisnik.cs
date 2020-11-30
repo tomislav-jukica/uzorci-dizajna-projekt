@@ -32,7 +32,7 @@ namespace tjukica_zadaca_1
 
         public void VratiVozilo(Vozilo vozilo)
         {
-
+            najmovi.Remove(getVoziloUNajmu(vozilo));
         }
         
         public Vozilo getVoziloUNajmu(TipVozila tipVozila)

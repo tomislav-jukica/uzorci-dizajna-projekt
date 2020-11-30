@@ -66,7 +66,6 @@ namespace tjukica_zadaca_1.Composite.Iterator
 
         public override List<TvrtkaComponent> DFS()
         {
-
             for (int i = 0; i < collection.Count; i++)
             {
                 if (collection[i].getChildrenComponents().Count > 0)
@@ -77,7 +76,20 @@ namespace tjukica_zadaca_1.Composite.Iterator
             collection.Insert(0, pocetna);
             return this.collection;
         }
+        public override List<TvrtkaComponent> DFS(List<TvrtkaComponent> lista)
+        {
+            
+            for (int i = 0; i < lista.Count; i++)
+            {
+                if (lista[i].getChildrenComponents().Count > 0)
+                {
+                    lista.InsertRange(i + 1, lista[i].getChildrenComponents());
+                }
+            }
+            lista.Insert(0, this.Current());
+            return lista;
+        }
 
-        
+
     }
 }

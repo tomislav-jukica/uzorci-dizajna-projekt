@@ -25,27 +25,29 @@ namespace tjukica_zadaca_1.Proxy
             return racunovodstvo;
         }
 
-        public void IzdajRacun(int lokacijaIdNajam, int lokacijaIdVracanje, int voziloId, double brojSati, int brojKm)
+        public void IzdajRacun(int lokacijaIdNajam, int lokacijaIdVracanje, int voziloId, double brojSati, int brojKm, DateTime vrijeme, int korisnikId)
         {
             TipVozila vozilo = baza.getVozilo(voziloId);
             Cjenik cjenik = baza.getCjenikZaVozilo(vozilo);
 
             double ukupno = cjenik.najam + cjenik.cijenaSat * (int)Math.Ceiling(brojSati) + cjenik.cijenaKm * brojKm;
-            Racun noviRacun = new Racun(racunId++, lokacijaIdNajam, lokacijaIdVracanje, voziloId, brojSati, brojKm, ukupno);
+            Racun noviRacun = new Racun(racunId++, lokacijaIdNajam, lokacijaIdVracanje, voziloId, brojSati, brojKm, korisnikId, vrijeme ,ukupno);
             racuni.Add(noviRacun);
 
             cw.HorizontalLine();
             cw.Write("Racun broj: " + noviRacun.id, false);
+            cw.Write(vrijeme.ToString(), false);
+            cw.Write("Kupac: " + baza.getKorisnik(korisnikId).ime,false);
             cw.Write("Vozilo unajmljeno na lokaciji: " + baza.getLokacija(lokacijaIdNajam).naziv, false);
             cw.Write("Vozilo vraceno na lokaciju: " + baza.getLokacija(lokacijaIdVracanje).naziv, false);
             cw.Write("");
             cw.Write("Stavke racuna:", false);
-            cw.Write("1. Najam - " + cjenik.najam, false);
+            cw.Write("1. Najam: " + cjenik.najam + " KN", false);
             cw.Write("2. Cijena po satu * sati u najmu: " 
                 + cjenik.cijenaSat + " * " + (int)Math.Ceiling(brojSati) + " = " 
-                + cjenik.cijenaSat * (int)Math.Ceiling(brojSati), false);
+                + cjenik.cijenaSat * (int)Math.Ceiling(brojSati) + " KN", false);
             cw.Write("3. Cijena po km * prijedeni kilometri: "
-                + cjenik.cijenaKm + " * " + brojKm + " = " + cjenik.cijenaKm * brojKm, false);
+                + cjenik.cijenaKm + " * " + brojKm + " = " + cjenik.cijenaKm * brojKm + " KN", false);
             cw.Write("UKUPNO: " + ukupno + " KN", false);
             cw.HorizontalLine();
 

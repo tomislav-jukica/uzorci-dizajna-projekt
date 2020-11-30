@@ -13,9 +13,9 @@ namespace tjukica_zadaca_1.Proxy
             this.racunovodstvo = racunovodstvo;
         }
 
-        public void IzdajRacun(int lokacijaIdNajam, int lokacijaIdVracanje, int voziloId, double brojSati, int brojKm)
+        public void IzdajRacun(int lokacijaIdNajam, int lokacijaIdVracanje, int voziloId, double brojSati, int brojKm, DateTime vrijeme, int korisnikId)
         {
-            racunovodstvo.IzdajRacun(lokacijaIdNajam, lokacijaIdVracanje, voziloId, brojSati, brojKm);
+            racunovodstvo.IzdajRacun(lokacijaIdNajam, lokacijaIdVracanje, voziloId, brojSati, brojKm, vrijeme, korisnikId);
         }
     }
 }

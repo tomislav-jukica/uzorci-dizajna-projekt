@@ -28,7 +28,6 @@ namespace tjukica_zadaca_1
             {
                 cw.Write("Postotak baterije ne može biti manji od 0%!");
             }
-            //vozilo.kilometri += napravljeniKilometri;
             int zaNapuniti = 100 - postotakBaterije;
             double jedanPosto = (double)vrijemePunjenja / (double)100;
             double satiPunjenja = zaNapuniti * jedanPosto;
@@ -67,7 +66,8 @@ namespace tjukica_zadaca_1
 
         public override void VratiPokvareno()
         {
-            cw.Write("Nije moguće vratiti vozilo koje nije iznajmljeno.");
+            baza.getVozilaNaPunjenju().Remove(this);            
+            this.vozilo.TransitionTo(new PokvarenoState());
         }
     }
 }

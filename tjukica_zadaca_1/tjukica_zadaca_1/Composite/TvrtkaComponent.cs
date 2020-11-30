@@ -9,6 +9,7 @@ namespace tjukica_zadaca_1.Composite
         public int id;
         public TvrtkaComponent nadredeni;
         public int razina = 0;
+        public bool orgJedinica = false;
         public TvrtkaComponent(int componentId, TvrtkaComponent nadred)
         {
             id = componentId;

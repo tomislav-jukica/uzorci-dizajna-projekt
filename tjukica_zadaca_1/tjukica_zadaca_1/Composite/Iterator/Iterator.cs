@@ -14,5 +14,6 @@ namespace tjukica_zadaca_1.Composite.Iterator
         public abstract void Reset(); //Rewinds the Iterator to the first element
         public abstract bool IsEnd(); //Check if you have reached the end
         public abstract List<TvrtkaComponent> DFS(); //Depth-first search
+        public abstract List<TvrtkaComponent> DFS(List<TvrtkaComponent> lista);
     }
 }
