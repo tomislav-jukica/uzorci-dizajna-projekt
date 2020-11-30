@@ -26,20 +26,35 @@ namespace tjukica_zadaca_1
         static string dokumentOsobe = null;
         static string dokumentAktivnosti = null;
         static string dokumentTvrtka = null;
+        static string dokumentKonfig = null;
 
         private static bool radi = true;
         static Baza baza = Baza.getInstance();
         static Helpers.ConsoleWriter cw = Helpers.ConsoleWriter.getInstance();
         private static bool skupni = false;
-
+        static string pocetnaKomanda = "";
         static void Main(string[] args)
         {
-            string pocetnaKomanda = "";
+            
             foreach (var x in args)
             {
                 pocetnaKomanda += " " + x;
             }
             string[] strSplit = Array.ConvertAll(pocetnaKomanda.Split(" "), p => p.Trim());
+
+            if (strSplit.Length == 2)
+            {
+                pocetnaKomanda = "";
+                dokumentKonfig = strSplit[1];
+                UcitajDatoteku(TipDatoteke.konfig);
+                UcitajDokument(TipDatoteke.konfig);
+                
+                foreach (var x in args)
+                {
+                    pocetnaKomanda += " " + x;
+                }
+                strSplit = Array.ConvertAll(pocetnaKomanda.Split(" "), p => p.Trim());
+            }
 
             UnesiDokumente(strSplit);
             if (!UcitajSveDokumente())
@@ -568,7 +583,7 @@ namespace tjukica_zadaca_1
                         break;
                     case "-t":
                         string vrijeme = args[i + 1] + " " + args[i + 2];
-                        MatchCollection match = REGEX_VRIJEME.Matches(vrijeme);
+                        MatchCollection match = REGEX_VRIJEME.Matches(vrijeme); //TODO match bez navodnika
                         DateTime virtualnoVrijeme = new DateTime();
                         virtualnoVrijeme = DateTime.Parse(match[0].Groups[2].Value);
                         baza.setVirtualnoVrijeme(virtualnoVrijeme);
@@ -579,6 +594,15 @@ namespace tjukica_zadaca_1
                         break;
                     case "-os":
                         dokumentTvrtka = args[i + 1];
+                        break;
+                    case "-dt":
+                        baza.dt = int.Parse(args[i + 1]);
+                        break;
+                    case "-dc":
+                        baza.dc = int.Parse(args[i + 1]);
+                        break;
+                    case "-dd":
+                        baza.dd = int.Parse(args[i + 1]);
                         break;
                 }
             }
@@ -806,7 +830,6 @@ namespace tjukica_zadaca_1
                     }
                     return true;
                 case TipDatoteke.tvrtka:
-
                     int brojPrijelaza = 0;
                     TvrtkaComponent tvrtka = null;
                     List<TvrtkaComponent> temp = new List<TvrtkaComponent>();
@@ -923,6 +946,55 @@ namespace tjukica_zadaca_1
                         }
                     }
                     return true;
+                case TipDatoteke.konfig:
+                    Regex regex = new Regex("([a-z]+)=(.+)");
+                    
+                    while ((line = file.ReadLine()) != null)
+                    {
+                        MatchCollection matches = regex.Matches(line);
+                        string kljuc = matches[0].Groups[1].Value;
+                        string vrijednost = matches[0].Groups[2].Value;
+                        switch (kljuc)
+                        {
+                            case "vozila":
+                                pocetnaKomanda += " -v " + vrijednost;
+                                break;
+                            case "lokacije":
+                                pocetnaKomanda += " -l " + vrijednost;
+                                break;
+                            case "cjenik":
+                                pocetnaKomanda += " -c " + vrijednost;
+                                break;
+                            case "kapaciteti":
+                                pocetnaKomanda += " -k " + vrijednost;
+                                break;
+                            case "osobe":
+                                pocetnaKomanda += " -o " + vrijednost;
+                                break;
+                            case "vrijeme":
+                                pocetnaKomanda += " -t „" + vrijednost;
+                                break;
+                            case "struktura":
+                                pocetnaKomanda += " -os " + vrijednost;
+                                break;
+                            case "aktivnosti":
+                                pocetnaKomanda += " -s " + vrijednost;
+                                break;
+                            case "tekst":
+                                pocetnaKomanda += " -dt " + vrijednost;
+                                break;
+                            case "cijeli":
+                                pocetnaKomanda += " -dc " + vrijednost;
+                                break;
+                            case "decimala":
+                                pocetnaKomanda += " -dd " + vrijednost;
+                                break;
+                            default:
+                                cw.Write("Pogrešan ključ prilikom učitavanja datoteke konfiguracije!");
+                                return false;
+                        }
+                    }
+                    return true;
                 default:
                     return false;
             }
@@ -978,6 +1050,8 @@ namespace tjukica_zadaca_1
                         return new System.IO.StreamReader(dokumentAktivnosti);
                     case TipDatoteke.tvrtka:
                         return new System.IO.StreamReader(dokumentTvrtka);
+                    case TipDatoteke.konfig:
+                        return new System.IO.StreamReader(dokumentKonfig);
                 }
             }
             catch (FileNotFoundException)
@@ -1003,7 +1077,8 @@ namespace tjukica_zadaca_1
             cjenik,
             lokacije_kapacitet,
             aktivnosti,
-            tvrtka
+            tvrtka,
+            konfig
         }
 
 
