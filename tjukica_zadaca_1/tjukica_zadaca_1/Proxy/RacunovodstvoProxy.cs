@@ -17,5 +17,10 @@ namespace tjukica_zadaca_1.Proxy
         {
             racunovodstvo.IzdajRacun(lokacijaIdNajam, lokacijaIdVracanje, voziloId, brojSati, brojKm, vrijeme, korisnikId);
         }
+
+        public List<Racun> GetRacuni()
+        {
+            return racunovodstvo.GetRacuni();
+        }
     }
 }

@@ -18,6 +18,7 @@ namespace tjukica_zadaca_1
         public List<Vozilo> trenutnaVozila = new List<Vozilo>();
 
         private Helpers.ConsoleWriter cw = Helpers.ConsoleWriter.getInstance();
+        private Baza baza = Baza.getInstance();
 
         public LokacijaKapacitet(Lokacija lokacija, TipVozila vozilo, int brojMjesta, int brojVozila)
         {
@@ -57,6 +58,31 @@ namespace tjukica_zadaca_1
                 if(v.state.GetType() == new PokvarenoState().GetType())
                 {
                     retVal++;
+                }
+            }
+            return retVal;
+        }
+        public int dajBrojNajamaVozila(TipVozila tipVozila)
+        {
+            int retVal = 0;
+            foreach (Vozilo vozilo in trenutnaVozila)
+            {
+                if(vozilo.id == tipVozila.id)
+                {
+                    retVal += vozilo.brojUnajmljivanja;
+                }
+            }
+            return retVal;
+        }
+        public int dajUkupnaTrajanjaNajmova(TipVozila tipVozila)//TODO
+        {
+            int retVal = 0;
+            foreach (Vozilo vozilo in trenutnaVozila)
+            {
+                List<Aktivnost> aktivnosti = baza.getAktivnosti();
+                foreach (Aktivnost aktivnost in aktivnosti)
+                {
+                    
                 }
             }
             return retVal;

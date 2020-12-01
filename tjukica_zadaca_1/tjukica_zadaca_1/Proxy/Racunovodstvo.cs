@@ -58,6 +58,10 @@ namespace tjukica_zadaca_1.Proxy
         {
             baza.getLokacija(idLokacije).zarada += zarada;
         }
+        public List<Racun> GetRacuni()
+        {
+            return this.racuni;
+        }
 
     }
 }

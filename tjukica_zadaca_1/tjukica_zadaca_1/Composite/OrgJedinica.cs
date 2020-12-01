@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using tjukica_zadaca_1.Composite.Iterator;
+using tjukica_zadaca_1.Proxy;
 
 namespace tjukica_zadaca_1.Composite
 {
@@ -93,6 +94,36 @@ namespace tjukica_zadaca_1.Composite
             {
                 retVal += item.DajPokvarenaVozila(tipVozila);
 
+            }
+            return retVal;
+        }
+
+        public override double DajZaradu(TipVozila tipVozila, DateTime datum1, DateTime datum2)
+        {
+            double retVal = 0;
+            foreach (var item in tvrtkaComponents)
+            {
+                retVal += item.DajZaradu(tipVozila, datum1, datum2);
+            }
+            return retVal;
+        }
+
+        public override int DajNajmove(TipVozila tipVozila, DateTime datum1, DateTime datum2)
+        {
+            int retVal = 0;
+            foreach (var item in tvrtkaComponents)
+            {
+                retVal += item.DajNajmove(tipVozila, datum1, datum2);
+            }
+            return retVal;
+        }
+
+        public override List<Racun> DajRacune(TipVozila tipVozila, DateTime datum1, DateTime datum2)
+        {
+            List<Racun> retVal = new List<Racun>();
+            foreach (var item in tvrtkaComponents)
+            {
+                retVal.AddRange(item.DajRacune(tipVozila, datum1, datum2));
             }
             return retVal;
         }

@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using tjukica_zadaca_1.Proxy;
+using tjukica_zadaca_1.State;
 
 namespace tjukica_zadaca_1.Composite
 {
@@ -61,6 +63,71 @@ namespace tjukica_zadaca_1.Composite
         public override int DajPokvarenaVozila(TipVozila tipVozila)
         {
             return baza.getKapacitetLokacije(this, tipVozila).dajBrojPokvarenihVozila();
+        }
+
+        public override double DajZaradu(TipVozila tipVozila, DateTime datum1, DateTime datum2)
+        {
+            double retVal = 0;
+            RacunovodstvoProxy rac = new RacunovodstvoProxy(Racunovodstvo.getInstance());
+            List<Racun> racuni = rac.GetRacuni();
+            foreach (Racun racun in racuni)
+            {
+                if (racun.idLokacijeNajma == this.id)
+                {
+                    if (racun.idVoziloTip == tipVozila.id)
+                    {
+                        if (datum1.CompareTo(racun.datumIzdavanja) < 0 && datum2.CompareTo(racun.datumIzdavanja) > 0)
+                        {
+                            retVal += racun.ukupno;
+                        }  
+                    }
+                }
+            }
+            return retVal;
+        }
+
+        public override int DajNajmove(TipVozila tipVozila, DateTime datum1, DateTime datum2)
+        {
+            int retVal = 0;
+            RacunovodstvoProxy rac = new RacunovodstvoProxy(Racunovodstvo.getInstance());
+            List<Racun> racuni = rac.GetRacuni();
+
+            foreach (Racun racun in racuni)
+            {
+                if (racun.idLokacijeNajma == this.id)
+                {
+                    if (racun.idVoziloTip == tipVozila.id)
+                    {
+                        if (datum1.CompareTo(racun.datumIzdavanja) < 0 && datum2.CompareTo(racun.datumIzdavanja) > 0)
+                        {
+                            retVal += 1;
+                        }
+                    }
+                }
+            }
+            return retVal;
+        }
+
+        public override List<Racun> DajRacune(TipVozila tipVozila, DateTime datum1, DateTime datum2)
+        {
+            List<Racun> retVal = new List<Racun>();
+            RacunovodstvoProxy rac = new RacunovodstvoProxy(Racunovodstvo.getInstance());
+            List<Racun> racuni = rac.GetRacuni();
+
+            foreach (Racun racun in racuni)
+            {
+                if (racun.idLokacijeNajma == this.id)
+                {
+                    if (racun.idVoziloTip == tipVozila.id)
+                    {
+                        if (datum1.CompareTo(racun.datumIzdavanja) < 0 && datum2.CompareTo(racun.datumIzdavanja) > 0)
+                        {
+                            retVal.Add(racun);
+                        }
+                    }
+                }
+            }
+            return retVal;
         }
     }
 }

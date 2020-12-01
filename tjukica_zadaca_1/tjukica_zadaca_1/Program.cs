@@ -6,6 +6,7 @@ using System.Text.RegularExpressions;
 using tjukica_zadaca_1.Composite;
 using tjukica_zadaca_1.Composite.Iterator;
 using tjukica_zadaca_1.State;
+using tjukica_zadaca_1.TemplateMethod;
 
 namespace tjukica_zadaca_1
 {
@@ -18,6 +19,7 @@ namespace tjukica_zadaca_1
         private static Regex REGEX_VRACANJE_NEISPRAVNO = new Regex("(\\d); .(\\d+-\\d+-\\d+ \\d+:\\d+:\\d+).; (\\d+); (\\d+); (\\d+); (\\d+); (.+)");
         private static Regex REGEX_SKUPNI = new Regex("(5); (.+\\.txt)");
         private static Regex REGEX_ISPIS_STANJE = new Regex("(\\d); (struktura|stanje)? (struktura|stanje)?\\s?(\\d*)");
+        private static Regex REGEX_AKTIVNOSTI_ISPISA = new Regex("(\\d); ([\\w\\s]+) (\\d{2}.\\d{2}.\\d{4}) (\\d{2}.\\d{2}.\\d{4})( \\d+)?");
 
         static string dokumentVozila = null;
         static string dokumentLokacije = null;
@@ -135,6 +137,7 @@ namespace tjukica_zadaca_1
             MatchCollection matchKraj = REGEX_KRAJ.Matches(komanda);
             MatchCollection matchSkupni = REGEX_SKUPNI.Matches(komanda);
             MatchCollection matchIspisStanje = REGEX_ISPIS_STANJE.Matches(komanda);
+            MatchCollection matchAktivnostiIspisa = REGEX_AKTIVNOSTI_ISPISA.Matches(komanda);
 
             if (matchVracanjeNeispravno.Count != 0)
             {
@@ -227,6 +230,107 @@ namespace tjukica_zadaca_1
                     cw.Write("Pogrešan format datuma!");
                 }
             }
+            else if (matchAktivnostiIspisa.Count != 0)
+            {
+                int aktivnost = int.Parse(matchAktivnostiIspisa[0].Groups[1].Value);
+                string komande = matchAktivnostiIspisa[0].Groups[2].Value;
+                string[] komandeSplit = Array.ConvertAll(komande.Split(" "), p => p.Trim());
+                DateTime datum_1 = DateTime.Parse(matchAktivnostiIspisa[0].Groups[3].Value);
+                DateTime datum_2 = DateTime.Parse(matchAktivnostiIspisa[0].Groups[4].Value);
+                int idOrgJedinice = baza.ishodisna.id; 
+
+                bool isNumber = int.TryParse(matchAktivnostiIspisa[0].Groups[matchAktivnostiIspisa[0].Groups.Count - 1].Value, out int n);
+                if (isNumber) idOrgJedinice = n;
+
+
+                if (aktivnost == 7)
+                {
+                    if (komandeSplit.Length > 0 && komandeSplit.Length < 4)
+                    {
+                        if(komandeSplit.Length == 1)
+                        {
+                            if (komandeSplit[0] == "struktura")
+                            {
+                                AktivnostIspisZarade aiz = new AktivnostIspisZarade(aktivnost, "struktura", datum_1, datum_2);
+                                aiz.PrikaziStrukturu(idOrgJedinice);
+                            }
+                            else if (komandeSplit[0] == "zarada")
+                            {
+                                AktivnostIspisZarade aiz = new AktivnostIspisZarade(aktivnost, "zarada", datum_1, datum_2);
+                                aiz.PrikaziZarada(idOrgJedinice);
+                            }
+                            else if (komandeSplit[0] == "najam")
+                            {
+                                AktivnostIspisZarade aiz = new AktivnostIspisZarade(aktivnost, "najam", datum_1, datum_2);
+                                aiz.PrikaziNajam(idOrgJedinice);
+                            }
+                        } else
+                        {
+                            for (int i = 0; i < komandeSplit.Length; i++)
+                            {
+                                if(komandeSplit.Length == 2)
+                                {
+                                    if((komandeSplit[0] == "zarada" || komandeSplit[0] == "najam") &&
+                                        (komandeSplit[1] == "zarada" || komandeSplit[2] == "najam"))
+                                    {
+                                        AktivnostIspisZarade aiz = new AktivnostIspisZarade(aktivnost, "", datum_1, datum_2);
+                                        aiz.PrikaziPodatke(idOrgJedinice);
+                                    } else
+                                    {
+                                        AktivnostIspisZarade aiz = new AktivnostIspisZarade(aktivnost, "", datum_1, datum_2);
+                                        aiz.PrikaziStrukturu(idOrgJedinice);
+                                        if(komandeSplit[0] == "zarada" || komandeSplit[1] == "zarada")
+                                        {
+                                            aiz.PrikaziZarada(idOrgJedinice);
+                                        }
+                                        if (komandeSplit[0] == "najam" || komandeSplit[1] == "najam")
+                                        {
+                                            aiz.PrikaziNajam(idOrgJedinice);
+                                        }
+                                    }
+                                } else
+                                {
+                                    AktivnostIspisZarade aiz = new AktivnostIspisZarade(aktivnost, "", datum_1, datum_2);
+                                    aiz.PrikaziStrukturu(idOrgJedinice);
+                                    aiz.PrikaziPodatke(idOrgJedinice);
+                                }
+                            }
+                        }
+                        
+                    }
+                    else
+                    {
+                        cw.Write("Pogresan broj komandi! - Aktivnost: " + aktivnost);
+                    }
+
+                }
+                else if (aktivnost == 8)
+                {
+                    if (komandeSplit.Length > 0 && komandeSplit.Length < 4)
+                    {
+                        foreach (string k in komandeSplit)
+                        {
+                            if (k == "struktura")
+                            {
+                                AktivnostIspisRacuna air = new AktivnostIspisRacuna(aktivnost, k, datum_1, datum_2);
+                                air.PrikaziStrukturu(idOrgJedinice);
+                            } else if(k == "racuni")
+                            {
+                                AktivnostIspisRacuna air = new AktivnostIspisRacuna(aktivnost, k, datum_1, datum_2);
+                                air.PrikaziRacune(idOrgJedinice);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        cw.Write("Pogresan broj komandi! - Aktivnost: " + aktivnost);
+                    }
+                }
+                else
+                {
+                    cw.Write("Pogrešna sintaksa komande!");
+                }
+            }
             else if (matchIspisStanje.Count != 0)
             {
                 int aktivnost = int.Parse(matchIspisStanje[0].Groups[1].Value);
@@ -238,7 +342,7 @@ namespace tjukica_zadaca_1
                 {
                     cw.Write("Pogrešna sintaksa komande! - Aktivnost: " + aktivnost);
                 }
-            }
+            }            
             else if (matchKraj.Count != 0)
             {
                 try
@@ -507,7 +611,6 @@ namespace tjukica_zadaca_1
         }
         private static void IspisiPodatkeStanja(List<TvrtkaComponent> lista)
         {
-
             Console.WriteLine("");
             Console.WriteLine("{0, -" + baza.dt + "} {1, -" + baza.dt + "} {2, " + baza.dc + "} {3, " + baza.dc + "} {4, " + baza.dc + "}  \n", "Naziv", "Vozilo", "SM", "SV", "NV");
             for (int ctr = 0; ctr < lista.Count; ctr++)
@@ -583,7 +686,7 @@ namespace tjukica_zadaca_1
                         break;
                     case "-t":
                         string vrijeme = args[i + 1] + " " + args[i + 2];
-                        MatchCollection match = REGEX_VRIJEME.Matches(vrijeme); //TODO match bez navodnika
+                        MatchCollection match = REGEX_VRIJEME.Matches(vrijeme);
                         DateTime virtualnoVrijeme = new DateTime();
                         virtualnoVrijeme = DateTime.Parse(match[0].Groups[2].Value);
                         baza.setVirtualnoVrijeme(virtualnoVrijeme);
@@ -947,8 +1050,7 @@ namespace tjukica_zadaca_1
                     }
                     return true;
                 case TipDatoteke.konfig:
-                    Regex regex = new Regex("([a-z]+)=(.+)");
-                    
+                    Regex regex = new Regex("([a-z]+)=(.+)");                    
                     while ((line = file.ReadLine()) != null)
                     {
                         MatchCollection matches = regex.Matches(line);

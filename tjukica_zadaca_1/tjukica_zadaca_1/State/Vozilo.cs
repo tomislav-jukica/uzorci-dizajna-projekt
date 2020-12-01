@@ -15,9 +15,6 @@ namespace tjukica_zadaca_1.State
 
         public VoziloState state = new SlobodnoState();
 
-        
-
-
         public Vozilo(int id, string naziv, int punjenje, int domet) 
             : base(id, naziv, punjenje, domet)
         {
