@@ -12,7 +12,7 @@ namespace tjukica_zadaca_1
 {
     class Program
     {
-        private static Regex REGEX_VRIJEME = new Regex("([„](\\d+-\\d+-\\d+ \\d+:\\d+:\\d+))");
+        private static Regex REGEX_VRIJEME = new Regex("(.(\\d+-\\d+-\\d+ \\d+:\\d+:\\d+))");
         private static Regex REGEX_KRAJ = new Regex("(\\d); .(\\d+-\\d+-\\d+ \\d+:\\d+:\\d+).");
         private static Regex REGEX_PODATCI = new Regex("(\\d); .(\\d+-\\d+-\\d+ \\d+:\\d+:\\d+).; (\\d+); (\\d+); (\\d+)");
         private static Regex REGEX_VRACANJE = new Regex("(\\d); .(\\d+-\\d+-\\d+ \\d+:\\d+:\\d+).; (\\d+); (\\d+); (\\d+); (\\d+)");
@@ -46,11 +46,14 @@ namespace tjukica_zadaca_1
 
             if (strSplit.Length == 2)
             {
+                
+
                 pocetnaKomanda = "";
                 dokumentKonfig = strSplit[1];
-                UcitajDatoteku(TipDatoteke.konfig);
+                //UcitajDatoteku(TipDatoteke.konfig);
                 UcitajDokument(TipDatoteke.konfig);
-                
+              
+                Console.WriteLine(dokumentOsobe);
                 foreach (var x in args)
                 {
                     pocetnaKomanda += " " + x;
@@ -685,11 +688,19 @@ namespace tjukica_zadaca_1
                         dokumentOsobe = args[i + 1];
                         break;
                     case "-t":
-                        string vrijeme = args[i + 1] + " " + args[i + 2];
-                        MatchCollection match = REGEX_VRIJEME.Matches(vrijeme);
-                        DateTime virtualnoVrijeme = new DateTime();
-                        virtualnoVrijeme = DateTime.Parse(match[0].Groups[2].Value);
-                        baza.setVirtualnoVrijeme(virtualnoVrijeme);
+                        try
+                        {
+                            string vrijeme = args[i + 1] + " " + args[i + 2];
+                            MatchCollection match = REGEX_VRIJEME.Matches(vrijeme);
+                            DateTime virtualnoVrijeme = new DateTime();
+                            virtualnoVrijeme = DateTime.Parse(match[0].Groups[2].Value);
+                            baza.setVirtualnoVrijeme(virtualnoVrijeme);
+                        }
+                        catch (Exception)
+                        {
+                            cw.Write("Format vremena je u pogrešnom obliku!");
+                            throw;
+                        }
                         break;
                     case "-s":
                         skupni = true;
@@ -733,6 +744,7 @@ namespace tjukica_zadaca_1
             file = UcitajDatoteku(tip);
             if (file == null)
             {
+                cw.Write("Ne postoji datoteka!");
                 return false;
             }
             switch (tip)
@@ -1050,7 +1062,7 @@ namespace tjukica_zadaca_1
                     }
                     return true;
                 case TipDatoteke.konfig:
-                    Regex regex = new Regex("([a-z]+)=(.+)");                    
+                    Regex regex = new Regex("([a-z]+)=(.+)");
                     while ((line = file.ReadLine()) != null)
                     {
                         MatchCollection matches = regex.Matches(line);

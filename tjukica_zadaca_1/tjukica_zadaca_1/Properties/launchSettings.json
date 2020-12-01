@@ -1,8 +1,0 @@
-{
-  "profiles": {
-    "tjukica_zadaca_1": {
-      "commandName": "Project",
-      "commandLineArgs": "DZ_2_konfiguracija_1.txt "
-    }
-  }
-}
