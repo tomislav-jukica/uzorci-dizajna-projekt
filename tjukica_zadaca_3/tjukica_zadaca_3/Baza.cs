@@ -22,6 +22,8 @@ namespace tjukica_zadaca_1
         public int dt = 30;
         public int dc = 5;
         public int dd = 2;
+        public float dugovanje = 0;
+        public string nazivDatotekeIzlaz = null; 
         public List<Lokacija> lokacijeZaDodjelu { get; set; } = new List<Lokacija>();
 
         public OrgJedinica ishodisna { get; set; } = null;

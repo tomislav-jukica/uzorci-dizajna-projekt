@@ -10,16 +10,18 @@ namespace tjukica_zadaca_1
 
         public int id { get; private set; }
         public string ime { get; private set; }
+        public bool ugovor { get; private set; }
         public int brojNeispravnihVracanja { get; set; } = 0;
 
         //public Vozilo najamVozila { get; set; }
 
         public List<Vozilo> najmovi = new List<Vozilo>();
         
-        public Korisnik(int id, string ime)
+        public Korisnik(int id, string ime, int ugovor)
         {
             this.id = id;
             this.ime = ime;
+            this.ugovor = ugovor == 0 ? false : true;
         }
 
         public void IznajmiVozilo(Vozilo vozilo)

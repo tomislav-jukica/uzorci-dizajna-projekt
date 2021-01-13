@@ -1,8 +1,0 @@
-{
-  "profiles": {
-    "tjukica_zadaca_2": {
-      "commandName": "Project",
-      "commandLineArgs": "-v DZ_2_vozila.txt  -l DZ_2_lokacije.txt  -c DZ_2_cjenik.txt  -k DZ_2_lokacije_kapaciteti.txt  -o DZ_2_osobe.txt  -t ,2020-10-16 08:00:00 -os DZ_2_tvrtka.txt -s DZ_2_aktivnosti_1.txt  -dt 20 -dc 5 -dd 2"
-    }
-  }
-}

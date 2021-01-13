@@ -37,7 +37,7 @@ namespace tjukica_zadaca_1
         static string pocetnaKomanda = "";
         static void Main(string[] args)
         {
-            
+
             foreach (var x in args)
             {
                 pocetnaKomanda += " " + x;
@@ -46,13 +46,13 @@ namespace tjukica_zadaca_1
 
             if (strSplit.Length == 2)
             {
-                
+
 
                 pocetnaKomanda = "";
                 dokumentKonfig = strSplit[1];
                 //UcitajDatoteku(TipDatoteke.konfig);
                 UcitajDokument(TipDatoteke.konfig);
-              
+
                 Console.WriteLine(dokumentOsobe);
                 foreach (var x in args)
                 {
@@ -240,7 +240,7 @@ namespace tjukica_zadaca_1
                 string[] komandeSplit = Array.ConvertAll(komande.Split(" "), p => p.Trim());
                 DateTime datum_1 = DateTime.Parse(matchAktivnostiIspisa[0].Groups[3].Value);
                 DateTime datum_2 = DateTime.Parse(matchAktivnostiIspisa[0].Groups[4].Value);
-                int idOrgJedinice = baza.ishodisna.id; 
+                int idOrgJedinice = baza.ishodisna.id;
 
                 bool isNumber = int.TryParse(matchAktivnostiIspisa[0].Groups[matchAktivnostiIspisa[0].Groups.Count - 1].Value, out int n);
                 if (isNumber) idOrgJedinice = n;
@@ -250,7 +250,7 @@ namespace tjukica_zadaca_1
                 {
                     if (komandeSplit.Length > 0 && komandeSplit.Length < 4)
                     {
-                        if(komandeSplit.Length == 1)
+                        if (komandeSplit.Length == 1)
                         {
                             if (komandeSplit[0] == "struktura")
                             {
@@ -267,22 +267,24 @@ namespace tjukica_zadaca_1
                                 AktivnostIspisZarade aiz = new AktivnostIspisZarade(aktivnost, "najam", datum_1, datum_2);
                                 aiz.PrikaziNajam(idOrgJedinice);
                             }
-                        } else
+                        }
+                        else
                         {
                             for (int i = 0; i < komandeSplit.Length; i++)
                             {
-                                if(komandeSplit.Length == 2)
+                                if (komandeSplit.Length == 2)
                                 {
-                                    if((komandeSplit[0] == "zarada" || komandeSplit[0] == "najam") &&
+                                    if ((komandeSplit[0] == "zarada" || komandeSplit[0] == "najam") &&
                                         (komandeSplit[1] == "zarada" || komandeSplit[2] == "najam"))
                                     {
                                         AktivnostIspisZarade aiz = new AktivnostIspisZarade(aktivnost, "", datum_1, datum_2);
                                         aiz.PrikaziPodatke(idOrgJedinice);
-                                    } else
+                                    }
+                                    else
                                     {
                                         AktivnostIspisZarade aiz = new AktivnostIspisZarade(aktivnost, "", datum_1, datum_2);
                                         aiz.PrikaziStrukturu(idOrgJedinice);
-                                        if(komandeSplit[0] == "zarada" || komandeSplit[1] == "zarada")
+                                        if (komandeSplit[0] == "zarada" || komandeSplit[1] == "zarada")
                                         {
                                             aiz.PrikaziZarada(idOrgJedinice);
                                         }
@@ -291,7 +293,8 @@ namespace tjukica_zadaca_1
                                             aiz.PrikaziNajam(idOrgJedinice);
                                         }
                                     }
-                                } else
+                                }
+                                else
                                 {
                                     AktivnostIspisZarade aiz = new AktivnostIspisZarade(aktivnost, "", datum_1, datum_2);
                                     aiz.PrikaziStrukturu(idOrgJedinice);
@@ -299,7 +302,7 @@ namespace tjukica_zadaca_1
                                 }
                             }
                         }
-                        
+
                     }
                     else
                     {
@@ -317,7 +320,8 @@ namespace tjukica_zadaca_1
                             {
                                 AktivnostIspisRacuna air = new AktivnostIspisRacuna(aktivnost, k, datum_1, datum_2);
                                 air.PrikaziStrukturu(idOrgJedinice);
-                            } else if(k == "racuni")
+                            }
+                            else if (k == "racuni")
                             {
                                 AktivnostIspisRacuna air = new AktivnostIspisRacuna(aktivnost, k, datum_1, datum_2);
                                 air.PrikaziRacune(idOrgJedinice);
@@ -345,7 +349,7 @@ namespace tjukica_zadaca_1
                 {
                     cw.Write("Pogrešna sintaksa komande! - Aktivnost: " + aktivnost);
                 }
-            }            
+            }
             else if (matchKraj.Count != 0)
             {
                 try
@@ -756,7 +760,7 @@ namespace tjukica_zadaca_1
                         string[] atributi = Array.ConvertAll(line.Split(";"), p => p.Trim());
                         if (brojac > 1) //Preskacemo prvu liniju u datoteci
                         {
-                            if (atributi.Length != 2)
+                            if (atributi.Length != 3)
                             {
                                 cw.Write("Pogrešan broj atributa u liniji: " + brojac + " - Datoteka: " + tip);
                             }
@@ -764,7 +768,7 @@ namespace tjukica_zadaca_1
                             {
                                 try
                                 {
-                                    Korisnik noviKorisnik = new Korisnik(int.Parse(atributi[0]), atributi[1]);
+                                    Korisnik noviKorisnik = new Korisnik(int.Parse(atributi[0]), atributi[1], int.Parse(atributi[2]));
                                     baza.getKorisnici().Add(noviKorisnik);
                                 }
                                 catch (Exception)
@@ -1102,6 +1106,12 @@ namespace tjukica_zadaca_1
                                 break;
                             case "decimala":
                                 pocetnaKomanda += " -dd " + vrijednost;
+                                break;
+                            case "dugovanje":
+                                baza.dugovanje = float.Parse(vrijednost);
+                                break;
+                            case "izlaz":
+                                baza.nazivDatotekeIzlaz = vrijednost;
                                 break;
                             default:
                                 cw.Write("Pogrešan ključ prilikom učitavanja datoteke konfiguracije!");
