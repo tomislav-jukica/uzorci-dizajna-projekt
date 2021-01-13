@@ -9,7 +9,7 @@ namespace tjukica_zadaca_1.State
     {
         public int idVozila { get; set; }
         public float baterija { get; set; }
-        public int kilometri { get; set; }
+        public int kilometri { get; set; } = 0;
         //public bool iznajmljen { get; set; }
         public int brojUnajmljivanja { get; set; } = 0;
 
@@ -38,9 +38,9 @@ namespace tjukica_zadaca_1.State
         {
             this.state.Iznajmi(korisnik, lokacija);
         }
-        public void Vrati(LokacijaKapacitet lokacija, DateTime vrijeme, int prijedeniKilometri)
+        public void Vrati(Aktivnost.Builder builder)
         {
-            this.state.Vrati(lokacija, vrijeme, prijedeniKilometri);
+            this.state.Vrati(builder);
         }
         public void VratiPokvareno()
         {

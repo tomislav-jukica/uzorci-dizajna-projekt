@@ -81,9 +81,11 @@ namespace tjukica_zadaca_1
                 return null;
             }
         }
-        public Aktivnost Vracanje(Korisnik idKorisnik, Lokacija idLokacija, TipVozila tipVozila, int brojKm, string opisProblema = null)
+        public Aktivnost Vracanje(Korisnik idKorisnik, Lokacija idLokacija, TipVozila tipVozila, int ukupniKilometri, string opisProblema = null)
         {
             Aktivnost aktivnost = null;
+
+             //prijedeni kilometri 
             if (idKorisnik.najmovi.Count == 0)
             {
                 cw.Write("Korisnik " + idKorisnik.ime + " nema nijedno vozilo u najmu.");
@@ -94,63 +96,27 @@ namespace tjukica_zadaca_1
                 cw.Write("Korisnik " + idKorisnik.ime + " nema u najmu vozilo tipa " + tipVozila.naziv + ".");
                 return null;
             }
-            if (brojKm < idKorisnik.getVoziloUNajmu(tipVozila).kilometri)
+            if (ukupniKilometri < idKorisnik.getVoziloUNajmu(tipVozila).kilometri)
             {
                 cw.Write("Vrijednost kilometara ne može biti manja od prethodne vrijednosti!");
                 return null;
             }
+            int brojKm = ukupniKilometri - idKorisnik.getVoziloUNajmu(tipVozila).kilometri;
             if (brojKm > tipVozila.domet)
             {
                 cw.Write("Vrijednost kilometara ne može biti veća od dometa vozila!");
                 return null;
             }
-            builder = builder.setPodatci(idKorisnik, idLokacija, tipVozila).setBrojKm(brojKm);
+            builder = builder.setPodatci(idKorisnik, idLokacija, tipVozila).setBrojKm(ukupniKilometri);
             if (builder != null)
             {
                 ProvjeriPunjenje(builder.Vrijeme);
-                if (idKorisnik.getVoziloUNajmu(tipVozila) == null)
-                {
-                    cw.Write("Korisnik " + idKorisnik.ime + " nema u najmu vozilo tipa " + tipVozila.naziv);
-                    return null;
-                }
                 LokacijaKapacitet kapacitet = Baza.getInstance().getKapacitetLokacije(idLokacija, tipVozila);
-                if (kapacitet.brojMjesta == kapacitet.trenutnaVozila.Count)
-                {
-                    cw.Write("Na lokaciji " + idLokacija.naziv + " nema slobodnog mjesta za vozilo tipa " + tipVozila.naziv + ".");
-                    return null;
-                }
-                else
-                {
-                    Aktivnost stariNajam = null;
-                    foreach (Aktivnost a in Baza.getInstance().getAktivnosti())
-                    {
-                        if (a.IdAktivnosti == 2 && a.Korisnik == idKorisnik && a.Vozilo == tipVozila)
-                        {
-                            stariNajam = a;
-                        }
-                    }
+                kapacitet.VratiVozilo(builder);
+                aktivnost = builder.build();
+                return aktivnost;
 
-                    cw.Write("Korisnik " + idKorisnik.ime + " vratio je vozilo tipa " + tipVozila.naziv + " na lokaciju " + idLokacija.naziv + ".", false);
-                    kapacitet.VratiVozilo(idKorisnik.getVoziloUNajmu(tipVozila), builder.Vrijeme, brojKm);
-
-
-                    DateTime vrijemeNajma = stariNajam.Vrijeme;
-                    long razlikaVremena = builder.Vrijeme.Subtract(vrijemeNajma).Ticks;
-                    double sati = TimeSpan.FromTicks(razlikaVremena).TotalHours;
-
-                    RacunovodstvoProxy rac = new RacunovodstvoProxy(Racunovodstvo.getInstance());
-                    rac.IzdajRacun(stariNajam.Lokacija.id, idLokacija.id, tipVozila.id, sati, brojKm, builder.Vrijeme, idKorisnik.id);
-
-                    if(opisProblema != null)
-                    {
-                        idKorisnik.brojNeispravnihVracanja++;
-                        idKorisnik.getVoziloUNajmu(tipVozila).state.VratiPokvareno();
-                        builder = builder.setOpis(opisProblema);
-                    }
-                    idKorisnik.VratiVozilo(idKorisnik.getVoziloUNajmu(tipVozila));
-                    aktivnost = builder.build();
-                    return aktivnost;
-                }
+                
 
             }
             else

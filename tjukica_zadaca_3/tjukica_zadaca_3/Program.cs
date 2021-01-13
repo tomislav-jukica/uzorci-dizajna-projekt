@@ -141,7 +141,7 @@ namespace tjukica_zadaca_1
             MatchCollection matchSkupni = REGEX_SKUPNI.Matches(komanda);
             MatchCollection matchIspisStanje = REGEX_ISPIS_STANJE.Matches(komanda);
             MatchCollection matchAktivnostiIspisa = REGEX_AKTIVNOSTI_ISPISA.Matches(komanda);
-
+            cw.Write(komanda, false);
             if (matchVracanjeNeispravno.Count != 0)
             {
                 try

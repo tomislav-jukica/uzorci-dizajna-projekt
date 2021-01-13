@@ -16,7 +16,7 @@ namespace tjukica_zadaca_1.State
             cw.Write("Nije moguće puniti pokvareno vozilo.");
         }
 
-        public override void Vrati(LokacijaKapacitet lokacija, DateTime vrijeme, int prijedeniKilometri)
+        public override void Vrati(Aktivnost.Builder builder)
         {
             cw.Write("Nije moguće vratiti vozilo koje nije iznajmljeno.");
         }

@@ -16,7 +16,7 @@ namespace tjukica_zadaca_1.State
         }
 
         public abstract void Iznajmi(Korisnik korisnik, LokacijaKapacitet lokacija);
-        public abstract void Vrati(LokacijaKapacitet lokacija, DateTime vrijeme, int prijedeniKilometri);
+        public abstract void Vrati(Aktivnost.Builder builder);
         public abstract void VratiPokvareno();
         public abstract void Napuni();
     }

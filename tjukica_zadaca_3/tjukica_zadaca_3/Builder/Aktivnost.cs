@@ -53,7 +53,7 @@ namespace tjukica_zadaca_1
             public Lokacija Lokacija { get => lokacija; set => lokacija = value; }
             public TipVozila Vozilo { get => vozilo; set => vozilo = value; }
             public int BrojKm { get => brojKm; set => brojKm = value; }
-
+            public string OpisProblema { get => opis; set => opis = value; }
             public Builder(int idAktivnosti, DateTime vrijeme)
             {
                 this.IdAktivnosti = idAktivnosti;

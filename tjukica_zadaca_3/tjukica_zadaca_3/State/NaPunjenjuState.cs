@@ -19,8 +19,11 @@ namespace tjukica_zadaca_1
             this.vrijemeAktivnosti = vrijeme;            
         }
 
-        public void IzracunajVrijemePunjenja(int napravljeniKilometri)
+        public void IzracunajVrijemePunjenja(int brojKm) //550
         {
+            //napravljeniKilometri - trenutni kilometri 
+            int trenutniKilometri = vozilo.kilometri;
+            int napravljeniKilometri = brojKm - trenutniKilometri;
             int vrijemePunjenja = vozilo.vrijemePunjenja; // npr. 4 sata
             int domet = vozilo.domet;
             int postotakBaterije = IzracunajPostotakBaterije(domet, napravljeniKilometri);
@@ -32,7 +35,7 @@ namespace tjukica_zadaca_1
             double jedanPosto = (double)vrijemePunjenja / (double)100;
             double satiPunjenja = zaNapuniti * jedanPosto;
             gotovoPunjenje = vrijemeAktivnosti.AddHours(satiPunjenja);
-
+            vozilo.kilometri += napravljeniKilometri; 
         }
 
         private int IzracunajPostotakBaterije(int domet, int kilometri)
@@ -59,7 +62,7 @@ namespace tjukica_zadaca_1
             this.vozilo.TransitionTo(new SlobodnoState());
         }
 
-        public override void Vrati(LokacijaKapacitet lokacija, DateTime vrijeme, int prijedeniKilometri)
+        public override void Vrati(Aktivnost.Builder builder)
         {
             cw.Write("Nije moguće vratiti vozilo koje nije iznajmljeno.");
         }

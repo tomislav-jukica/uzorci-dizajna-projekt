@@ -103,15 +103,16 @@ namespace tjukica_zadaca_1
             }
             trenutnaVozila.Remove(vozilo);
             vozilo.state.Iznajmi(korisnik, this);
+            cw.Write("------Broj slobodnih mjesta: " + dajBrojSlobodnihMjesta());
             return vozilo;
         }
 
-        public void VratiVozilo(Vozilo vozilo, DateTime vrijeme, int kilometri)
+        public void VratiVozilo(Aktivnost.Builder builder)
         {
             if (dajBrojSlobodnihMjesta() > 0)
             {
-                trenutnaVozila.Add(vozilo);
-                vozilo.state.Vrati(this, vrijeme, kilometri);
+                trenutnaVozila.Add(builder.Korisnik.getVoziloUNajmu(builder.Vozilo));
+                builder.Korisnik.getVoziloUNajmu(builder.Vozilo).state.Vrati(builder);
             }
             else
             {
