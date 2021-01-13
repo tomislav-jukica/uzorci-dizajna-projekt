@@ -42,8 +42,8 @@ namespace tjukica_zadaca_1
             Aktivnost aktivnost = null;
             builder = builder.setPodatci(idKorisnik, idLokacija, idVozilo);
             if (builder != null)
-            {
-                ProvjeriPunjenje(builder.Vrijeme);
+            {  
+                ProvjeriPunjenje(builder.Vrijeme); 
                 if (Baza.getInstance().getKapacitetLokacije(idLokacija, idVozilo).dajBrojSlobodnihVozila() < 1)
                 {
                     cw.Write("Na lokaciji " + idLokacija.naziv + " nema slobodnih vozila tipa " + idVozilo.naziv + ".");
@@ -55,10 +55,7 @@ namespace tjukica_zadaca_1
                     return null;
                 }
                 aktivnost = builder.build();
-                Vozilo v = Baza.getInstance().getKapacitetLokacije(idLokacija, idVozilo).dajVoziloUNajam();
-                idKorisnik.IznajmiVozilo(v);
-                Baza.getInstance().getIznajmljenaVozila().Add(v);
-                cw.Write("Korisnik " + idKorisnik.ime + " unajmio je vozilo tipa " + idVozilo.naziv + " na lokaciji " + idLokacija.naziv + ".", false);
+                Baza.getInstance().getKapacitetLokacije(idLokacija, idVozilo).dajVoziloUNajam(idKorisnik);
                 return aktivnost;
             }
             else
@@ -87,13 +84,11 @@ namespace tjukica_zadaca_1
         public Aktivnost Vracanje(Korisnik idKorisnik, Lokacija idLokacija, TipVozila tipVozila, int brojKm, string opisProblema = null)
         {
             Aktivnost aktivnost = null;
-
             if (idKorisnik.najmovi.Count == 0)
             {
                 cw.Write("Korisnik " + idKorisnik.ime + " nema nijedno vozilo u najmu.");
                 return null;
             }
-
             if (idKorisnik.getVoziloUNajmu(tipVozila) == null)
             {
                 cw.Write("Korisnik " + idKorisnik.ime + " nema u najmu vozilo tipa " + tipVozila.naziv + ".");
@@ -109,7 +104,6 @@ namespace tjukica_zadaca_1
                 cw.Write("Vrijednost kilometara ne može biti veća od dometa vozila!");
                 return null;
             }
-
             builder = builder.setPodatci(idKorisnik, idLokacija, tipVozila).setBrojKm(brojKm);
             if (builder != null)
             {

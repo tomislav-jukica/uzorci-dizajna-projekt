@@ -88,7 +88,7 @@ namespace tjukica_zadaca_1
             return retVal;
         }
 
-        public Vozilo dajVoziloUNajam()
+        public Vozilo dajVoziloUNajam(Korisnik korisnik)
         {
             Vozilo vozilo = null;
             foreach (Vozilo v in trenutnaVozila)
@@ -102,7 +102,7 @@ namespace tjukica_zadaca_1
                 }
             }
             trenutnaVozila.Remove(vozilo);
-            vozilo.state.Iznajmi();
+            vozilo.state.Iznajmi(korisnik, this);
             return vozilo;
         }
 

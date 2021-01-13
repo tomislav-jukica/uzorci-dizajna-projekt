@@ -6,7 +6,7 @@ namespace tjukica_zadaca_1.State
 {
     class IznajmljenoState : VoziloState
     {
-        public override void Iznajmi()
+        public override void Iznajmi(Korisnik korisnik, LokacijaKapacitet lokacija)
         {
             cw.Write("Nije moguće iznajmiti već iznajmljeno vozilo.");
         }

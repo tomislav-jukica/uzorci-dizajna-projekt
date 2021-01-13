@@ -6,9 +6,12 @@ namespace tjukica_zadaca_1.State
 {
     class SlobodnoState : VoziloState
     {
-        public override void Iznajmi()
+        public override void Iznajmi(Korisnik korisnik, LokacijaKapacitet lokacija)
         {
             this.vozilo.brojUnajmljivanja++;
+            korisnik.IznajmiVozilo(this.vozilo);
+            Baza.getInstance().getIznajmljenaVozila().Add(this.vozilo);
+            cw.Write("Korisnik " + korisnik.ime + " unajmio je vozilo tipa " + this.vozilo.naziv + " na lokaciji " + lokacija.lokacija.naziv + ".", false);
             this.vozilo.TransitionTo(new IznajmljenoState());            
         }
 

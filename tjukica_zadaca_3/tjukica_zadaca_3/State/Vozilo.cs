@@ -34,9 +34,9 @@ namespace tjukica_zadaca_1.State
             this.state.SetVozilo(this);
         }
 
-        public void Iznajmi()
+        public void Iznajmi(Korisnik korisnik, LokacijaKapacitet lokacija)
         {
-            this.state.Iznajmi();
+            this.state.Iznajmi(korisnik, lokacija);
         }
         public void Vrati(LokacijaKapacitet lokacija, DateTime vrijeme, int prijedeniKilometri)
         {

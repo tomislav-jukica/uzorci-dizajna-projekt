@@ -49,7 +49,7 @@ namespace tjukica_zadaca_1
             }
         }
 
-        public override void Iznajmi()
+        public override void Iznajmi(Korisnik korisnik, LokacijaKapacitet lokacija)
         {
             cw.Write("Nije moguće iznajmiti vozilo koje je na punjenju.");
         }

@@ -15,7 +15,7 @@ namespace tjukica_zadaca_1.State
             this.vozilo = vozilo;
         }
 
-        public abstract void Iznajmi();
+        public abstract void Iznajmi(Korisnik korisnik, LokacijaKapacitet lokacija);
         public abstract void Vrati(LokacijaKapacitet lokacija, DateTime vrijeme, int prijedeniKilometri);
         public abstract void VratiPokvareno();
         public abstract void Napuni();
