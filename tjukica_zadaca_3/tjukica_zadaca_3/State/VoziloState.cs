@@ -15,7 +15,7 @@ namespace tjukica_zadaca_1.State
             this.vozilo = vozilo;
         }
 
-        public abstract void Iznajmi(Korisnik korisnik, LokacijaKapacitet lokacija);
+        public abstract bool Iznajmi(Korisnik korisnik, LokacijaKapacitet lokacija);
         public abstract void Vrati(Aktivnost.Builder builder);
         public abstract void VratiPokvareno();
         public abstract void Napuni();

@@ -30,8 +30,10 @@ namespace tjukica_zadaca_1.Proxy
             TipVozila vozilo = baza.getVozilo(voziloId);
             Cjenik cjenik = baza.getCjenikZaVozilo(vozilo);
 
-            double ukupno = cjenik.najam + cjenik.cijenaSat * (int)Math.Ceiling(brojSati) + cjenik.cijenaKm * brojKm;
-            Racun noviRacun = new Racun(racunId++, lokacijaIdNajam, lokacijaIdVracanje, voziloId, brojSati, brojKm, korisnikId, vrijeme ,ukupno);
+            float ukupno = cjenik.najam + cjenik.cijenaSat * (int)Math.Ceiling(brojSati) + cjenik.cijenaKm * brojKm;
+            baza.getKorisnik(korisnikId).dugovanje += (decimal)ukupno;
+
+            Racun noviRacun = new Racun(racunId++, lokacijaIdNajam, lokacijaIdVracanje, voziloId, brojSati, brojKm, korisnikId, vrijeme ,(decimal)ukupno);
             racuni.Add(noviRacun);
 
             cw.HorizontalLine();
@@ -54,6 +56,16 @@ namespace tjukica_zadaca_1.Proxy
             DodajZaraduLokaciji(lokacijaIdNajam, ukupno);
         }
 
+        internal List<Racun> GetRacuniKorisnika(int id)
+        {
+            List<Racun> lista = new List<Racun>();
+            foreach(Racun r in racuni)
+            {
+                if (r.idKorisnik == id) lista.Add(r);
+            }
+            return lista;
+        }
+
         private void DodajZaraduLokaciji(int idLokacije, double zarada)
         {
             baza.getLokacija(idLokacije).zarada += zarada;
@@ -62,6 +74,5 @@ namespace tjukica_zadaca_1.Proxy
         {
             return this.racuni;
         }
-
     }
 }

@@ -22,5 +22,10 @@ namespace tjukica_zadaca_1.Proxy
         {
             return racunovodstvo.GetRacuni();
         }
+
+        public List<Racun> GetRacuniKorisnika(int id)
+        {
+            return racunovodstvo.GetRacuniKorisnika(id);
+        }
     }
 }

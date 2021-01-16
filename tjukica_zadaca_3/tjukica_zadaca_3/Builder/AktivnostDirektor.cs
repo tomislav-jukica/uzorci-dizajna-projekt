@@ -56,6 +56,7 @@ namespace tjukica_zadaca_1
                 }
                 aktivnost = builder.build();
                 Baza.getInstance().getKapacitetLokacije(idLokacija, idVozilo).dajVoziloUNajam(idKorisnik);
+                idKorisnik.zadnjiNajamVozila = builder.Vrijeme;
                 return aktivnost;
             }
             else

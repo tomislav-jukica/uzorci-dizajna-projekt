@@ -13,10 +13,11 @@ namespace tjukica_zadaca_1.Proxy
         public double brojSati { get; private set; }
         public int brojKm { get; private set; }
         public int idKorisnik { get; private set; }
-        public double ukupno { get; private set; }
+        public decimal ukupno { get; private set; }
         public DateTime datumIzdavanja { get; private set; }
+        public bool placen { get; set; } = false;
 
-        public Racun(int id, int lokacijaIdNajam, int lokacijaIdVracanje, int voziloId, double brojSati, int brojKm, int korisnikId, DateTime vrijeme, double ukupno)
+        public Racun(int id, int lokacijaIdNajam, int lokacijaIdVracanje, int voziloId, double brojSati, int brojKm, int korisnikId, DateTime vrijeme, decimal ukupno)
         {
             this.id = id;
             this.idLokacijeNajma = lokacijaIdNajam;
@@ -27,6 +28,13 @@ namespace tjukica_zadaca_1.Proxy
             this.ukupno = ukupno;
             this.datumIzdavanja = vrijeme;
             this.idKorisnik = korisnikId;
-        } 
+            this.placen = !ProvjeriUgovorKorisnika(korisnikId);
+        }
+
+        private bool ProvjeriUgovorKorisnika(int id)
+        {
+            return Baza.getInstance().getKorisnik(id).ugovor;
+        }
+
     }
 }

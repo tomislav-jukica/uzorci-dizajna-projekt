@@ -20,6 +20,8 @@ namespace tjukica_zadaca_1
         private static Regex REGEX_SKUPNI = new Regex("(5); (.+\\.txt)");
         private static Regex REGEX_ISPIS_STANJE = new Regex("(\\d); (struktura|stanje)? (struktura|stanje)?\\s?(\\d*)");
         private static Regex REGEX_AKTIVNOSTI_ISPISA = new Regex("(\\d); ([\\w\\s]+) (\\d{2}.\\d{2}.\\d{4}) (\\d{2}.\\d{2}.\\d{4})( \\d+)?");
+        private static Regex REGEX_AKTIVNOST_DESET = new Regex("(10); (\\d+) (\\d{2}.\\d{2}.\\d{4}) (\\d{2}.\\d{2}.\\d{4})(\\d+)?");
+        private static Regex REGEX_AKTIVNOST_ELEVEN = new Regex("(11); (\\d+) (\\d+,\\d+)");
 
         static string dokumentVozila = null;
         static string dokumentLokacije = null;
@@ -133,6 +135,9 @@ namespace tjukica_zadaca_1
             MatchCollection matchSkupni = REGEX_SKUPNI.Matches(komanda);
             MatchCollection matchIspisStanje = REGEX_ISPIS_STANJE.Matches(komanda);
             MatchCollection matchAktivnostiIspisa = REGEX_AKTIVNOSTI_ISPISA.Matches(komanda);
+            MatchCollection matchAktivnostDeset = REGEX_AKTIVNOST_DESET.Matches(komanda);
+            MatchCollection matchAktivnostEleven = REGEX_AKTIVNOST_ELEVEN.Matches(komanda);
+
             cw.Write(komanda, false);
             if (matchVracanjeNeispravno.Count != 0)
             {
@@ -154,10 +159,55 @@ namespace tjukica_zadaca_1
                 {
                     cw.Write("Pogrešan format datuma!");
                 }
+            } 
+            else if (matchAktivnostDeset.Count != 0)
+            {
+                try
+                {
+                    int aktivnost = int.Parse(matchAktivnostDeset[0].Groups[1].Value);
+                    int korisnikId = int.Parse(matchAktivnostDeset[0].Groups[2].Value);
+                    DateTime datum_1 = DateTime.Parse(matchAktivnostDeset[0].Groups[3].Value);
+                    DateTime datum_2 = DateTime.Parse(matchAktivnostDeset[0].Groups[4].Value);
+                    Match podatci = matchAktivnostDeset[0];
+                    if (aktivnost == 10)
+                    {
+                        AktivnostDeset(korisnikId, datum_1, datum_2);
+                    }
+                    else
+                    {
+                        cw.Write("Pogrešna sintaksa komande! - Aktivnost: " + aktivnost);
+                    }
+                }
+                catch (FormatException)
+                {
+                    cw.Write("Pogrešan format datuma!");
+                }
+            }
+            else if(matchAktivnostEleven.Count != 0)
+            {
+                try
+                {
+                    int aktivnost = int.Parse(matchAktivnostEleven[0].Groups[1].Value);
+                    int korisnikId = int.Parse(matchAktivnostEleven[0].Groups[2].Value);
+                    decimal iznos = decimal.Parse(matchAktivnostEleven[0].Groups[3].Value);
+                   
+                    Match podatci = matchAktivnostEleven[0];
+                    if (aktivnost == 11)
+                    {
+                        AktivnostEleven(korisnikId, iznos);
+                    }
+                    else
+                    {
+                        cw.Write("Pogrešna sintaksa komande! - Aktivnost: " + aktivnost);
+                    }
+                }
+                catch (Exception e)
+                {
+                    cw.Write("ERROR: " + e);
+                }
             }
             else if (matchVracanje.Count != 0)
             {
-
                 try
                 {
                     int aktivnost = int.Parse(matchVracanje[0].Groups[1].Value);
@@ -367,6 +417,9 @@ namespace tjukica_zadaca_1
                 if (komanda == "")
                 {
                     cw.Write("Unjeli ste praznu komandu.");
+                }else if(komanda == "9")
+                {
+                    cw.ispisFinancijskogStanja();
                 }
                 else
                 {
@@ -376,7 +429,15 @@ namespace tjukica_zadaca_1
             }
         }
 
+        private static void AktivnostEleven(int korisnikId, decimal iznos)
+        {
+            cw.AktivnostEleven(korisnikId, iznos);
+        }
 
+        private static void AktivnostDeset(int korisnikId, DateTime datum_1, DateTime datum_2)
+        {
+            cw.AktivnostDeset(korisnikId, datum_1, datum_2);
+        }
 
         private static void AktivnostPregledVozila(int idAktivnosti, DateTime vrijeme, string korisnik, string lokacija, string vozilo)
         {
@@ -698,6 +759,7 @@ namespace tjukica_zadaca_1
                         {
                             if (atributi.Length != 3)
                             {
+                                cw.Write(line);
                                 cw.Write("Pogrešan broj atributa u liniji: " + brojac + " - Datoteka: " + tip);
                             }
                             else
@@ -709,6 +771,7 @@ namespace tjukica_zadaca_1
                                 }
                                 catch (Exception)
                                 {
+                                    cw.Write(line);
                                     cw.Write("Linija: " + brojac + "Greška prilikom unosa novog korisnika! Datoteka: " + tip);
                                 }
                             }
@@ -725,6 +788,7 @@ namespace tjukica_zadaca_1
                         {
                             if (atributi.Length != 4)
                             {
+                                cw.Write(line);
                                 cw.Write("Pogrešan broj atributa u liniji: " + brojac + " - Datoteka: " + tip);
                             }
                             else
@@ -737,6 +801,7 @@ namespace tjukica_zadaca_1
                                 }
                                 catch (Exception)
                                 {
+                                    cw.Write(line);
                                     cw.Write("Linija: " + brojac + "Greška prilikom unosa nove lokacije! Datoteke: " + tip);
                                 }
                             }
@@ -754,6 +819,7 @@ namespace tjukica_zadaca_1
                         {
                             if (atributi.Length != 4)
                             {
+                                cw.Write(line);
                                 cw.Write("Pogrešan broj atributa u liniji: " + brojac + " - Datoteka: " + tip);
                             }
                             else
@@ -765,6 +831,7 @@ namespace tjukica_zadaca_1
                                 }
                                 catch (Exception)
                                 {
+                                    cw.Write(line);
                                     cw.Write("Linija: " + brojac + "Greška prilikom unosa tipa vozila! - Datoteka: " + tip);
                                 }
                             }
@@ -781,6 +848,7 @@ namespace tjukica_zadaca_1
                         {
                             if (atributi.Length != 4)
                             {
+                                cw.Write(line);
                                 cw.Write("Pogrešan broj atributa u liniji: " + brojac + " - Datoteka: " + tip);
                             }
                             else
@@ -797,6 +865,7 @@ namespace tjukica_zadaca_1
                                         }
                                         catch (Exception)
                                         {
+                                            cw.Write(line);
                                             cw.Write("Linija: " + brojac + "Greška prilikom unosa novog cjenika! Datoteka: " + tip);
                                         }
                                         postoji = true;
@@ -804,6 +873,7 @@ namespace tjukica_zadaca_1
                                 }
                                 if (!postoji)
                                 {
+                                    cw.Write(line);
                                     cw.Write("Linija: " + brojac + " - Greška u kreiranju cjenika! Ne postoji tip vozila s ID-jem " + int.Parse(atributi[0]) + ".");
                                 }
                             }
@@ -820,6 +890,7 @@ namespace tjukica_zadaca_1
                         {
                             if (atributi.Length != 4)
                             {
+                                cw.Write(line);
                                 cw.Write("Pogrešan broj atributa u liniji: " + brojac + " - Datoteka: " + tip);
                             }
                             else
@@ -836,6 +907,7 @@ namespace tjukica_zadaca_1
                                 }
                                 if (!postoji)
                                 {
+                                    cw.Write(line);
                                     cw.Write("Linija: " + brojac + " - Greška u kreiranju kapaciteta lokacija! Ne postoji lokacija s ID-jem " + int.Parse(atributi[0]) + ".");
                                 }
                                 if (postoji)
@@ -852,6 +924,7 @@ namespace tjukica_zadaca_1
                                                 LokacijaKapacitet novaLokacijaKapacitet = new LokacijaKapacitet(lokacijaUnos, vozilo, int.Parse(atributi[2]), int.Parse(atributi[3]));
                                                 if (novaLokacijaKapacitet.brojVozila > novaLokacijaKapacitet.brojMjesta)
                                                 {
+                                                    cw.Write(line);
                                                     cw.Write("Linija: " + brojac + " - Greška u kreiranju kapaciteta lokacija! - Broj vozila ne moze biti veci od broja mjesta!");
                                                     novaLokacijaKapacitet.brojMjesta = 0;
                                                     novaLokacijaKapacitet.brojVozila = 0;
@@ -869,12 +942,14 @@ namespace tjukica_zadaca_1
                                             }
                                             catch (Exception)
                                             {
+                                                cw.Write(line);
                                                 cw.Write("Linija: " + brojac + " - Greška prilikom unosa kapaciteta lokacije! Datoteka: " + tip);
                                             }
                                         }
                                     }
                                     if (!postoji)
                                     {
+                                        cw.Write(line);
                                         cw.Write("Linija: " + brojac + " - Greška u kreiranju kapaciteta lokacija! Ne postoji tip vozila s ID-jem " + int.Parse(atributi[1]) + ".");
                                     }
                                 }
@@ -906,6 +981,7 @@ namespace tjukica_zadaca_1
                                 {
                                     if (atributi.Length != 4)
                                     {
+                                        cw.Write(line);
                                         cw.Write("Pogrešan broj atributa u liniji: " + brojac + " - Datoteka: " + tip);
                                     }
                                     else
@@ -922,6 +998,7 @@ namespace tjukica_zadaca_1
                                                 if (x == "") continue;
                                                 if (int.Parse(x) == item.id)
                                                 {
+                                                    cw.Write(line);
                                                     cw.Write("Linija: " + brojac + " - Lokacija sa ID-jem " + item.id + " već ima nadređenu organizacijsku jedinicu.");
                                                 }
                                             }
@@ -946,6 +1023,7 @@ namespace tjukica_zadaca_1
                                                 {
                                                     if (!greske.Contains(brojac))
                                                     {
+                                                        cw.Write(line);
                                                         cw.Write("Linija: " + brojac + " - Pogrešno formatirana linija.");
                                                         greske.Add(brojac);
                                                     }
@@ -978,6 +1056,7 @@ namespace tjukica_zadaca_1
                                         {
                                             if (tvrtka == null)
                                             {
+                                                cw.Write(line);
                                                 cw.Write("Linija: " + brojac + " - Ne postoji ta nadredena jedinica.");
                                                 continue;
                                             }
@@ -1044,7 +1123,7 @@ namespace tjukica_zadaca_1
                                 pocetnaKomanda += " -dd " + vrijednost;
                                 break;
                             case "dugovanje":
-                                baza.dugovanje = float.Parse(vrijednost);
+                                baza.maxDugovanje = decimal.Parse(vrijednost);
                                 break;
                             case "izlaz":
                                 baza.nazivDatotekeIzlaz = vrijednost;

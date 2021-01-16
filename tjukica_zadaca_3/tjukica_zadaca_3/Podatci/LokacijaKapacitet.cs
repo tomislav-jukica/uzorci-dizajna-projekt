@@ -38,7 +38,6 @@ namespace tjukica_zadaca_1
             {
                 if (v.state.GetType() == new SlobodnoState().GetType())
                 {
-                    //retVal -= 1;
                     retVal += 1;
                 }
             }
@@ -101,9 +100,9 @@ namespace tjukica_zadaca_1
                     break;
                 }
             }
-            trenutnaVozila.Remove(vozilo);
-            vozilo.state.Iznajmi(korisnik, this);
-            return vozilo;
+            
+            if(vozilo.state.Iznajmi(korisnik, this)) trenutnaVozila.Remove(vozilo);
+            return vozilo; //ovo se nigdi ne vraca tako da nije bitno
         }
 
         public void VratiVozilo(Aktivnost.Builder builder)

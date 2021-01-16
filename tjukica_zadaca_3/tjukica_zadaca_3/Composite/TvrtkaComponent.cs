@@ -25,7 +25,7 @@ namespace tjukica_zadaca_1.Composite
         public abstract int DajSlobodnaMjesta(TipVozila tipVozila);
         public abstract int DajSlobodnaVozila(TipVozila tipVozila);
         public abstract int DajPokvarenaVozila(TipVozila tipVozila);
-        public abstract double DajZaradu(TipVozila tipVozila, DateTime datum1, DateTime datum2);
+        public abstract decimal DajZaradu(TipVozila tipVozila, DateTime datum1, DateTime datum2);
         public abstract int DajNajmove(TipVozila tipVozila, DateTime datum1, DateTime datum2);
         public abstract List<Racun> DajRacune(TipVozila tipVozila, DateTime datum1, DateTime datum2);
     }

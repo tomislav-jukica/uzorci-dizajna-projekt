@@ -65,9 +65,9 @@ namespace tjukica_zadaca_1.Composite
             return baza.getKapacitetLokacije(this, tipVozila).dajBrojPokvarenihVozila();
         }
 
-        public override double DajZaradu(TipVozila tipVozila, DateTime datum1, DateTime datum2)
+        public override decimal DajZaradu(TipVozila tipVozila, DateTime datum1, DateTime datum2)
         {
-            double retVal = 0;
+            decimal retVal = 0;
             RacunovodstvoProxy rac = new RacunovodstvoProxy(Racunovodstvo.getInstance());
             List<Racun> racuni = rac.GetRacuni();
             foreach (Racun racun in racuni)

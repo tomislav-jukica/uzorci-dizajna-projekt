@@ -11,7 +11,10 @@ namespace tjukica_zadaca_1
         public int id { get; private set; }
         public string ime { get; private set; }
         public bool ugovor { get; private set; }
+        public decimal dugovanje { get; set; } = 0;
         public int brojNeispravnihVracanja { get; set; } = 0;
+        public bool unajmioJeVozilo { get; private set; } = false;
+        public DateTime zadnjiNajamVozila { get; set; }
 
         //public Vozilo najamVozila { get; set; }
 
@@ -26,7 +29,8 @@ namespace tjukica_zadaca_1
 
         public void IznajmiVozilo(Vozilo vozilo)
         {
-            if(!ImaUNajmu(vozilo))
+            unajmioJeVozilo = true;
+            if (!ImaUNajmu(vozilo))
             {
                 najmovi.Add(vozilo);
             }
