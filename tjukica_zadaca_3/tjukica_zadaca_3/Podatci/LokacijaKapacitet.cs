@@ -103,7 +103,6 @@ namespace tjukica_zadaca_1
             }
             trenutnaVozila.Remove(vozilo);
             vozilo.state.Iznajmi(korisnik, this);
-            cw.Write("------Broj slobodnih mjesta: " + dajBrojSlobodnihMjesta());
             return vozilo;
         }
 

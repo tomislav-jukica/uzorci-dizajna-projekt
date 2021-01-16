@@ -73,9 +73,11 @@ namespace tjukica_zadaca_1
             {
                 PokreniSkupniNacinRada();
             }
-
+            
             if (!skupni)
             {
+                cw.zatvoriFile();
+                baza.nazivDatotekeIzlaz = null;
                 while (radi)
                 {
                     cw.Write("INTERAKTIVNI NAČIN IZVOĐENJA", false);
@@ -84,16 +86,6 @@ namespace tjukica_zadaca_1
                     CitajKomandu(komanda);
                 }
             }
-            /*
-            List<TvrtkaComponent> temp = baza.ishodisna.GetIterator().DFS();
-            foreach (var item in temp)
-            {
-                for (int i = 0; i < item.razina; i++)
-                {
-                    Console.Write("-");
-                }
-                cw.Write(item.getComponentName());                
-            }*/
         }
 
         private static void PokreniSkupniNacinRada()
@@ -602,73 +594,17 @@ namespace tjukica_zadaca_1
 
         private static void IspisiStrukturuStanja(List<TvrtkaComponent> lista)
         {
-            Console.WriteLine("");
-            Console.WriteLine("{0,10}\n", "Naziv");
-            for (int ctr = 0; ctr < lista.Count; ctr++)
-            {
-                string razinaIcon = "";
-                for (int i = 0; i < lista[ctr].razina; i++)
-                {
-                    razinaIcon += "-";
-                }
-
-                Console.WriteLine("{0,-20}", razinaIcon + "  " + lista[ctr].getComponentName());
-            }
-            Console.WriteLine("");
+            cw.ispisiStrukturuStanja(lista);
         }
         private static void IspisiPodatkeStanja(List<TvrtkaComponent> lista)
         {
-            Console.WriteLine("");
-            Console.WriteLine("{0, -" + baza.dt + "} {1, -" + baza.dt + "} {2, " + baza.dc + "} {3, " + baza.dc + "} {4, " + baza.dc + "}  \n", "Naziv", "Vozilo", "SM", "SV", "NV");
-            for (int ctr = 0; ctr < lista.Count; ctr++)
-            {
-                foreach (var tipVozila in baza.getTipoviVozila())
-                {
-                    string name = lista[ctr].getComponentName();
-                    string voziloName = tipVozila.naziv;
-
-                    if (name.Length > baza.dt) name = name.Substring(0, baza.dt);
-                    if (voziloName.Length > baza.dt) voziloName = voziloName.Substring(0, baza.dt);
-
-                    Console.WriteLine("{0, -" + baza.dt + "} {1, -" + baza.dt + "} {2, " + baza.dc + "} {3, " + baza.dc + "} {4, " + baza.dc + "} ",
-                        name,
-                        voziloName,
-                        lista[ctr].DajSlobodnaMjesta(tipVozila),
-                        lista[ctr].DajSlobodnaVozila(tipVozila),
-                        lista[ctr].DajPokvarenaVozila(tipVozila));
-                }
-            }
-            Console.WriteLine("");
+            cw.ispisiPodatkeStanja(lista);
         }
         private static void IspisiSveStanja(List<TvrtkaComponent> lista)
         {
-            Console.WriteLine("");
-            Console.WriteLine("{0, 10} {1, -" + baza.dt + "} {2, -" + baza.dt + "} {3, " + baza.dc + "} {4, " + baza.dc + "} {5, " + baza.dc + "}  \n", "Razina", "Naziv", "Vozilo", "SM", "SV", "NV");
-            for (int ctr = 0; ctr < lista.Count; ctr++)
-            {
-                foreach (var tipVozila in baza.getTipoviVozila())
-                {
-                    string name = lista[ctr].getComponentName();
-                    string voziloName = tipVozila.naziv;
-
-                    if (name.Length > baza.dt) name = name.Substring(0, baza.dt);
-                    if (voziloName.Length > baza.dt) voziloName = voziloName.Substring(0, baza.dt);
-                    string razinaIcon = "";
-                    for (int i = 0; i < lista[ctr].razina; i++)
-                    {
-                        razinaIcon += "-";
-                    }
-                    Console.WriteLine("{0,10} {1, -" + baza.dt + "} {2, -" + baza.dt + "} {3, " + baza.dc + "} {4, " + baza.dc + "} {5, " + baza.dc + "} ",
-                        razinaIcon,
-                        name,
-                        voziloName,
-                        lista[ctr].DajSlobodnaMjesta(tipVozila),
-                        lista[ctr].DajSlobodnaVozila(tipVozila),
-                        lista[ctr].DajPokvarenaVozila(tipVozila)); ;
-                }
-            }
-            Console.WriteLine("");
+            cw.ispisiSveStanja(lista);
         }
+
         static void UnesiDokumente(string[] args)
         {
             for (int i = 0; i < args.Length; i++)
@@ -1150,6 +1086,7 @@ namespace tjukica_zadaca_1
                 }
                 brojac++;
             }
+
             return true;
         }
 

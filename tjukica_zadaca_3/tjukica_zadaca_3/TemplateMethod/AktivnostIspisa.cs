@@ -63,19 +63,7 @@ namespace tjukica_zadaca_1.TemplateMethod
 
         private void IspisStrukture(List<TvrtkaComponent> lista)
         {
-            Console.WriteLine("");
-            Console.WriteLine("{0,10}\n", "Naziv");
-            for (int ctr = 0; ctr < lista.Count; ctr++)
-            {
-                string razinaIcon = "";
-                for (int i = 0; i < lista[ctr].razina; i++)
-                {
-                    razinaIcon += "-";
-                }
-
-                Console.WriteLine("{0,-20}", razinaIcon + "  " + lista[ctr].getComponentName());
-            }
-            Console.WriteLine("");
+            cw.ispisStrukture(lista);
         }
 
     }

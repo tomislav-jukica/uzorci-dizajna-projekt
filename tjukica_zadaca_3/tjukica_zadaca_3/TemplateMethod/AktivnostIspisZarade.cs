@@ -118,70 +118,15 @@ namespace tjukica_zadaca_1.TemplateMethod
 
         private void IspisZarade(List<TvrtkaComponent> lista)
         {
-            Console.WriteLine("");
-            Console.WriteLine("{0, -" + baza.dt + "} {1, -" + baza.dt + "} {2, " + baza.dc + "}\n", "Naziv", "Vozilo", "Zarada");
-            for (int ctr = 0; ctr < lista.Count; ctr++)
-            {
-                foreach (var tipVozila in baza.getTipoviVozila())
-                {
-                    string name = lista[ctr].getComponentName();
-                    string voziloName = tipVozila.naziv;
-
-                    if (name.Length > baza.dt) name = name.Substring(0, baza.dt);
-                    if (voziloName.Length > baza.dt) voziloName = voziloName.Substring(0, baza.dt);
-
-                    Console.WriteLine("{0, -" + baza.dt + "} {1, -" + baza.dt + "} {2, " + baza.dc + "}",
-                        name,
-                        voziloName,
-                        lista[ctr].DajZaradu(tipVozila, datum_1, datum_2));
-                }
-            }
-            Console.WriteLine("");
+            cw.ispisZarade(lista, datum_1, datum_2);
         }
         private void IspisNajma(List<TvrtkaComponent> lista)
         {
-            Console.WriteLine("");
-            Console.WriteLine("{0, -" + baza.dt + "} {1, -" + baza.dt + "} {2, " + baza.dc + "}\n", "Naziv", "Vozilo", "Najam");
-            for (int ctr = 0; ctr < lista.Count; ctr++)
-            {
-                foreach (var tipVozila in baza.getTipoviVozila())
-                {
-                    string name = lista[ctr].getComponentName();
-                    string voziloName = tipVozila.naziv;
-
-                    if (name.Length > baza.dt) name = name.Substring(0, baza.dt);
-                    if (voziloName.Length > baza.dt) voziloName = voziloName.Substring(0, baza.dt);
-
-                    Console.WriteLine("{0, -" + baza.dt + "} {1, -" + baza.dt + "} {2, " + baza.dc + "}",
-                        name,
-                        voziloName,
-                        lista[ctr].DajNajmove(tipVozila, datum_1, datum_2));
-                }
-            }
-            Console.WriteLine("");
+            cw.ispisNajma(lista, datum_1, datum_2);
         }
         private void IspisPodataka(List<TvrtkaComponent> lista)
         {
-            Console.WriteLine("");
-            Console.WriteLine("{0, -" + baza.dt + "} {1, -" + baza.dt + "} {2, " + baza.dc + "} {3, " + baza.dc + "}\n", "Naziv", "Vozilo", "Najam", "Zarada");
-            for (int ctr = 0; ctr < lista.Count; ctr++)
-            {
-                foreach (var tipVozila in baza.getTipoviVozila())
-                {
-                    string name = lista[ctr].getComponentName();
-                    string voziloName = tipVozila.naziv;
-
-                    if (name.Length > baza.dt) name = name.Substring(0, baza.dt);
-                    if (voziloName.Length > baza.dt) voziloName = voziloName.Substring(0, baza.dt);
-
-                    Console.WriteLine("{0, -" + baza.dt + "} {1, -" + baza.dt + "} {2, " + baza.dc + "} {3, " + baza.dc + "}",
-                        name,
-                        voziloName,
-                        lista[ctr].DajNajmove(tipVozila, datum_1, datum_2),
-                        lista[ctr].DajZaradu(tipVozila,datum_1, datum_2));
-                }
-            }
-            Console.WriteLine("");
+            cw.ispisPodataka(lista, datum_1, datum_2);
         }
     }
 }
