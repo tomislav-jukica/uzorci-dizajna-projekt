@@ -127,5 +127,15 @@ namespace tjukica_zadaca_1.Composite
             }
             return retVal;
         }
+
+        internal override int DajVremenaNajmova(TipVozila tipVozila, DateTime datum_1, DateTime datum_2)
+        {
+            int retVal = 0;
+            foreach (var item in tvrtkaComponents)
+            {
+                retVal += item.DajVremenaNajmova(tipVozila, datum_1, datum_2);
+            }
+            return retVal;
+        }
     }
 }

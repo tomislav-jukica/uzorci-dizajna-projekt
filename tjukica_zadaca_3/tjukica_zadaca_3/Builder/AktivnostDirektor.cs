@@ -108,7 +108,12 @@ namespace tjukica_zadaca_1
                 cw.Write("Vrijednost kilometara ne može biti veća od dometa vozila!");
                 return null;
             }
+            
             builder = builder.setPodatci(idKorisnik, idLokacija, tipVozila).setBrojKm(ukupniKilometri);
+            if (opisProblema != null)
+            {
+                builder = builder.setOpis(opisProblema);
+            }
             if (builder != null)
             {
                 ProvjeriPunjenje(builder.Vrijeme);
@@ -116,8 +121,6 @@ namespace tjukica_zadaca_1
                 kapacitet.VratiVozilo(builder);
                 aktivnost = builder.build();
                 return aktivnost;
-
-                
 
             }
             else

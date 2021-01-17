@@ -129,5 +129,29 @@ namespace tjukica_zadaca_1.Composite
             }
             return retVal;
         }
+
+        internal override int DajVremenaNajmova(TipVozila tipVozila, DateTime datum_1, DateTime datum_2)
+        {
+            int retVal = 0;
+            RacunovodstvoProxy rac = new RacunovodstvoProxy(Racunovodstvo.getInstance());
+            List<Racun> racuni = rac.GetRacuni();            
+
+            foreach (Racun racun in racuni)
+            {
+                if (racun.idLokacijeNajma == this.id)
+                {
+                    if (racun.idVoziloTip == tipVozila.id)
+                    {
+                        if (datum_1.CompareTo(racun.datumIzdavanja) < 0 && datum_2.CompareTo(racun.datumIzdavanja) > 0)
+                        {
+                            double vrijeme = racun.brojSati;
+                            //int t =(int) Math.Ceiling(vrijeme.TotalMinutes);
+                            retVal += (int)Math.Ceiling(vrijeme);
+                        }
+                    }
+                }
+            }
+            return retVal;
+        }
     }
 }

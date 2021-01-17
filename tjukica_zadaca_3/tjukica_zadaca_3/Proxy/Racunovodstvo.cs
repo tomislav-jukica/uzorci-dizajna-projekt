@@ -31,7 +31,8 @@ namespace tjukica_zadaca_1.Proxy
             Cjenik cjenik = baza.getCjenikZaVozilo(vozilo);
 
             float ukupno = cjenik.najam + cjenik.cijenaSat * (int)Math.Ceiling(brojSati) + cjenik.cijenaKm * brojKm;
-            baza.getKorisnik(korisnikId).dugovanje += (decimal)ukupno;
+            if(baza.getKorisnik(korisnikId).ugovor) baza.getKorisnik(korisnikId).dugovanje += (decimal)ukupno;
+
 
             Racun noviRacun = new Racun(racunId++, lokacijaIdNajam, lokacijaIdVracanje, voziloId, brojSati, brojKm, korisnikId, vrijeme ,(decimal)ukupno);
             racuni.Add(noviRacun);

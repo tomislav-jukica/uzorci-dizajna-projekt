@@ -128,8 +128,8 @@ namespace tjukica_zadaca_1.Helpers
                 file.WriteLine("");
                 file.WriteLine("{0, -" + baza.dt + "} {1, -" + baza.dt + "} {2, " + baza.dc + "} {3, -" + baza.dt + "} {4, -" + baza.dt + "}" +
                     "{5, " + baza.dc + "} {6, -" + baza.dt + "} {7, " + baza.dc + "} {8, -" + baza.dt + "}" +
-                    "{9, " + (baza.dc + baza.dd + 1) + "} {10, " + (baza.dc + baza.dd + 1) + "} {11, " + (baza.dc + baza.dd + 1) + "}\n",
-                    "Naziv", "Vozilo", "Rb.", "Vrijeme", "Korisnik", "ID", "L. Najma", "ID", "L. Vracanja", "C. Najma", "C. Km", "C. Sat");
+                    "{9, " + (baza.dc + baza.dd + 1) + "} {10, " + (baza.dc + baza.dd + 1) + "} {11, " + (baza.dc + baza.dd + 1) + "} {12, " + baza.dc + "}\n",
+                    "Naziv", "Vozilo", "Rb.", "Vrijeme", "Korisnik", "ID", "L. Najma", "ID", "L. Vracanja", "C. Najma", "C. Km", "C. Sat", "Ukupno");
                 for (int ctr = 0; ctr < lista.Count; ctr++)
                 {
                     foreach (var tipVozila in baza.getTipoviVozila())
@@ -144,19 +144,21 @@ namespace tjukica_zadaca_1.Helpers
                         {
                             file.WriteLine("{0, -" + baza.dt + "} {1, -" + baza.dt + "} {2, " + baza.dc + "} {3, -" + baza.dt + "} {4, -" + baza.dt + "}" +
                     "{5, " + baza.dc + "} {6, -" + baza.dt + "} {7, " + baza.dc + "} {8, -" + baza.dt + "}" +
-                    "{9, " + (baza.dc + baza.dd + 1) + "} {10, " + (baza.dc + baza.dd + 1) + "} {11, " + (baza.dc + baza.dd + 1) + "}",
+                    "{9, " + (baza.dc + baza.dd + 1) + "} {10, " + (baza.dc + baza.dd + 1) + "} {11, " + (baza.dc + baza.dd + 1) + "} {12, " + baza.dc + "}",
                             name,
                             voziloName,
                             x.id,
                             x.datumIzdavanja,
                             baza.getKorisnik(x.idKorisnik).ime,
-                            x.idLokacijeNajma, baza.getLokacija(x.idLokacijeNajma).naziv,
-                            x.idLokacijeVracanja, baza.getLokacija(x.idLokacijeVracanja).naziv,
+                            x.idLokacijeNajma,
+                            baza.getLokacija(x.idLokacijeNajma).naziv,
+                            x.idLokacijeVracanja,
+                            baza.getLokacija(x.idLokacijeVracanja).naziv,
                             Math.Round(baza.getCjenikZaVozilo(tipVozila).najam, baza.dd, MidpointRounding.AwayFromZero),
                             Math.Round(baza.getCjenikZaVozilo(tipVozila).cijenaKm * x.brojKm, baza.dd, MidpointRounding.AwayFromZero),
-                            Math.Round(baza.getCjenikZaVozilo(tipVozila).cijenaSat * x.brojSati, baza.dd, MidpointRounding.AwayFromZero),
-                            lista[ctr].DajNajmove(tipVozila, datum_1, datum_2),
-                            lista[ctr].DajZaradu(tipVozila, datum_1, datum_2));
+                            Math.Round(baza.getCjenikZaVozilo(tipVozila).cijenaSat * Math.Ceiling(x.brojSati), baza.dd, MidpointRounding.AwayFromZero),
+                            x.ukupno);
+
                         }
 
                     }
@@ -168,8 +170,8 @@ namespace tjukica_zadaca_1.Helpers
                 Console.WriteLine("");
                 Console.WriteLine("{0, -" + baza.dt + "} {1, -" + baza.dt + "} {2, " + baza.dc + "} {3, -" + baza.dt + "} {4, -" + baza.dt + "}" +
                     "{5, " + baza.dc + "} {6, -" + baza.dt + "} {7, " + baza.dc + "} {8, -" + baza.dt + "}" +
-                    "{9, " + (baza.dc + baza.dd + 1) + "} {10, " + (baza.dc + baza.dd + 1) + "} {11, " + (baza.dc + baza.dd + 1) + "}\n",
-                    "Naziv", "Vozilo", "Rb.", "Vrijeme", "Korisnik", "ID", "L. Najma", "ID", "L. Vracanja", "C. Najma", "C. Km", "C. Sat");
+                    "{9, " + (baza.dc + baza.dd + 1) + "} {10, " + (baza.dc + baza.dd + 1) + "} {11, " + (baza.dc + baza.dd + 1) + "} {12, " + baza.dc + "}\n",
+                    "Naziv", "Vozilo", "Rb.", "Vrijeme", "Korisnik", "ID", "L. Najma", "ID", "L. Vracanja", "C. Najma", "C. Km", "C. Sat", "Ukupno");
                 for (int ctr = 0; ctr < lista.Count; ctr++)
                 {
                     foreach (var tipVozila in baza.getTipoviVozila())
@@ -184,19 +186,21 @@ namespace tjukica_zadaca_1.Helpers
                         {
                             Console.WriteLine("{0, -" + baza.dt + "} {1, -" + baza.dt + "} {2, " + baza.dc + "} {3, -" + baza.dt + "} {4, -" + baza.dt + "}" +
                     "{5, " + baza.dc + "} {6, -" + baza.dt + "} {7, " + baza.dc + "} {8, -" + baza.dt + "}" +
-                    "{9, " + (baza.dc + baza.dd + 1) + "} {10, " + (baza.dc + baza.dd + 1) + "} {11, " + (baza.dc + baza.dd + 1) + "}",
+                    "{9, " + (baza.dc + baza.dd + 1) + "} {10, " + (baza.dc + baza.dd + 1) + "} {11, " + (baza.dc + baza.dd + 1) + "} {12, " + baza.dc + "}",
                             name,
                             voziloName,
                             x.id,
                             x.datumIzdavanja,
                             baza.getKorisnik(x.idKorisnik).ime,
-                            x.idLokacijeNajma, baza.getLokacija(x.idLokacijeNajma).naziv,
-                            x.idLokacijeVracanja, baza.getLokacija(x.idLokacijeVracanja).naziv,
+                            x.idLokacijeNajma,
+                            baza.getLokacija(x.idLokacijeNajma).naziv,
+                            x.idLokacijeVracanja,
+                            baza.getLokacija(x.idLokacijeVracanja).naziv,
                             Math.Round(baza.getCjenikZaVozilo(tipVozila).najam, baza.dd, MidpointRounding.AwayFromZero),
                             Math.Round(baza.getCjenikZaVozilo(tipVozila).cijenaKm * x.brojKm, baza.dd, MidpointRounding.AwayFromZero),
-                            Math.Round(baza.getCjenikZaVozilo(tipVozila).cijenaSat * x.brojSati, baza.dd, MidpointRounding.AwayFromZero),
-                            lista[ctr].DajNajmove(tipVozila, datum_1, datum_2),
-                            lista[ctr].DajZaradu(tipVozila, datum_1, datum_2));
+                            Math.Round(baza.getCjenikZaVozilo(tipVozila).cijenaSat * Math.Ceiling(x.brojSati), baza.dd, MidpointRounding.AwayFromZero),
+                            x.ukupno);
+
                         }
 
                     }
@@ -258,7 +262,7 @@ namespace tjukica_zadaca_1.Helpers
             if (baza.nazivDatotekeIzlaz != null)
             {
                 file.WriteLine("");
-                file.WriteLine("{0, -" + baza.dt + "} {1, -" + baza.dt + "} {2, " + baza.dc + "} {3, " + baza.dc + "}\n", "Naziv", "Vozilo", "Najam", "Zarada");
+                file.WriteLine("{0, -" + baza.dt + "} {1, -" + baza.dt + "} {2, " + baza.dc + "} {3, " + baza.dc + "} {4, " + baza.dt + "}\n", "Naziv", "Vozilo", "Najam", "Zarada", "Trajanje(Min)");
                 for (int ctr = 0; ctr < lista.Count; ctr++)
                 {
                     foreach (var tipVozila in baza.getTipoviVozila())
@@ -269,11 +273,12 @@ namespace tjukica_zadaca_1.Helpers
                         if (name.Length > baza.dt) name = name.Substring(0, baza.dt);
                         if (voziloName.Length > baza.dt) voziloName = voziloName.Substring(0, baza.dt);
 
-                        file.WriteLine("{0, -" + baza.dt + "} {1, -" + baza.dt + "} {2, " + baza.dc + "} {3, " + baza.dc + "}",
+                        file.WriteLine("{0, -" + baza.dt + "} {1, -" + baza.dt + "} {2, " + baza.dc + "} {3, " + baza.dc + "} {4, " + baza.dt + "}",
                             name,
                             voziloName,
                             lista[ctr].DajNajmove(tipVozila, datum_1, datum_2),
-                            lista[ctr].DajZaradu(tipVozila, datum_1, datum_2));
+                            lista[ctr].DajZaradu(tipVozila, datum_1, datum_2),
+                            lista[ctr].DajVremenaNajmova(tipVozila, datum_1, datum_2));
                     }
                 }
                 file.WriteLine("");
@@ -281,7 +286,7 @@ namespace tjukica_zadaca_1.Helpers
             else
             {
                 Console.WriteLine("");
-                Console.WriteLine("{0, -" + baza.dt + "} {1, -" + baza.dt + "} {2, " + baza.dc + "} {3, " + baza.dc + "}\n", "Naziv", "Vozilo", "Najam", "Zarada");
+                Console.WriteLine("{0, -" + baza.dt + "} {1, -" + baza.dt + "} {2, " + baza.dc + "} {3, " + baza.dc + "} {4, " + baza.dt + "}\n", "Naziv", "Vozilo", "Najam", "Zarada", "Trajanje(Min)");
                 for (int ctr = 0; ctr < lista.Count; ctr++)
                 {
                     foreach (var tipVozila in baza.getTipoviVozila())
@@ -292,11 +297,12 @@ namespace tjukica_zadaca_1.Helpers
                         if (name.Length > baza.dt) name = name.Substring(0, baza.dt);
                         if (voziloName.Length > baza.dt) voziloName = voziloName.Substring(0, baza.dt);
 
-                        Console.WriteLine("{0, -" + baza.dt + "} {1, -" + baza.dt + "} {2, " + baza.dc + "} {3, " + baza.dc + "}",
+                        Console.WriteLine("{0, -" + baza.dt + "} {1, -" + baza.dt + "} {2, " + baza.dc + "} {3, " + baza.dc + "} {4, " + baza.dt + "}",
                             name,
                             voziloName,
                             lista[ctr].DajNajmove(tipVozila, datum_1, datum_2),
-                            lista[ctr].DajZaradu(tipVozila, datum_1, datum_2));
+                            lista[ctr].DajZaradu(tipVozila, datum_1, datum_2),
+                            lista[ctr].DajVremenaNajmova(tipVozila, datum_1, datum_2));
                     }
                 }
                 Console.WriteLine("");
@@ -439,7 +445,7 @@ namespace tjukica_zadaca_1.Helpers
             }
         }
 
-        
+
 
         public void ispisiSveStanja(List<TvrtkaComponent> lista)
         {
@@ -569,7 +575,7 @@ namespace tjukica_zadaca_1.Helpers
                         placen,
                         vozilo,
                         lokacija);
-                    }                    
+                    }
                 }
                 file.WriteLine("");
             }
@@ -613,16 +619,20 @@ namespace tjukica_zadaca_1.Helpers
 
                 foreach (Racun r in listaRacuna)
                 {
-                    if(r.ukupno < iznos)
+                    if (!r.placen)
                     {
-                        iznos -= r.ukupno;
-                        r.placen = true;
-                        korisnik.dugovanje -= r.ukupno;
-                        file.WriteLine("{0, " + baza.dc + "} {1, " + baza.dt + "} {2, " + baza.dc + "}  ",
-                        r.id,
-                        r.datumIzdavanja,
-                        r.ukupno);
+                        if (r.ukupno < iznos)
+                        {
+                            iznos -= r.ukupno;
+                            r.placen = true;
+                            korisnik.dugovanje -= r.ukupno;
+                            file.WriteLine("{0, " + baza.dc + "} {1, " + baza.dt + "} {2, " + baza.dc + "}  ",
+                            r.id,
+                            r.datumIzdavanja,
+                            r.ukupno);
+                        }
                     }
+
                 }
                 file.WriteLine("Korisniku je vraćeno " + iznos + " kuna.");
                 file.WriteLine("");
@@ -643,9 +653,8 @@ namespace tjukica_zadaca_1.Helpers
                         r.id,
                         r.datumIzdavanja,
                         r.ukupno);
-
-                        r.placen = true;
                     }
+
                 }
                 Console.WriteLine("Korisniku je vraćeno " + iznos + " kuna.");
                 Console.WriteLine("");

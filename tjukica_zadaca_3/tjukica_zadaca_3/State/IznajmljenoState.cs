@@ -29,6 +29,7 @@ namespace tjukica_zadaca_1.State
             int brojKm = builder.BrojKm;
             string opisProblema = builder.OpisProblema;
             bool greska = false;
+
             if (idKorisnik.getVoziloUNajmu(tipVozila) == null)
             {
                 cw.Write("Korisnik " + idKorisnik.ime + " nema u najmu vozilo tipa " + tipVozila.naziv);
@@ -70,12 +71,19 @@ namespace tjukica_zadaca_1.State
                 }
                 idKorisnik.VratiVozilo(idKorisnik.getVoziloUNajmu(tipVozila));                
             }
-            //TODO provjeri prijedene kilometre
-            NaPunjenjuState nps = new NaPunjenjuState(this.vozilo, kapacitet, builder.Vrijeme, builder.BrojKm);
-
-            nps.IzracunajVrijemePunjenja(builder.BrojKm);
-            Baza.getInstance().getVozilaNaPunjenju().Add(nps);
-            this.vozilo.TransitionTo(nps);
+            
+            if(opisProblema != null)
+            {
+                PokvarenoState ps = new PokvarenoState();
+                this.vozilo.TransitionTo(ps);
+            } else
+            {
+                NaPunjenjuState nps = new NaPunjenjuState(this.vozilo, kapacitet, builder.Vrijeme, builder.BrojKm);
+                nps.IzracunajVrijemePunjenja(builder.BrojKm);
+                Baza.getInstance().getVozilaNaPunjenju().Add(nps);
+                this.vozilo.TransitionTo(nps);
+            }
+            
 
         }
 

@@ -28,5 +28,6 @@ namespace tjukica_zadaca_1.Composite
         public abstract decimal DajZaradu(TipVozila tipVozila, DateTime datum1, DateTime datum2);
         public abstract int DajNajmove(TipVozila tipVozila, DateTime datum1, DateTime datum2);
         public abstract List<Racun> DajRacune(TipVozila tipVozila, DateTime datum1, DateTime datum2);
+        internal abstract int DajVremenaNajmova(TipVozila tipVozila, DateTime datum_1, DateTime datum_2);
     }
 }

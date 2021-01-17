@@ -18,10 +18,10 @@ namespace tjukica_zadaca_1
         private static Regex REGEX_VRACANJE = new Regex("(\\d); .(\\d+-\\d+-\\d+ \\d+:\\d+:\\d+).; (\\d+); (\\d+); (\\d+); (\\d+)");
         private static Regex REGEX_VRACANJE_NEISPRAVNO = new Regex("(\\d); .(\\d+-\\d+-\\d+ \\d+:\\d+:\\d+).; (\\d+); (\\d+); (\\d+); (\\d+); (.+)");
         private static Regex REGEX_SKUPNI = new Regex("(5); (.+\\.txt)");
-        private static Regex REGEX_ISPIS_STANJE = new Regex("(\\d); (struktura|stanje)? (struktura|stanje)?\\s?(\\d*)");
+        private static Regex REGEX_ISPIS_STANJE = new Regex("(\\d); (struktura|stanje)?\\s?(struktura|stanje)?\\s?(\\d*)");
         private static Regex REGEX_AKTIVNOSTI_ISPISA = new Regex("(\\d); ([\\w\\s]+) (\\d{2}.\\d{2}.\\d{4}) (\\d{2}.\\d{2}.\\d{4})( \\d+)?");
         private static Regex REGEX_AKTIVNOST_DESET = new Regex("(10); (\\d+) (\\d{2}.\\d{2}.\\d{4}) (\\d{2}.\\d{2}.\\d{4})(\\d+)?");
-        private static Regex REGEX_AKTIVNOST_ELEVEN = new Regex("(11); (\\d+) (\\d+,\\d+)");
+        private static Regex REGEX_AKTIVNOST_ELEVEN = new Regex("(11); (\\d+) (\\d+,?\\d+)");
 
         static string dokumentVozila = null;
         static string dokumentLokacije = null;
@@ -54,8 +54,8 @@ namespace tjukica_zadaca_1
                 dokumentKonfig = strSplit[1];
                 //UcitajDatoteku(TipDatoteke.konfig);
                 UcitajDokument(TipDatoteke.konfig);
+                
 
-                Console.WriteLine(dokumentOsobe);
                 foreach (var x in args)
                 {
                     pocetnaKomanda += " " + x;
@@ -68,6 +68,10 @@ namespace tjukica_zadaca_1
             {
                 cw.Write("Neuspjelo ucitavanje dokumenata. Zatvaram program...");
                 return;
+            }
+            if (dokumentAktivnosti == null)
+            {
+                baza.nazivDatotekeIzlaz = null;
             }
             PostaviRoditeljeLokacijama();
 
@@ -341,6 +345,7 @@ namespace tjukica_zadaca_1
                                     AktivnostIspisZarade aiz = new AktivnostIspisZarade(aktivnost, "", datum_1, datum_2);
                                     aiz.PrikaziStrukturu(idOrgJedinice);
                                     aiz.PrikaziPodatke(idOrgJedinice);
+                                    break;
                                 }
                             }
                         }
@@ -363,7 +368,7 @@ namespace tjukica_zadaca_1
                                 AktivnostIspisRacuna air = new AktivnostIspisRacuna(aktivnost, k, datum_1, datum_2);
                                 air.PrikaziStrukturu(idOrgJedinice);
                             }
-                            else if (k == "racuni")
+                            else if (k == "računi" || k=="racuni")
                             {
                                 AktivnostIspisRacuna air = new AktivnostIspisRacuna(aktivnost, k, datum_1, datum_2);
                                 air.PrikaziRacune(idOrgJedinice);
